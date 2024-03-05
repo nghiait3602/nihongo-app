@@ -16,15 +16,13 @@ const Search = () => {
   return (
     <View style={styles.container}>
       <View style={styles.searchContainer}>
-        <Text
-          style={styles.label}
+        <Text style={styles.label}>Tra từ :</Text>
+        <TextInput
           onChangeText={tuNhapVao}
           value={tuSearch}
-        >
-          Tra từ :
-        </Text>
-        <TextInput style={styles.search} />
-        <Button title="Tìm kiếm" style={styles.button} onPress={xuLySearch} />
+          style={styles.search}
+        />
+        <Button title="Tìm kiếm" onPress={xuLySearch} />
       </View>
     </View>
   );
