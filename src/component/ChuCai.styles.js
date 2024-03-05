@@ -16,7 +16,7 @@ export default StyleSheet.create({
     marginVertical: 8,
     borderRadius: 5,
     borderWidth: 1,
-    borderColor: "gray",
+    borderColor: "#08979c",
     justifyContent: "center",
     alignItems: "center",
   },
