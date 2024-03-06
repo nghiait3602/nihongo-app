@@ -1,7 +1,7 @@
 import { Text, View, FlatList } from "react-native";
 import React, { useState, useEffect } from "react";
 
-import styles from "../../component/ChuCai.styles";
+import styles from "../../component/UI/ChuCai.styles";
 import Data from "../../../data/bangChuCai.json";
 
 const Katakana = () => {

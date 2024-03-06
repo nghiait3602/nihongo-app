@@ -2,7 +2,7 @@ import { Text, View, FlatList } from "react-native";
 import React, { useState, useEffect } from "react";
 
 import Data from "../../../data/bangChuCai.json";
-import styles from "../../component/ChuCai.styles";
+import styles from "../../component/UI/ChuCai.styles";
 
 const Hiragana = () => {
   const [hiraData, setHiraData] = useState([]); // Luu data bang hira

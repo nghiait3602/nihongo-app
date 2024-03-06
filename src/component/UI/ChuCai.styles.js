@@ -1,4 +1,5 @@
 import { StyleSheet } from "react-native";
+import { Colors } from "../../constants/colors";
 
 export default StyleSheet.create({
   nullContainer: {
@@ -16,7 +17,7 @@ export default StyleSheet.create({
     marginVertical: 8,
     borderRadius: 5,
     borderWidth: 1,
-    borderColor: "#08979c",
+    borderColor: Colors.XanhNgocDam,
     justifyContent: "center",
     alignItems: "center",
   },
