@@ -2,6 +2,7 @@ import { StyleSheet, Text, View, TextInput, FlatList } from "react-native";
 import Button from "../../component/UI/Button";
 import Icon from "react-native-vector-icons/FontAwesome";
 import React, { useState } from "react";
+import Scan from "../../component/Scan";
 
 const Search = () => {
   const [tuSearch, setTuSearch] = useState("");

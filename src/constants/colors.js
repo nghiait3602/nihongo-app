@@ -1,4 +1,5 @@
 export const Colors = {
-  XanhNgocChuDao: "#a9fafc",
-  XanhNgocDam: "#08979c"
+  XanhNgoc: "#a9fafc",
+  XanhNgocDam: "#08979c",
+  title: "#0287a8",
 };

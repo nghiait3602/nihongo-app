@@ -1,5 +1,6 @@
-import { Text, View, FlatList } from "react-native";
+import { Text, View, FlatList, TouchableOpacity } from "react-native";
 import React, { useState, useEffect } from "react";
+import * as Speech from "expo-speech";
 
 import Data from "../../../data/bangChuCai.json";
 import styles from "../../component/UI/ChuCai.styles";
@@ -15,18 +16,32 @@ const Hiragana = () => {
     setHiraData(xuLyChuoi); // Updata chuoi sau khi xu ly
   }, []);
 
-  const motChuHira = ({ item: { hira, index } }) => (
-    // dieu kien style loc cac o trong
-    <View
-      style={hira !== " " ? styles.chuCaiContainer : styles.nullContainer}
-      key={index}
-    >
-      <Text style={styles.chuCai}>{hira}</Text>
-    </View>
-  ); // Ham hien thi 1 chu hira
+  const xuLyDoc = (hira) => {
+    Speech.speak(hira, {
+      language: "ja",
+      pitch: 1, // Cao độ giọng nói
+      rate: 0.5, // Tốc độ đọc
+    });
+  };
+
+  const motChuHira = ({ item: { hira, index } }) => {
+    return (
+      <TouchableOpacity
+        // Điều kiện style lọc các ô trống
+        style={hira !== " " ? styles.chuCaiContainer : styles.nullContainer}
+        key={index}
+        onPress={() => {
+          xuLyDoc(hira);
+        }}
+      >
+        <Text style={styles.chuCai}>{hira}</Text>
+      </TouchableOpacity>
+    );
+  }; // Hàm hiển thị 1 chữ hira
 
   return (
     <View style={styles.container}>
+      <Text style={styles.title}>Nhấn vào chữ để nghe cách đọc</Text>
       <FlatList
         data={hiraData}
         renderItem={motChuHira} //hien thi danh sach theo tung hira
