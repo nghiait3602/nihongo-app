@@ -13,7 +13,7 @@ const Colors = {
   Hare: '#afafaf',
   Swan: '#e5e5e5',
   Polar: '#f7f7f7',
-  Beak_Upper: '#ffc200',
+  Beak_Upper: '#ffc200'
 };
 
 export default Colors;

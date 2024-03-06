@@ -8,7 +8,7 @@ function Button({ children, onPress }) {
       <Pressable
         style={styles.buttonInnerContainer}
         onPress={onPress}
-        android_ripple={{ color: Colors.XanhNgocChuDao }}
+        android_ripple={{ color: Colors.XanhNgoc }}
       >
         <Text style={styles.buttonText}>{children}</Text>
       </Pressable>

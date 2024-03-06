@@ -30,6 +30,12 @@ export default StyleSheet.create({
     fontSize: 24,
     color: "black",
   },
+  title: {
+    marginVertical: 10,
+    fontSize: 24,
+    color: Colors.title,
+    fontWeight: 'bold'
+  },
   row: {
     flexDirection: "row",
     justifyContent: "space-around",
