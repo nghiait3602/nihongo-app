@@ -29,7 +29,7 @@ function TopTabBarNavigation() {
       <TopTab.Screen
         name="Katakana"
         component={Katakana}
-        options={{ tabBarLabel: 'HIRAGANA' }}
+        options={{ tabBarLabel: 'KATAKANA' }}
       ></TopTab.Screen>
     </TopTab.Navigator>
   );
