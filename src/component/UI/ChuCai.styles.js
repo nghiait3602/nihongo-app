@@ -23,6 +23,7 @@ export default StyleSheet.create({
   },
   container: {
     flex: 1,
+    marginTop: 20,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -44,5 +45,5 @@ export default StyleSheet.create({
   chuCaiFlatList: {
     justifyContent: "center",
     alignItems: "center",
-  },
+  }
 });

@@ -3,6 +3,7 @@ import Button from "../../component/UI/Button";
 import Icon from "react-native-vector-icons/FontAwesome";
 import React, { useState } from "react";
 import Scan from "../../component/Scan";
+import { Colors } from "../../constants/colors";
 
 const Search = () => {
   const [tuSearch, setTuSearch] = useState("");
@@ -30,7 +31,7 @@ const Search = () => {
           value={tuSearch}
           style={styles.search}
         />
-        <Icon name="search" size={20} color="gray" style={styles.icon} />
+        <Icon name="search" size={20} color="white" style={styles.icon} />
       </View>
       <View style={styles.buttonsContainer}>
         <View style={styles.buttonContainer}>
@@ -49,7 +50,7 @@ export default Search;
 const styles = StyleSheet.create({
   container: {
     flex: 0.2,
-    backgroundColor: "#a9fafc",
+    backgroundColor: Colors.backgroundHeader,
     paddingHorizontal: 20,
     paddingVertical: 15,
     borderBottomLeftRadius: 30,
@@ -69,7 +70,7 @@ const styles = StyleSheet.create({
   },
   search: {
     flex: 1,
-    backgroundColor: "white",
+    backgroundColor: Colors.backgroundBottom,
     paddingHorizontal: 8,
     paddingVertical: 6,
     borderRadius: 5,
@@ -79,7 +80,7 @@ const styles = StyleSheet.create({
     // borderWidth: 1,
   },
   label: {
-    color: "black",
+    color: Colors.title,
     fontWeight: "bold",
     fontSize: 18,
     marginBottom: 4,

@@ -8,7 +8,7 @@ function Button({ children, onPress }) {
       <Pressable
         style={styles.buttonInnerContainer}
         onPress={onPress}
-        android_ripple={{ color: Colors.XanhNgoc }}
+        android_ripple={{ color: Colors.buttonAction }}
       >
         <Text style={styles.buttonText}>{children}</Text>
       </Pressable>
@@ -25,14 +25,15 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   buttonInnerContainer: {
-    backgroundColor: Colors.XanhNgocDam,
+    backgroundColor: Colors.button,
     paddingVertical: 8,
     paddingHorizontal: 16,
     elevation: 2,
   },
   buttonText: {
-    color: "white",
+    color: Colors.character,
     textAlign: "center",
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    fontSize: 16
   },
 });
