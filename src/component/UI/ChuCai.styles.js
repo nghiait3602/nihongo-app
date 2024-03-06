@@ -34,8 +34,7 @@ export default StyleSheet.create({
     marginVertical: 10,
     fontSize: 24,
     color: Colors.title,
-    fontWeight: 'bold',
-    fontStyle: ""
+    fontWeight: 'bold'
   },
   row: {
     flexDirection: "row",
