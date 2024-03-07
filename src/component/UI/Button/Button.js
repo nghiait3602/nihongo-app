@@ -1,5 +1,5 @@
 import { Text, View, Pressable, StyleSheet } from "react-native";
-import { Colors } from "../../constants/colors";
+import { Colors } from "../../../constants/colors";
 
 function Button({ children, onPress }) {
   
@@ -25,13 +25,13 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   buttonInnerContainer: {
-    backgroundColor: Colors.button,
+    backgroundColor: Colors.XanhNgocDam,
     paddingVertical: 8,
     paddingHorizontal: 16,
     elevation: 2,
   },
   buttonText: {
-    color: Colors.character,
+    color: Colors.Snow,
     textAlign: "center",
     fontWeight: 'bold',
     fontSize: 16

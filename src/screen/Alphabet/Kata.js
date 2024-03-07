@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import * as Speech from "expo-speech";
 import { Feather } from '@expo/vector-icons';
 
-import styles from "../../component/UI/ChuCai.styles";
+import styles from "../../component/UI/Alphabet/ChuCai.styles";
 import Data from "../../../data/bangChuCai.json";
 
 const Katakana = () => {
