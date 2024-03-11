@@ -7,7 +7,6 @@ const ItemHome = ({ item }) => {
   return (
     <View style={ItemStyles.sectionContainer}>
       {data.map((tier) => {
-        console.log(tier);
         return (
           <View key={tier.tier} style={ItemStyles.sections}>
             {tier.exercises.map((exercise) => {

@@ -7,15 +7,20 @@ import { useNavigation } from '@react-navigation/native';
 import data from '../../../../data/lession.json';
 const ItemKhoaHoc = ({ exercise }) => {
   const navigator = useNavigation();
+  function handlerNavigation() {
+    navigator.navigate('LessionScreen', data.sections);
+    console.log(exercise.KhoaHoc);
+  }
   return (
     <TouchableOpacity
       style={ItemKhoaHoaStyles.innerButton}
-      onPress={() => navigator.navigate('LessionScreen', data.sections)}
+      onPress={handlerNavigation}
     >
       <AnimatedCircularProgress
         size={120} // Kích thước của vòng tròn
         width={10} // Độ rộng của vòng tròn
-        fill={exercise.definition.levels} // Giá trị tiến trình
+        // fill={exercise.definition.levels} // Giá trị tiến trình/
+        fill={100}
         rotation={135}
         tintColor={Colors.Beak_Upper} // Màu sắc của vòng tròn
         backgroundColor={Colors.Hare} // Màu nền của vòng tròn
