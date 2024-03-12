@@ -28,7 +28,8 @@
     },
     "plugins": [
       "expo-font",
-      "expo-camera"
+      "expo-camera",
+      "expo-image-picker"
     ]
   }
 }

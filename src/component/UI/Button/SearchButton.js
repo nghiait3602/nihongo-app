@@ -1,7 +1,7 @@
 import { Text, View, Pressable, StyleSheet } from "react-native";
 import { Colors } from "../../../constants/colors";
 
-function Button({ children, onPress }) {
+function SearchButton({ children, onPress }) {
   
   return (
     <View style={styles.buttonOuterContainer}>
@@ -16,7 +16,7 @@ function Button({ children, onPress }) {
   );
 }
 
-export default Button;
+export default SearchButton;
 
 const styles = StyleSheet.create({
   buttonOuterContainer: {

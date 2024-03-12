@@ -4,7 +4,7 @@ import * as Speech from "expo-speech";
 import { Feather } from '@expo/vector-icons';
 
 import Data from "../../../data/bangChuCai.json";
-import styles from "../../component/UI/Alphabet/ChuCai.styles";
+import styles from "./ChuCai.styles";
 
 const Hiragana = () => {
   const [hiraData, setHiraData] = useState([]); // Luu data bang hira
