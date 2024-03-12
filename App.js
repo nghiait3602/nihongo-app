@@ -15,6 +15,7 @@ import TuVung from './src/screen/BaiHoc/TuVung';
 import NguPhap from './src/screen/BaiHoc/NguPhap';
 import Kanji from './src/screen/BaiHoc/Kanji';
 import BaiDoc from './src/screen/BaiHoc/BaiDoc';
+import BaiTapTongHop from './src/screen/BaiHoc/BaiTapTongHop';
 
 const Stack = createStackNavigator();
 const Tabs = createBottomTabNavigator();
@@ -55,6 +56,10 @@ function HomeScreen() {
       <Stack.Screen name="NguPhap" component={NguPhap}></Stack.Screen>
       <Stack.Screen name="Kanji" component={Kanji}></Stack.Screen>
       <Stack.Screen name="BaiDoc" component={BaiDoc}></Stack.Screen>
+      <Stack.Screen
+        name="BaiTapTongHop"
+        component={BaiTapTongHop}
+      ></Stack.Screen>
     </Stack.Navigator>
   );
 }
