@@ -14,8 +14,8 @@ export default StyleSheet.create({
     width: 120 * 0.75, // 90px
   },
   innerLogo: {
-    width: 50,
-    height: 50,
+    height: 140 * 0.75, // 90px
+    width: 140 * 0.75, // 90px
   },
   innerText: { fontFamily: 'Nunito_Black', fontSize: 18, marginTop: 5 },
 });
