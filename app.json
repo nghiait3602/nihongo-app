@@ -28,8 +28,9 @@
     },
     "plugins": [
       "expo-font",
-      "expo-camera",
-      "expo-image-picker"
+      "expo-camera",{
+        "cameraPermission": "Cho tui xin quyền để khởi động chức năng."
+      }
     ]
   }
 }
