@@ -22,6 +22,11 @@
           "id": 4,
           "name": "Bài Đọc",
           "screen": "BaiDoc"
+        },
+        {
+          "id": 5,
+          "name": "Bài Tập Tổng Họp",
+          "screen": "BaiTapTongHop"
         }
       ]
     }
