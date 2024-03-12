@@ -1,9 +1,10 @@
 import { Text, View, FlatList, TouchableOpacity } from "react-native";
 import React, { useState, useEffect } from "react";
 import * as Speech from "expo-speech";
+import { Feather } from '@expo/vector-icons';
 
 import Data from "../../../data/bangChuCai.json";
-import styles from "../../component/UI/ChuCai.styles";
+import styles from "./ChuCai.styles";
 
 const Hiragana = () => {
   const [hiraData, setHiraData] = useState([]); // Luu data bang hira
@@ -35,13 +36,13 @@ const Hiragana = () => {
         }}
       >
         <Text style={styles.chuCai}>{hira}</Text>
+        {hira !== " " && <Feather name="volume-2" size={15} color="gray" />}
       </TouchableOpacity>
     );
   }; // Hàm hiển thị 1 chữ hira
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Nhấn vào chữ để nghe cách đọc</Text>
+    <View style={styles.container}>      
       <FlatList
         data={hiraData}
         renderItem={motChuHira} //hien thi danh sach theo tung hira

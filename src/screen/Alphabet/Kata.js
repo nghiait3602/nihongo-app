@@ -1,8 +1,9 @@
 import { Text, View, FlatList, TouchableOpacity } from "react-native";
 import React, { useState, useEffect } from "react";
 import * as Speech from "expo-speech";
+import { Feather } from '@expo/vector-icons';
 
-import styles from "../../component/UI/ChuCai.styles";
+import styles from "./ChuCai.styles";
 import Data from "../../../data/bangChuCai.json";
 
 const Katakana = () => {
@@ -34,13 +35,13 @@ const Katakana = () => {
         }}
       >
         <Text style={styles.chuCai}>{kata}</Text>
+        {kata !== " " && <Feather name="volume-2" size={15} color="gray" />}
       </TouchableOpacity>
     );
   }; // Ham hien thi 1 chu kata
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Nhấn vào chữ để nghe cách đọc</Text>
       <FlatList
         data={kataData}
         renderItem={motChuKata} // hien thi danh sach theo tung kata

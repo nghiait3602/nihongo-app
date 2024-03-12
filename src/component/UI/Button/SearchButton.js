@@ -1,14 +1,14 @@
 import { Text, View, Pressable, StyleSheet } from "react-native";
-import { Colors } from "../../constants/colors";
+import { Colors } from "../../../constants/colors";
 
-function Button({ children, onPress }) {
+function SearchButton({ children, onPress }) {
   
   return (
     <View style={styles.buttonOuterContainer}>
       <Pressable
         style={styles.buttonInnerContainer}
         onPress={onPress}
-        android_ripple={{ color: Colors.XanhNgoc }}
+        android_ripple={{ color: Colors.buttonAction }}
       >
         <Text style={styles.buttonText}>{children}</Text>
       </Pressable>
@@ -16,7 +16,7 @@ function Button({ children, onPress }) {
   );
 }
 
-export default Button;
+export default SearchButton;
 
 const styles = StyleSheet.create({
   buttonOuterContainer: {
@@ -31,8 +31,9 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   buttonText: {
-    color: "white",
+    color: Colors.Snow,
     textAlign: "center",
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    fontSize: 16
   },
 });
