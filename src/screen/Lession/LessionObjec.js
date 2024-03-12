@@ -1,42 +1,43 @@
 import {
   StyleSheet,
-  SafeAreaView,
-  Platform,
   Text,
   View,
   TouchableOpacity,
   Image,
+  FlatList,
+  SafeAreaView,
+  Platform,
   Dimensions,
 } from 'react-native';
-import { Colors } from '../../constants/colors';
+import React from 'react';
 import { useRoute } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
 import Header from '../../component/UI/Header/header';
-import { FlatList } from 'react-native-gesture-handler';
-const LessionScreen = () => {
-  const navigation = useNavigation();
+import BaiTap from '../../../data/BaiTap.json';
+import { Colors } from '../../constants/colors';
+const LessionObjec = () => {
   const router = useRoute();
-  const datas = router.params;
+  const navigation = useNavigation();
+  const idBaiHoc = router.params;
   function navigationHandler() {
     navigation.goBack();
   }
   function handlerNavigation(item) {
-    navigation.navigate('LessionObject', item);
-    console.log(item);
+    navigation.navigate(item, idBaiHoc);
   }
   const renderItem = ({ item }) => {
     return (
       <TouchableOpacity
         style={styles.item}
-        onPress={handlerNavigation.bind(this, item.id)}
+        onPress={handlerNavigation.bind(this, item.screen)}
       >
         <View style={styles.infoContainer}>
           <Image
             style={styles.logoLession}
-            source={require(`../../../assets/Icons/japan.png`)}
+            source={require('../../../assets/Icons/animals.png')}
           ></Image>
           <View style={styles.inforContent}>
-            <Text style={styles.text}>{item.lesson}</Text>
+            <Text style={styles.text}>{item.name}</Text>
           </View>
         </View>
       </TouchableOpacity>
@@ -50,7 +51,7 @@ const LessionScreen = () => {
         left={require('../../../assets/Icons/japan.png')}
       />
       <FlatList
-        data={datas[0].data}
+        data={BaiTap.sections[0].data}
         keyExtractor={(item, index) => index}
         renderItem={renderItem}
       ></FlatList>
@@ -58,7 +59,8 @@ const LessionScreen = () => {
   );
 };
 
-export default LessionScreen;
+export default LessionObjec;
+
 var width = Dimensions.get('window').width;
 var height = Dimensions.get('window').height;
 const styles = StyleSheet.create({
@@ -96,5 +98,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     fontFamily: 'Nunito_ExtraBold',
+    textAlign: 'center',
   },
 });

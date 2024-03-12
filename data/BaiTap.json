@@ -1,0 +1,29 @@
+{
+  "sections": [
+    {
+      "id": "test",
+      "data": [
+        {
+          "id": 1,
+          "name": "Từ Vựng",
+          "screen": "TuVung"
+        },
+        {
+          "id": 2,
+          "name": "Ngữ Pháp",
+          "screen": "NguPhap"
+        },
+        {
+          "id": 3,
+          "name": "Kanji",
+          "screen": "Kanji"
+        },
+        {
+          "id": 4,
+          "name": "Bài Đọc",
+          "screen": "BaiDoc"
+        }
+      ]
+    }
+  ]
+}

@@ -9,7 +9,12 @@ import Alphabet from './src/screen/Alphabet/Alphabet';
 import Profile from './src/screen/Profile/Profile';
 import Search from './src/screen/Search/Search';
 import LessionScreen from './src/screen/Lession/Lession';
+import LessionObjec from './src/screen/Lession/LessionObjec';
 import Dialog from './src/screen/Dialog/Dialog';
+import TuVung from './src/screen/BaiHoc/TuVung';
+import NguPhap from './src/screen/BaiHoc/NguPhap';
+import Kanji from './src/screen/BaiHoc/Kanji';
+import BaiDoc from './src/screen/BaiHoc/BaiDoc';
 
 const Stack = createStackNavigator();
 const Tabs = createBottomTabNavigator();
@@ -36,11 +41,20 @@ function HomeScreen() {
       <Stack.Screen
         name="BottomNavigation"
         component={BottomNavigation}
+        // options={{headerShown:false}}
       ></Stack.Screen>
       <Stack.Screen
         name="LessionScreen"
         component={LessionScreen}
       ></Stack.Screen>
+      <Stack.Screen
+        name="LessionObject"
+        component={LessionObjec}
+      ></Stack.Screen>
+      <Stack.Screen name="TuVung" component={TuVung}></Stack.Screen>
+      <Stack.Screen name="NguPhap" component={NguPhap}></Stack.Screen>
+      <Stack.Screen name="Kanji" component={Kanji}></Stack.Screen>
+      <Stack.Screen name="BaiDoc" component={BaiDoc}></Stack.Screen>
     </Stack.Navigator>
   );
 }

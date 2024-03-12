@@ -1,0 +1,44 @@
+{
+  "sections": [
+    {
+      "id": "intro",
+      "data": [
+        {
+          "tier": 1,
+          "exercises": [
+            {
+              "id": "1",
+              "KhoaHoc": "N5"
+            }
+          ]
+        },
+        {
+          "tier": 2,
+          "exercises": [
+            {
+              "id": "2",
+              "KhoaHoc": "N4"
+            },
+            {
+              "id": "3",
+              "KhoaHoc": "N3"
+            }
+          ]
+        },
+        {
+          "tier": 3,
+          "exercises": [
+            {
+              "id": "4",
+              "KhoaHoc": "N2"
+            },
+            {
+              "id": "5",
+              "KhoaHoc": "N1"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

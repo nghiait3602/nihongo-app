@@ -1,19 +1,18 @@
-import { View, Text, Image } from 'react-native';
+import { View, Text, Image, TouchableOpacity } from 'react-native';
 import React from 'react';
 import styles from './header.styles';
-const Header = () => {
+const Header = ({ left, right, onPress, textLeft, textRight }) => {
   return (
     <View style={styles.header}>
       <View style={styles.infoContainer}>
-        <Image
-          style={styles.countryLogo}
-          source={require('../../../../assets/Icons/japan.png')}
-        />
-        <Text style={styles.countryText}>Left</Text>
+        <TouchableOpacity style={styles.infoContainer} onPress={onPress}>
+          <Image style={styles.countryLogo} source={left} />
+          <Text style={styles.countryText}>{textLeft}</Text>
+        </TouchableOpacity>
       </View>
       <View style={styles.infoContainer}>
-        <Image source={require('../../../../assets/Icons/fire.png')} />
-        <Text style={styles.fireText}>Right</Text>
+        <Image source={right} />
+        <Text style={styles.fireText}>{textRight}</Text>
       </View>
     </View>
   );
