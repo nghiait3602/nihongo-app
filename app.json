@@ -28,8 +28,9 @@
     },
     "plugins": [
       "expo-font",
-      "expo-camera",{
-        "cameraPermission": "Cho tui xin quyền để khởi động chức năng."
+      "expo-image-picker",
+      {
+        "cameraPermission": "The app needs access to your camera in order to take photos of your favorite places."
       }
     ]
   }
