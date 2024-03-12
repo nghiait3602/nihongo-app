@@ -16,7 +16,7 @@ const Search = () => {
 
   const xuLySearch = () => {
     // Xu ly tim kiem => in ra tu goi y
-    console.log("Search:", tuSearch);
+    console.log("Tìm kiếm:", tuSearch);
   };
 
   const openCamera = () => {
@@ -29,7 +29,7 @@ const Search = () => {
   };
 
   const buttonText = () => {
-    return !camera ? "Scan đồ vật" : "Tắt Camera";
+    return !camera ? "Scan đồ vật" : "Ẩn chức năng";
   };
 
   return (
