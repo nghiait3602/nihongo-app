@@ -24,8 +24,7 @@ export default TakePhotoButton;
 const styles = StyleSheet.create({
   button: {
     paddingHorizontal: 12,
-    paddingVertical: 9,
-    marginBottom: 28,
+    paddingVertical: 7,
     marginRight: 28,
     marginLeft: 28,
     flexDirection: "row",
