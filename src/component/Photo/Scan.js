@@ -54,7 +54,7 @@ function ImagePicker({ onTakeImage }) {
   }
 
   const setText = () => {
-    return pickedImage;
+    return pickedImage == undefined ? "" : `Đây là: ${pickedImage}`;
   };
 
   return (
@@ -63,7 +63,7 @@ function ImagePicker({ onTakeImage }) {
       <TakePhotoButton icon="camera" onPress={takeImageHandler}>
         Chụp Ảnh
       </TakePhotoButton>
-      <Text style={styles.text}>Đây là: {setText()}</Text>
+      <Text style={styles.text}>{setText()}</Text>
     </View>
   );
 }
@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: Colors.backgroundSliver,
-    borderRadius: 4,
+    borderRadius: 30,
     overflow: "hidden",
   },
   image: {

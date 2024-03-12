@@ -25,13 +25,14 @@ const styles = StyleSheet.create({
   button: {
     paddingHorizontal: 12,
     paddingVertical: 7,
-    marginRight: 28,
-    marginLeft: 28,
+    marginRight: 18,
+    marginLeft: 18,
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
     borderWidth: 1.5,
     borderColor: Colors.Beak_Upper,
+    borderRadius: 10
   },
   pressed: {
     opacity: 0.7,
