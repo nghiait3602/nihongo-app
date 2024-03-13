@@ -2,7 +2,7 @@ import { Pressable, Text, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "../../../constants/colors";
 
-function TakePhotoButton({ onPress, icon, children }) {
+function OutLineButton({ onPress, icon, children }) {
   return (
     <Pressable
       style={({ pressed }) => [styles.button, pressed && styles.pressed]}
@@ -19,7 +19,7 @@ function TakePhotoButton({ onPress, icon, children }) {
   );
 }
 
-export default TakePhotoButton;
+export default OutLineButton;
 
 const styles = StyleSheet.create({
   button: {

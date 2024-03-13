@@ -5,7 +5,7 @@ import {
   PermissionStatus,
 } from "expo-image-picker";
 import { useState } from "react";
-import TakePhotoButton from "../UI/Button/TakePhotoButton";
+import OutLineButton from "../UI/Button/OutLineButton";
 import { Colors } from "../../constants/colors";
 
 function ImagePicker({ onTakeImage }) {
@@ -60,9 +60,9 @@ function ImagePicker({ onTakeImage }) {
   return (
     <View>
       <View style={styles.imagePreview}>{imagePreview}</View>
-      <TakePhotoButton icon="camera" onPress={takeImageHandler}>
+      <OutLineButton icon="camera" onPress={takeImageHandler}>
         Chụp Ảnh
-      </TakePhotoButton>
+      </OutLineButton>
       <Text style={styles.text}>{setText()}</Text>
     </View>
   );
@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
   },
   text: {
     paddingTop: 10,
-    fontSize: 10,
+    fontSize: 10, //khi co du lieu that thay doi thanh 20
     alignItems: "center",
     justifyContent: "center",
     color: Colors.title,
