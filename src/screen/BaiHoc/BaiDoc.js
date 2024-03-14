@@ -5,6 +5,7 @@ import {
   FlatList,
   SafeAreaView,
   Platform,
+  Dimensions
 } from "react-native";
 import * as Speech from "expo-speech";
 import React from "react";
@@ -12,9 +13,14 @@ import { useRoute } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import BaiTap from "../../../data/BaiTap.json";
 import { Colors } from "../../constants/colors";
+import { useNavigation } from "@react-navigation/native";
 import OutLineButton from "../../component/UI/Button/OutLineButton";
 import Header from "../../component/UI/Header/header";
-import { useNavigation } from "@react-navigation/native";
+
+var width = Dimensions.get('window').width;
+var height = Dimensions.get('window').height;
+
+
 const BaiDoc = () => {
   const navigation = useNavigation();
   const router = useRoute();
@@ -139,6 +145,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
     marginVertical: 8,
+    marginBottom: Platform.OS === "android" ? 60 : 60, //chinh lai sau khi test ios
   },
   baiDoc: {
     fontSize: 24,
@@ -147,7 +154,8 @@ const styles = StyleSheet.create({
   },
   baiDocContainer: {
     marginHorizontal: 12,
-    marginTop: 9,
+    marginBottom: Platform.OS === "android" ? 70 : 70, //chinh lai sau khi test ios
+    marginTop: Platform.OS === "android" ? -50 : -50, //chinh lai sau khi test ios
     borderRadius: 5,
     borderWidth: 1,
     borderColor: Colors.XanhNgocDam,
@@ -155,10 +163,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   buttonContainer: {
-    flex: 0.5,
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
+    flexDirection: 'row', 
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    position: 'absolute', 
+    bottom: 20, 
+    width: width, 
   },
   subContent: {
     fontSize: 20,
