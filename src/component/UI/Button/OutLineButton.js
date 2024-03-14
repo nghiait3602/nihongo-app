@@ -1,6 +1,6 @@
-import { Pressable, Text, StyleSheet } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import { Colors } from "../../../constants/colors";
+import { Pressable, Text, StyleSheet } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { Colors } from '../../../constants/colors';
 
 function OutLineButton({ onPress, icon, children }) {
   return (
@@ -27,12 +27,12 @@ const styles = StyleSheet.create({
     paddingVertical: 7,
     marginRight: 18,
     marginLeft: 18,
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
     borderWidth: 1.5,
     borderColor: Colors.Beak_Upper,
-    borderRadius: 10
+    borderRadius: 10,
   },
   pressed: {
     opacity: 0.7,
@@ -42,7 +42,8 @@ const styles = StyleSheet.create({
   },
   text: {
     color: Colors.Beak_Upper,
-    fontWeight: "bold",
-    fontSize: 15
+    fontWeight: 'bold',
+    fontSize: 15,
+    fontFamily: 'Nunito_Bold',
   },
 });
