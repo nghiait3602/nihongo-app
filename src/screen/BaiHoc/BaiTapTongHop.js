@@ -1,12 +1,32 @@
-import { StyleSheet, Text, View } from 'react-native';
-import React from 'react';
-import { useRoute } from '@react-navigation/native';
-import { useEffect, useState } from 'react';
-import BaiTap from '../../../data/BaiTap.json';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Platform,
+  SafeAreaView,
+  Dimensions,
+} from "react-native";
+import React from "react";
+import { useRoute } from "@react-navigation/native";
+import { useEffect, useState } from "react";
+import BaiTap from "../../../data/BaiTap.json";
+import { Colors } from "../../constants/colors";
+import Header from "../../component/UI/Header/header";
+import { useNavigation } from "@react-navigation/native";
+import ColorButton from "../../component/UI/Button/ColorButton";
+
+var width = Dimensions.get("window").width;
+var height = Dimensions.get("window").height;
+
 const BaiTapTongHop = () => {
+  const navigation = useNavigation();
   const router = useRoute();
   const data = router.params;
   const [Baihoc, setBaihoc] = useState(null); // Khởi tạo state Baihoc với giá trị ban đầu là null
+
+  function navigationHandler() {
+    navigation.goBack();
+  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -19,7 +39,7 @@ const BaiTapTongHop = () => {
         // Gán giá trị cho state Baihoc
         setBaihoc(item);
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error("Error fetching data:", error);
       }
     };
 
@@ -34,13 +54,41 @@ const BaiTapTongHop = () => {
       </View>
     );
   }
+
   return (
-    <View style={{ flex: 1, marginTop: 100 }}>
+    <SafeAreaView style={styles.container}>
+      <Header
+        onPress={navigationHandler}
+        textLeft="Go back"
+        left={require("../../../assets/Icons/japan.png")}
+      />
       <Text>{Baihoc.name} +4</Text>
-    </View>
+      <Text>1. Cau hoi............</Text>
+      <View style={styles.answerButtons}>
+        <View style={styles.buttonContainer}>
+          <ColorButton color={Colors.Beak_Upper}>A</ColorButton>
+          <ColorButton color={Colors.Cardinal}>B</ColorButton>        
+          <ColorButton color={Colors.Feather_Green}>C</ColorButton>
+          <ColorButton color={Colors.Humpback}>D</ColorButton>
+        </View>
+      </View>
+    </SafeAreaView>
   );
 };
 
 export default BaiTapTongHop;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: Colors.Snow,
+    paddingTop: Platform.OS === "android" ? 50 : 0,
+  },
+  buttonContainer: {
+    flexDirection: 'row', 
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    position: 'absolute', 
+    width: width,
+  },
+});
