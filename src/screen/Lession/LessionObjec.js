@@ -45,11 +45,6 @@ const LessionObjec = () => {
   };
   return (
     <SafeAreaView style={{ ...styles.container }}>
-      <Header
-        onPress={navigationHandler}
-        textLeft="Go back"
-        left={require('../../../assets/Icons/japan.png')}
-      />
       <FlatList
         data={BaiTap.sections[0].data}
         keyExtractor={(item, index) => index}

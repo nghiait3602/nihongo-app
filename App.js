@@ -16,6 +16,7 @@ import NguPhap from './src/screen/BaiHoc/NguPhap';
 import Kanji from './src/screen/BaiHoc/Kanji';
 import BaiDoc from './src/screen/BaiHoc/BaiDoc';
 import BaiTapTongHop from './src/screen/BaiHoc/BaiTapTongHop';
+import ChuDe from './src/screen/ChuDe/ChuDe';
 
 const Stack = createStackNavigator();
 const Tabs = createBottomTabNavigator();
@@ -38,27 +39,67 @@ export default function App() {
 }
 function HomeScreen() {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Navigator>
+      {/* <Stack.Screen
+        name="ChuDe"
+        component={ChuDe}
+        options={{
+          title: 'Chủ đề yêu thích',
+        }}
+      ></Stack.Screen> */}
       <Stack.Screen
         name="BottomNavigation"
         component={BottomNavigation}
-        // options={{headerShown:false}}
+        options={{ headerShown: false }}
       ></Stack.Screen>
       <Stack.Screen
         name="LessionScreen"
         component={LessionScreen}
+        options={{
+          title: 'Bài Học',
+        }}
       ></Stack.Screen>
       <Stack.Screen
         name="LessionObject"
         component={LessionObjec}
+        options={{
+          title: 'Bài Học',
+        }}
       ></Stack.Screen>
-      <Stack.Screen name="TuVung" component={TuVung}></Stack.Screen>
-      <Stack.Screen name="NguPhap" component={NguPhap}></Stack.Screen>
-      <Stack.Screen name="Kanji" component={Kanji}></Stack.Screen>
-      <Stack.Screen name="BaiDoc" component={BaiDoc}></Stack.Screen>
+      <Stack.Screen
+        name="TuVung"
+        component={TuVung}
+        options={{
+          title: 'Từ Vựng',
+        }}
+      ></Stack.Screen>
+      <Stack.Screen
+        name="NguPhap"
+        component={NguPhap}
+        options={{
+          title: 'Ngữ Pháp',
+        }}
+      ></Stack.Screen>
+      <Stack.Screen
+        name="Kanji"
+        component={Kanji}
+        options={{
+          title: 'Kanji',
+        }}
+      ></Stack.Screen>
+      <Stack.Screen
+        name="BaiDoc"
+        component={BaiDoc}
+        options={{
+          title: 'Bài Đọc',
+        }}
+      ></Stack.Screen>
       <Stack.Screen
         name="BaiTapTongHop"
         component={BaiTapTongHop}
+        options={{
+          title: 'Bài tập tổng hợp',
+        }}
       ></Stack.Screen>
     </Stack.Navigator>
   );

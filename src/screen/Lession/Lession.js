@@ -44,11 +44,6 @@ const LessionScreen = () => {
   };
   return (
     <SafeAreaView style={{ ...styles.container }}>
-      <Header
-        onPress={navigationHandler}
-        textLeft="Go back"
-        left={require('../../../assets/Icons/japan.png')}
-      />
       <FlatList
         data={datas[0].data}
         keyExtractor={(item, index) => index}
