@@ -4,6 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useFonts } from 'expo-font';
+import { AntDesign } from '@expo/vector-icons';
 import Home from './src/screen/Home/Home';
 import Alphabet from './src/screen/Alphabet/Alphabet';
 import Profile from './src/screen/Profile/Profile';
@@ -39,14 +40,24 @@ export default function App() {
 }
 function HomeScreen() {
   return (
-    <Stack.Navigator>
-      {/* <Stack.Screen
+    <Stack.Navigator screenOptions={{ headerTitleAlign: 'center' }}>
+      <Stack.Screen
         name="ChuDe"
         component={ChuDe}
-        options={{
+        options={({ navigation }) => ({
           title: 'Chủ đề yêu thích',
-        }}
-      ></Stack.Screen> */}
+          presentation: 'modal',
+          headerLeft: () => (
+            <AntDesign
+              name="close"
+              size={24}
+              color="black"
+              style={{ marginLeft: 5 }}
+              onPress={() => navigation.navigate('BottomNavigation')}
+            />
+          ),
+        })}
+      ></Stack.Screen>
       <Stack.Screen
         name="BottomNavigation"
         component={BottomNavigation}
