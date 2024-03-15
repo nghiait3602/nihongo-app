@@ -16,6 +16,7 @@ const Data = [
   {
     id: 1,
     chude: 'Thể Thao',
+    sport: 0,
   },
   {
     id: 2,
@@ -69,9 +70,9 @@ const ChuDe = () => {
   };
 
   function nextHandler() {
-    const test = countItems();
-    console.log(test);
-    navigation.navigate('BottomNavigation', itemList);
+    const data = countItems();
+    console.log(data);
+    navigation.navigate('BottomNavigation');
   }
   function renderItem({ item }) {
     return (
@@ -144,6 +145,12 @@ const styles = StyleSheet.create({
     borderColor: 'gray',
     marginHorizontal: height * 0.05,
     marginVertical: width * 0.05,
+    shadowColor: 'black',
+    shadowOffset: { width: 0, height: 2 }, // đẩy xuống 2 px
+    shadowRadius: 6,
+    shadowOpacity: 0.25,
+    backgroundColor: 'white',
+    elevation: 10,
   },
   image: {
     width: width * 0.06,
