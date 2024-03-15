@@ -6,19 +6,18 @@ import {
   SafeAreaView,
   Platform,
   Dimensions,
-} from 'react-native';
-import * as Speech from 'expo-speech';
-import React from 'react';
-import { useRoute } from '@react-navigation/native';
-import { useEffect, useState } from 'react';
-import BaiTap from '../../../data/BaiTap.json';
-import { Colors } from '../../constants/colors';
-import { useNavigation } from '@react-navigation/native';
-import OutLineButton from '../../component/UI/Button/OutLineButton';
-import Header from '../../component/UI/Header/header';
+} from "react-native";
+import * as Speech from "expo-speech";
+import React from "react";
+import { useRoute, useNavigation, useFocusEffect } from "@react-navigation/native";
+import { useEffect, useState } from "react";
+import BaiTap from "../../../data/BaiTap.json";
+import { Colors } from "../../constants/colors";
+import OutLineButton from "../../component/UI/Button/OutLineButton";
+import Header from "../../component/UI/Header/header";
 
-var width = Dimensions.get('window').width;
-var height = Dimensions.get('window').height;
+var width = Dimensions.get("window").width;
+var height = Dimensions.get("window").height;
 
 const BaiDoc = () => {
   const navigation = useNavigation();
@@ -26,8 +25,22 @@ const BaiDoc = () => {
   const data = router.params;
   const [Baihoc, setBaihoc] = useState(null); // Khởi tạo state Baihoc với giá trị ban đầu là null
   const [showBaiDich, setShowBaiDich] = useState(false);
+  const [readState, setReadState] = useState(false); //set ngung doc or doc
 
+  useEffect(() => {
+    const stop = navigation.addListener('beforeRemove', (e) => {
+      // Dừng đọc nếu trạng thái là đang đọc
+      if (readState) {
+        Speech.stop();
+        setReadState(false);
+      }
+    });
+  
+    return stop;
+  }, [navigation, readState]);
+    
   function navigationHandler() {
+    setReadState(false);
     navigation.goBack();
   }
 
@@ -42,7 +55,7 @@ const BaiDoc = () => {
         // Gán giá trị cho state Baihoc
         setBaihoc(item);
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error("Error fetching data:", error);
       }
     };
 
@@ -60,12 +73,12 @@ const BaiDoc = () => {
 
   const DATA = [
     {
-      id: 'nd1',
-      title: 'びじゅつかん',
+      id: "nd1",
+      title: "びじゅつかん",
       content:
-        'きのう友達と「みんなの美術館」へ行きました。おもしろい絵がたくさんありました。',
+        "きのう友達と「みんなの美術館」へ行きました。おもしろい絵がたくさんありました。",
       subcontent:
-        'Hôm qua tôi đã cùng một người bạn đi đến bảo tàng mỹ thuật. Có rất nhiều bức tranh thú vị ở đó.',
+        "Hôm qua tôi đã cùng một người bạn đi đến bảo tàng mỹ thuật. Có rất nhiều bức tranh thú vị ở đó.",
     },
   ];
 
@@ -89,12 +102,24 @@ const BaiDoc = () => {
     setShowBaiDich(!showBaiDich);
   };
 
-  const xuLyDoc = (text) => {
-    Speech.speak(text, {
-      language: 'ja',
-      pitch: 1, // Cao độ giọng nói
-      rate: 0.75, // Tốc độ đọc
-    });
+  const xuLyDoc = async (text) => {
+    // Bắt đầu đọc bài
+    if (!readState) {
+      setReadState(true);
+      Speech.speak(text, {
+        language: "ja",
+        pitch: 1,
+        rate: 0.75,
+      });
+    } else {
+      setReadState(false);
+      Speech.stop(text);
+    }
+  };
+
+
+  const setText = () => {
+    return readState ? "Ngưng đọc" : "Đọc bài";
   };
 
   return (
@@ -118,7 +143,7 @@ const BaiDoc = () => {
           icon="volume-high"
           onPress={() => xuLyDoc(DATA[0].content)}
         >
-          Đọc bài
+          {setText()}
         </OutLineButton>
       </View>
     </SafeAreaView>
@@ -131,15 +156,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.Snow,
-    paddingTop: Platform.OS === 'android' ? 50 : 0,
   },
   title: {
     fontSize: 32,
     color: Colors.XanhNgocDam,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontWeight: "bold",
+    textAlign: "center",
     marginVertical: 8,
-    marginBottom: Platform.OS === 'android' ? 60 : 60, //chinh lai sau khi test ios
+    marginBottom: Platform.OS === "android" ? 60 : 60, //chinh lai sau khi test ios
   },
   baiDoc: {
     fontSize: 24,
@@ -148,19 +172,19 @@ const styles = StyleSheet.create({
   },
   baiDocContainer: {
     marginHorizontal: 12,
-    marginBottom: Platform.OS === 'android' ? 70 : 70, //chinh lai sau khi test ios
-    marginTop: Platform.OS === 'android' ? -50 : -50, //chinh lai sau khi test ios
+    marginBottom: Platform.OS === "android" ? 70 : 70, //chinh lai sau khi test ios
+    marginTop: Platform.OS === "android" ? -50 : -50, //chinh lai sau khi test ios
     borderRadius: 5,
     borderWidth: 1,
     borderColor: Colors.XanhNgocDam,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'absolute',
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    position: "absolute",
     bottom: 20,
     width: width,
   },
