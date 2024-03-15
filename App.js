@@ -18,6 +18,7 @@ import Kanji from './src/screen/BaiHoc/Kanji';
 import BaiDoc from './src/screen/BaiHoc/BaiDoc';
 import BaiTapTongHop from './src/screen/BaiHoc/BaiTapTongHop';
 import ChuDe from './src/screen/ChuDe/ChuDe';
+import TuVungChiTiet from './src/screen/ChiTiet/TuVungChiTiet';
 
 const Stack = createStackNavigator();
 const Tabs = createBottomTabNavigator();
@@ -37,6 +38,12 @@ export default function App() {
       <HomeScreen />
     </NavigationContainer>
   );
+}
+function AuthStack() {
+  return <Stack.Navigator></Stack.Navigator>;
+}
+function ChudeScreen() {
+  return <Stack.Navigator></Stack.Navigator>;
 }
 function HomeScreen() {
   return (
@@ -111,6 +118,11 @@ function HomeScreen() {
         options={{
           title: 'Bài tập tổng hợp',
         }}
+      ></Stack.Screen>
+      <Stack.Screen
+        name="TuVungChiTiet"
+        component={TuVungChiTiet}
+        options={{ title: 'Cấu trúc từ vựng' }}
       ></Stack.Screen>
     </Stack.Navigator>
   );
