@@ -28,7 +28,7 @@ const BaiDoc = () => {
   const [readState, setReadState] = useState(false); //set ngung doc or doc
 
   useEffect(() => {
-    const unsubscribe = navigation.addListener('beforeRemove', (e) => {
+    const stop = navigation.addListener('beforeRemove', (e) => {
       // Dừng đọc nếu trạng thái là đang đọc
       if (readState) {
         Speech.stop();
@@ -36,7 +36,7 @@ const BaiDoc = () => {
       }
     });
   
-    return unsubscribe;
+    return stop;
   }, [navigation, readState]);
     
   function navigationHandler() {
