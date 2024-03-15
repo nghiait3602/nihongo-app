@@ -54,7 +54,7 @@ function ImagePicker({ onTakeImage }) {
   }
 
   const setText = () => {
-    return pickedImage == undefined ? "" : `Đây là: ${pickedImage}`;
+    return pickedImage === undefined ? "" : `Đây là: ${pickedImage}`;
   };
 
   return (
