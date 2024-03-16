@@ -6,7 +6,6 @@ export default StyleSheet.create({
     flex: 1,
   },
   headerContainer: {
-    flex: 0.2,
     backgroundColor: Colors.backgroundSliver,
     paddingHorizontal: 20,
     paddingVertical: 15,

@@ -3,149 +3,80 @@ import {
   Text,
   View,
   FlatList,
-  SafeAreaView,
-  Platform,
-  Image,
-  Dimensions,
+  TouchableOpacity,
 } from "react-native";
 import React from "react";
 import { useRoute } from "@react-navigation/native";
 import { useEffect, useState } from "react";
-import { Colors } from "../../constants/colors";
-
 import BaiTap from "../../../data/BaiTap.json";
-
+import data from "../../../data/Kanji.json";
+import { Colors } from "../../constants/colors";
+import { useNavigation } from "@react-navigation/native";
 const Kanji = () => {
-  const router = useRoute();
-  const data = router.params;
-  const [Baihoc, setBaihoc] = useState(null); // Khởi tạo state Baihoc với giá trị ban đầu là null
+  const navigator = useNavigation();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // Lấy dữ liệu từ API hoặc nguồn dữ liệu khác ở đây
-        // Ví dụ: const response = await fetch('API_URL');
-        // const data = await response.json();
-        // Sau đó, tìm phần tử trong mảng dữ liệu có id trùng với data
-        const item = BaiTap.sections[0].data.find((item) => item.id === data);
-        // Gán giá trị cho state Baihoc
-        setBaihoc(item);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
+  const ItemBaiHoc = ({ item, index }) => {
+    const getKanjiDataById = (id) => {
+      const kanjiData = data.sections.find((section) => {
+        return section.data.some((kanji) => kanji.id === id); // Tìm kiếm Kanji có ID khớp
+      });
+      
+      return kanjiData?.data?.find((kanji) => kanji.id === id); // Trả về dữ liệu Kanji
     };
 
-    fetchData(); // Gọi hàm fetchData trong useEffect
-  }, [data]); // Sử dụng useEffect với dependency là data
+    function navigationHandler() {
+      console.log(item.id);
+      const kanjiData = getKanjiDataById(item.id); // Lấy dữ liệu Kanji cụ thể dựa trên ID
+      const params = {
+        itemId: item.id,
+        kanjiData, // Thêm dữ liệu Kanji vào tham số
+      };
 
-  const DATA = [
-    {
-      id: "kj1",
-      hantu: "後 - HẬU, HẤU",
-      kunyomi: "のち うし.ろ うしろ あと おく.れ る",
-      onyomi: "ゴ コウ",
-      sonet: 9,
-      bo: "彳 XÍCH",
-      nghia:
-        "Sau. Con nối. Lời nói đưa đẩy. Một âm là hấu. Giản thể của chữ [后].",
-      vidu: "その後	そのご	sau đó; sau đấy",
-      hinhanh: require("./../../../assets/Img/Kanji(DulieuAo).gif"),
-    },
-  ]; //du lieu ao
+      navigator.navigate("KanjiChiTiet", params);
+    }
 
-  const KanjiDetail = ({ label, value }) => (
-    <View>
-      <Text style={styles.label}>{label}:</Text>
-      <View style={styles.kanjiContainer}>
-        <Text style={styles.kanji}>{value}</Text>
-      </View>
-    </View>
-  );
-
-  const NoiDung = ({
-    hantu,
-    kunyomi,
-    onyomi,
-    sonet,
-    bo,
-    nghia,
-    vidu,
-    hinhanh,
-  }) => (
-    <View>
-      <KanjiDetail label="Hán Tự" value={hantu} />
-      <KanjiDetail label="Kunyomi" value={kunyomi} />
-      <KanjiDetail label="Onyomi" value={onyomi} />
-      <KanjiDetail label="Số nét" value={sonet} />
-      <KanjiDetail label="Bộ" value={bo} />
-      <KanjiDetail label="Nghĩa" value={nghia} />
-      <KanjiDetail label="Ví dụ" value={vidu} />
-      <Image source={hinhanh} style={styles.image} />
-    </View>
-  );
-
-  // Kiểm tra nếu Baihoc chưa được gán giá trị, trả về null hoặc hiển thị thông báo loading
-  if (!Baihoc) {
     return (
-      <View>
-        <Text>Loading....</Text>
-      </View>
+      <TouchableOpacity style={styles.container} onPress={navigationHandler}>
+        <View style={{ flexDirection: "row" }}>
+          <Text style={styles.textTitle}>{index + 1}.</Text>
+          <Text style={styles.textTitle}>{item.hantu}</Text>
+        </View>
+        <Text style={styles.textDesc}>{item.nghia}</Text>
+      </TouchableOpacity>
     );
-  }
+  };
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={{ flex: 1, backgroundColor: "white" }}>
       <FlatList
-        data={DATA}
-        renderItem={({ item }) => (
-          <NoiDung
-            hantu={item.hantu}
-            kunyomi={item.kunyomi}
-            onyomi={item.onyomi}
-            sonet={item.sonet}
-            bo={item.bo}
-            nghia={item.nghia}
-            vidu={item.vidu}
-            hinhanh={item.hinhanh}
-          />
-        )}
+        data={data.sections[0].data}
         keyExtractor={(item) => item.id}
-      />
-    </SafeAreaView>
+        renderItem={ItemBaiHoc}
+      ></FlatList>
+    </View>
   );
 };
 
 export default Kanji;
 
-var width = Dimensions.get("window").width;
-var height = Dimensions.get("window").height;
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.Snow,
-  },
-  image: {    
-    marginTop: 30,
-    width: width,
-    height: height/2,
-  },
-  label: {
-    marginLeft: 12,
-    fontWeight: 'bold',
-    fontSize: 20,
-  },
-  kanji: {
-    fontSize: 20,
-    marginHorizontal: 4,
-    marginVertical: 4,
-  },
-  kanjiContainer: {
-    marginHorizontal: 12,
-    marginBottom: Platform.OS === "android" ? 7 : 0, //chinh lai sau khi test ios
-    borderRadius: 5,
-    borderWidth: 1.25,
-    borderColor: Colors.Feather_Green,
+    padding: 10,
+    borderBottomColor: "gray",
+    borderBottomWidth: 1,
+    backgroundColor: "white",
     justifyContent: "center",
-    alignItems: "center",
+  },
+  textTitle: {
+    fontSize: 20,
+    color: "black",
+    fontFamily: "Nunito_Bold",
+    fontWeight: "bold",
+  },
+  textDesc: {
+    marginLeft: 10,
+    fontSize: 15,
+    color: Colors.Wolf,
+    fontFamily: "Nunito_Bold",
   },
 });

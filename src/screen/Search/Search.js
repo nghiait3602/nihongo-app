@@ -1,4 +1,4 @@
-import { Text, View, TextInput, FlatList } from "react-native";
+import { Text, View, TextInput, FlatList, SafeAreaView } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import React, { useState } from "react";
 
@@ -33,7 +33,7 @@ const Search = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
         <Text style={styles.label}>Tra từ :</Text>
         <View style={styles.searchContainer}>
@@ -59,7 +59,7 @@ const Search = () => {
           <Scan />
         </View>
       )}
-    </View>
+    </SafeAreaView>
   );
 };
 
