@@ -19,6 +19,8 @@ import BaiDoc from './src/screen/BaiHoc/BaiDoc';
 import BaiTapTongHop from './src/screen/BaiHoc/BaiTapTongHop';
 import ChuDe from './src/screen/ChuDe/ChuDe';
 import TuVungChiTiet from './src/screen/ChiTiet/TuVungChiTiet';
+import KanjiChiTiet from './src/screen/ChiTiet/KanjiChiTiet';
+import BaiDocChiTiet from './src/screen/ChiTiet/BaiDocChiTiet';
 
 const Stack = createStackNavigator();
 const Tabs = createBottomTabNavigator();
@@ -123,6 +125,16 @@ function HomeScreen() {
         name="TuVungChiTiet"
         component={TuVungChiTiet}
         options={{ title: 'Cấu trúc từ vựng' }}
+      ></Stack.Screen>
+      <Stack.Screen
+        name="KanjiChiTiet"
+        component={KanjiChiTiet}
+        options={{ title: 'Tổng quan hán tự' }}
+      ></Stack.Screen>
+      <Stack.Screen
+        name="BaiDocChiTiet"
+        component={BaiDocChiTiet}
+        options={{ title: 'Tổng quan bài đọc' }}
       ></Stack.Screen>
     </Stack.Navigator>
   );
