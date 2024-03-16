@@ -13,10 +13,10 @@ import data from '../../../data/tuvung.json';
 import { Colors } from '../../constants/colors';
 import { useNavigation } from '@react-navigation/native';
 const TuVung = () => {
-  const navigator = useNavigation();
   // const router = useRoute();
   // const data = router.params; // id của khóa bài học được truyền qua để tìm các bài kanji ngữ pháp từ vựng
   // const [Baihoc, setBaihoc] = useState(null); // Khởi tạo state Baihoc với giá trị ban đầu là null
+  const navigator = useNavigation();
   // useEffect(() => {
   //   const fetchData = async () => {
   //     try {
@@ -48,7 +48,6 @@ const TuVung = () => {
       console.log(item.id);
       navigator.navigate('TuVungChiTiet', { itemId: item.id }); // Chuyển item id dưới dạng tham số
     }
-
     return (
       <TouchableOpacity style={styles.container} onPress={navigationHandler}>
         <View style={{ flexDirection: 'row' }}>

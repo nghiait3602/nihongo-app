@@ -17,9 +17,7 @@ const LessionScreen = () => {
   const navigation = useNavigation();
   const router = useRoute();
   const datas = router.params;
-  function navigationHandler() {
-    navigation.goBack();
-  }
+
   function handlerNavigation(item) {
     navigation.navigate('LessionObject', item);
     console.log(item);
