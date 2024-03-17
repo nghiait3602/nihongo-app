@@ -1,12 +1,15 @@
 import { Pressable, Text, StyleSheet } from "react-native";
 import { Colors } from "../../../constants/colors";
 
-function ColorButton({ onPress, children, color }) {
+function ColorButton({ onPress, children, color, selected }) {
   return (
     <Pressable
       style={({ pressed }) => [
         styles.button,
-        { backgroundColor: color || Colors.Feather_Green }, // Set mau mac dinh
+        { 
+          backgroundColor: color || Colors.Feather_Green, // Set mau mac dinh
+          borderColor: selected ? Colors.Mask_Green : pressed ? "green" : "white", // Thêm viền xanh khi nút được chọn
+         }, 
         pressed && styles.pressed,
       ]}
       onPress={onPress}

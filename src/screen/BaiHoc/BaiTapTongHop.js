@@ -5,24 +5,27 @@ import {
   Platform,
   SafeAreaView,
   Dimensions,
-} from 'react-native';
-import React from 'react';
-import { useRoute } from '@react-navigation/native';
-import { useEffect, useState } from 'react';
-import BaiTap from '../../../data/BaiTap.json';
-import { Colors } from '../../constants/colors';
-import Header from '../../component/UI/Header/header';
-import { useNavigation } from '@react-navigation/native';
-import ColorButton from '../../component/UI/Button/ColorButton';
+  FlatList,
+} from "react-native";
+import React from "react";
+import { useRoute } from "@react-navigation/native";
+import { useEffect, useState } from "react";
+import BaiTap from "../../../data/BaiTap.json";
+import { Colors } from "../../constants/colors";
+import Header from "../../component/UI/Header/header";
+import { useNavigation } from "@react-navigation/native";
+import ColorButton from "../../component/UI/Button/ColorButton";
 
-var width = Dimensions.get('window').width;
-var height = Dimensions.get('window').height;
+var width = Dimensions.get("window").width;
+var height = Dimensions.get("window").height;
 
 const BaiTapTongHop = () => {
   const navigation = useNavigation();
   const router = useRoute();
   const data = router.params;
   const [Baihoc, setBaihoc] = useState(null); // Khởi tạo state Baihoc với giá trị ban đầu là null
+
+  const [selectedButtons, setSelectedButtons] = useState({});
 
   function navigationHandler() {
     navigation.goBack();
@@ -39,7 +42,7 @@ const BaiTapTongHop = () => {
         // Gán giá trị cho state Baihoc
         setBaihoc(item);
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error("Error fetching data:", error);
       }
     };
 
@@ -55,18 +58,77 @@ const BaiTapTongHop = () => {
     );
   }
 
+  const DATA = [
+    {
+      id: 1,
+      cauhoi: "自分 - Kanji này là gì?",
+      dapan: "",
+    },
+    {
+      id: 2,
+      cauhoi: "自分 - Kanji này là gì?",
+      dapan: "",
+    },
+    {
+      id: 3,
+      cauhoi: "自分 - Kanji này là gì?",
+      dapan: "",
+    },
+  ];
+
+  const confirmHandler = (id, buttonName) => {
+    console.log(`Đã chọn câu ${buttonName}`);
+    
+    const updatedSelectedButtons = { ...selectedButtons }; // Tạo bản sao của trạng thái hiện tại
+    updatedSelectedButtons[id] = buttonName; // Đánh dấu nút đã được chọn
+    setSelectedButtons(updatedSelectedButtons); // Cập nhật trạng thái mới
+  };
+
+  const NoiDung = (props) => (
+    <View style={styles.answerButtons}>
+      <Text style={styles.text}>
+        {props.id}. {props.cauhoi}
+      </Text>
+      <View style={styles.buttonContainer}>
+        <ColorButton
+          color={Colors.Beak_Upper}
+          selected={selectedButtons[props.id] === "A"}
+          onPress={() => confirmHandler(props.id, "A")}
+        >
+          A
+        </ColorButton>
+        <ColorButton
+          color={Colors.Cardinal}
+          selected={selectedButtons[props.id] === "B"}
+          onPress={() => confirmHandler(props.id, "B")}
+        >
+          B
+        </ColorButton>
+        <ColorButton
+          color={Colors.Feather_Green}
+          selected={selectedButtons[props.id] === "C"}
+          onPress={() => confirmHandler(props.id, "C")}
+        >
+          C
+        </ColorButton>
+        <ColorButton
+          color={Colors.Humpback}
+          selected={selectedButtons[props.id] === "D"}
+          onPress={() => confirmHandler(props.id, "D")}
+        >
+          D
+        </ColorButton>
+      </View>
+    </View>
+  );
+
   return (
     <SafeAreaView style={styles.container}>
-      <Text>{Baihoc.name} +4</Text>
-      <Text>1. Cau hoi............</Text>
-      <View style={styles.answerButtons}>
-        <View style={styles.buttonContainer}>
-          <ColorButton color={Colors.Beak_Upper}>A</ColorButton>
-          <ColorButton color={Colors.Cardinal}>B</ColorButton>
-          <ColorButton color={Colors.Feather_Green}>C</ColorButton>
-          <ColorButton color={Colors.Humpback}>D</ColorButton>
-        </View>
-      </View>
+      <FlatList
+        data={DATA}
+        renderItem={({ item }) => <NoiDung id={item.id} cauhoi={item.cauhoi} />}
+        keyExtractor={(item) => item.id}
+      />
     </SafeAreaView>
   );
 };
@@ -77,13 +139,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.Snow,
-    paddingTop: Platform.OS === 'android' ? 50 : 0,
+    paddingTop: Platform.OS === "android" ? 20 : 0,
+  },
+  text: {
+    marginHorizontal: 12,
+    fontSize: 18,
+    fontWeight: "bold",
   },
   buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'absolute',
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
     width: width,
   },
 });
