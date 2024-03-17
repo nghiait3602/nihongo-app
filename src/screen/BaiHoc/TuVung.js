@@ -1,4 +1,4 @@
- import {
+import {
   StyleSheet,
   Text,
   View,
@@ -46,7 +46,7 @@ const TuVung = () => {
   const ItemBaiHoc = ({ item, index }) => {
     function navigationHandler() {
       console.log(item.id);
-      navigator.navigate('TuVungChiTiet', { itemId: item.id }); // Chuyển item id dưới dạng tham số
+      navigator.navigate('TuVungChiTiet', item); // Chuyển item id dưới dạng tham số
     }
     return (
       <TouchableOpacity style={styles.container} onPress={navigationHandler}>
