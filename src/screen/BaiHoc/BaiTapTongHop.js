@@ -25,12 +25,7 @@ const BaiTapTongHop = () => {
   const data = router.params;
   const [Baihoc, setBaihoc] = useState(null); // Khởi tạo state Baihoc với giá trị ban đầu là null
 
-  const [buttonStates, setButtonStates] = useState({
-    A: false,
-    B: false,
-    C: false,
-    D: false,
-  });
+  const [selectedButtons, setSelectedButtons] = useState({});
 
   function navigationHandler() {
     navigation.goBack();
@@ -81,9 +76,13 @@ const BaiTapTongHop = () => {
     },
   ];
 
-  const confirmHandler = (buttonName) => {  
+  const confirmHandler = (id, buttonName) => {
     console.log(`Đã chọn câu ${buttonName}`);
-  }
+    
+    const updatedSelectedButtons = { ...selectedButtons }; // Tạo bản sao của trạng thái hiện tại
+    updatedSelectedButtons[id] = buttonName; // Đánh dấu nút đã được chọn
+    setSelectedButtons(updatedSelectedButtons); // Cập nhật trạng thái mới
+  };
 
   const NoiDung = (props) => (
     <View style={styles.answerButtons}>
@@ -93,29 +92,29 @@ const BaiTapTongHop = () => {
       <View style={styles.buttonContainer}>
         <ColorButton
           color={Colors.Beak_Upper}
-          selected={buttonStates.A}
-          onPress={() => confirmHandler(`${props.id}: A`)}
+          selected={selectedButtons[props.id] === "A"}
+          onPress={() => confirmHandler(props.id, "A")}
         >
           A
         </ColorButton>
         <ColorButton
           color={Colors.Cardinal}
-          selected={buttonStates.B}
-          onPress={() => confirmHandler(`${props.id}: B`)}
+          selected={selectedButtons[props.id] === "B"}
+          onPress={() => confirmHandler(props.id, "B")}
         >
           B
         </ColorButton>
         <ColorButton
           color={Colors.Feather_Green}
-          selected={buttonStates.C}
-          onPress={() => confirmHandler(`${props.id}: C`)}
+          selected={selectedButtons[props.id] === "C"}
+          onPress={() => confirmHandler(props.id, "C")}
         >
           C
         </ColorButton>
         <ColorButton
           color={Colors.Humpback}
-          selected={buttonStates.D}
-          onPress={() => confirmHandler(`${props.id}: D`)}
+          selected={selectedButtons[props.id] === "D"}
+          onPress={() => confirmHandler(props.id, "D")}
         >
           D
         </ColorButton>
