@@ -30,9 +30,13 @@ const ForgotPassword = () => {
         </View>
       </SectionnsComponent>
       <SectionnsComponent>
+        <Text style={styles.text}>Reset Password!</Text>
+        <Text style={styles.textDesc}>Hãy điền email của bạn vào!</Text>
+      </SectionnsComponent>
+      <SectionnsComponent>
         <InputComponent
           value={email}
-          placeholder="Email"
+          placeholder="abc@gmail.com"
           onChange={(val) => setEmail(val)}
           allowClear
           affix={<AntDesign name="mail" size={24} color="black" />}
@@ -51,4 +55,15 @@ const ForgotPassword = () => {
 
 export default ForgotPassword;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  text: {
+    color: 'black',
+    fontFamily: 'Nunito_Bold',
+    fontSize: 32,
+  },
+  textDesc: {
+    color: 'gray',
+    fontFamily: 'Nunito_Bold',
+    fontSize: 15,
+  },
+});
