@@ -24,8 +24,16 @@ import BaiDocChiTiet from './src/screen/ChiTiet/BaiDocChiTiet';
 import LoginScreen from './src/screen/Auth/LoginScreen';
 import SignUpScreen from './src/screen/Auth/SignupScreen';
 import ForgotPassword from './src/screen/Auth/ForgotPassword';
+import { Provider, useDispatch, useSelector } from 'react-redux';
+import store from './src/redux/store';
+import AsyncStorage, {
+  useAsyncStorage,
+} from '@react-native-async-storage/async-storage';
+import { useEffect } from 'react';
+import { addAuth, authSelector } from './src/redux/reducers/authReducer';
 const Stack = createStackNavigator();
 const Tabs = createBottomTabNavigator();
+
 export default function App() {
   const [loaded] = useFonts({
     Nunito_Black: require('./assets/Fonts/Nunito-Black.ttf'),
@@ -38,9 +46,30 @@ export default function App() {
   }
 
   return (
+    <Provider store={store}>
+      <Root></Root>
+    </Provider>
+  );
+}
+function Root() {
+  const { getItem } = useAsyncStorage('auth');
+
+  const auth = useSelector(authSelector);
+  const dispatch = useDispatch();
+  console.log(auth);
+  useEffect(() => {
+    checkLogin();
+  }, []);
+
+  const checkLogin = async () => {
+    const data = await getItem();
+    console.log(data);
+    data && dispatch(addAuth(JSON.parse(data)));
+  };
+
+  return (
     <NavigationContainer independent={true}>
-      {/* <HomeScreen /> */}
-      <AuthStack></AuthStack>
+      {auth.token ? <HomeScreen /> : <AuthStack></AuthStack>}
     </NavigationContainer>
   );
 }
