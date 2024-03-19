@@ -24,4 +24,5 @@ export const Colors = {
   Swan: '#c8c3c3',
   Polar: '#f7f7f7',
   Beak_Upper: '#ffc200',
+  primary: '#5669FF',
 };

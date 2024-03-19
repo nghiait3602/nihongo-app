@@ -21,7 +21,9 @@ import ChuDe from './src/screen/ChuDe/ChuDe';
 import TuVungChiTiet from './src/screen/ChiTiet/TuVungChiTiet';
 import KanjiChiTiet from './src/screen/ChiTiet/KanjiChiTiet';
 import BaiDocChiTiet from './src/screen/ChiTiet/BaiDocChiTiet';
-
+import LoginScreen from './src/screen/Auth/LoginScreen';
+import SignUpScreen from './src/screen/Auth/SignupScreen';
+import ForgotPassword from './src/screen/Auth/ForgotPassword';
 const Stack = createStackNavigator();
 const Tabs = createBottomTabNavigator();
 export default function App() {
@@ -37,12 +39,31 @@ export default function App() {
 
   return (
     <NavigationContainer independent={true}>
-      <HomeScreen />
+      {/* <HomeScreen /> */}
+      <AuthStack></AuthStack>
     </NavigationContainer>
   );
 }
 function AuthStack() {
-  return <Stack.Navigator></Stack.Navigator>;
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="Login"
+        component={LoginScreen}
+        options={{ headerShown: false }}
+      ></Stack.Screen>
+      <Stack.Screen
+        name="SigUp"
+        component={SignUpScreen}
+        options={{ headerShown: false }}
+      ></Stack.Screen>
+      <Stack.Screen
+        name="ForgotPassword"
+        component={ForgotPassword}
+        options={{ headerShown: false }}
+      ></Stack.Screen>
+    </Stack.Navigator>
+  );
 }
 function ChudeScreen() {
   return <Stack.Navigator></Stack.Navigator>;
