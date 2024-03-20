@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useState } from 'react';
 import InputComponent from '../../component/UI/Auth/InputComponent';
 import { Colors } from '../../constants/colors';
@@ -12,36 +12,53 @@ import { useDispatch } from 'react-redux';
 import { addAuth } from '../../redux/reducers/authReducer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Loading from '../../Modals/Loading';
+import { useRoute } from '@react-navigation/native';
+import { Validate } from '../../util/validate';
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isDisable, setIsDisable] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const dispatch = useDispatch();
   const data = {
     email: email,
     password: password,
   };
-  async function handlerLogin() {
-    setIsLoading(true);
-    try {
-      const res = await authenticationAPI.HandlerAuthentication(
-        '/login',
-        data,
-        'post'
-      );
-      const dataFetch = {
-        id: res.data.user._id,
-        token: res.token,
-        email: res.data.user.email,
-      };
-      dispatch(addAuth(dataFetch));
-      await AsyncStorage.setItem('auth', JSON.stringify(dataFetch));
-      setIsLoading(false);
-    } catch (error) {
-      setIsLoading(false);
+  useEffect(() => {
+    if (password || email) {
+      setErrorMessage('');
     }
+  }, [email, password]);
+
+  async function handlerLogin() {
+    const emailValidate = Validate.email(email);
+    setIsLoading(true);
+    if (emailValidate) {
+      try {
+        const res = await authenticationAPI.HandlerAuthentication(
+          '/login',
+          data,
+          'post'
+        );
+        if (res.data) {
+          const dataFetch = {
+            id: res.data.user._id,
+            token: res.token,
+            email: res.data.user.email,
+          };
+          dispatch(addAuth(dataFetch));
+          await AsyncStorage.setItem('auth', JSON.stringify(dataFetch));
+        } else {
+          setErrorMessage(res.message);
+        }
+        setIsLoading(false);
+      } catch (error) {
+        setIsLoading(false);
+      }
+    }
+    setIsLoading(false);
   }
   return (
     <>
@@ -54,7 +71,7 @@ const LoginScreen = ({ navigation }) => {
           }}
         >
           <Image
-            source={require('../../../assets/Icons/animals.png')}
+            source={require('../../../assets/Icons/iconapp.png')}
             style={{ width: 100, height: 100, marginBottom: 30 }}
           ></Image>
         </SectionnsComponent>
@@ -87,6 +104,11 @@ const LoginScreen = ({ navigation }) => {
             </TouchableOpacity>
           </View>
         </SectionnsComponent>
+        {errorMessage && (
+          <SectionnsComponent>
+            <Text style={{ color: 'red' }}>{errorMessage}</Text>
+          </SectionnsComponent>
+        )}
         <SectionnsComponent>
           <BottomComponent
             isDisable

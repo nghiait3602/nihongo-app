@@ -30,6 +30,8 @@ const InputComponen = (props) => {
         placeholder={placeholder ?? ''}
         onChangeText={(val) => onChange(val)}
         secureTextEntry={isShow}
+        autoCapitalize="none"
+        onEndEditing={onEnd}
       ></TextInput>
       {suffix ?? suffix}
       <TouchableOpacity

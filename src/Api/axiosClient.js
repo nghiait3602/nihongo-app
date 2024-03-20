@@ -22,7 +22,8 @@ axiosClient.interceptors.response.use(
     throw new Error('Error');
   },
   (error) => {
-    console.log(`Error api ${error}`);
+    // console.log(error.response.data);
+    return error.response.data;
     throw new Error('Error');
   }
 );

@@ -12,19 +12,19 @@ const Home = () => {
   const auth = useSelector(authSelector);
   useEffect(() => {
     console.log(auth.id);
-    fect();
+    // fect();
   }, []);
-  async function fect() {
-    try {
-      const res = await authenticationAPI.HandlerAuthentication(
-        `/`,
-        null,
-        'get',
-        auth.token
-      );
-      console.log(res.data);
-    } catch (error) {}
-  }
+  // async function fect() {
+  //   try {
+  //     const res = await authenticationAPI.HandlerAuthentication(
+  //       `/`,
+  //       null,
+  //       'get',
+  //       auth.token
+  //     );
+  //     console.log(res.data);
+  //   } catch (error) {}
+  // }
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar style="auto" />
