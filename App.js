@@ -21,6 +21,7 @@ import ChuDe from './src/screen/ChuDe/ChuDe';
 import TuVungChiTiet from './src/screen/ChiTiet/TuVungChiTiet';
 import KanjiChiTiet from './src/screen/ChiTiet/KanjiChiTiet';
 import BaiDocChiTiet from './src/screen/ChiTiet/BaiDocChiTiet';
+import NguPhapChiTiet from './src/screen/ChiTiet/NguPhapChiTiet';
 import LoginScreen from './src/screen/Auth/LoginScreen';
 import SignUpScreen from './src/screen/Auth/SignupScreen';
 import ForgotPassword from './src/screen/Auth/ForgotPassword';
@@ -185,6 +186,11 @@ function HomeScreen() {
         name="BaiDocChiTiet"
         component={BaiDocChiTiet}
         options={{ title: 'Tổng quan bài đọc' }}
+      ></Stack.Screen>
+      <Stack.Screen
+        name="NguPhapChiTiet"
+        component={NguPhapChiTiet}
+        options={{ title: 'Tổng quan ngữ pháp' }}
       ></Stack.Screen>
     </Stack.Navigator>
   );
