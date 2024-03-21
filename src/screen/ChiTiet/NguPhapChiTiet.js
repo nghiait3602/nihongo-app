@@ -1,20 +1,21 @@
 import React from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  FlatList,
-  SafeAreaView,
-  Platform,
-  Image,
-  Dimensions,
-} from "react-native";
+import { StyleSheet, Text, View, SafeAreaView } from "react-native";
 import { useRoute } from "@react-navigation/native";
 import { Colors } from "../../constants/colors";
 
 const NguPhapChiTiet = () => {
   const router = useRoute();
-  const { itemId, nguphapData } = router.params; // Get data từ navigation params
+  const { nguphapData } = router.params; // Lấy dữ liệu từ navigation params
+
+  if (!nguphapData) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.errorContainer}>
+          <Text style={styles.errorText}>Dữ liệu ngữ pháp không tồn tại hoặc không hợp lệ.</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
 
   const NguPhapDetail = ({ label, value }) => (
     <View>
@@ -36,11 +37,9 @@ const NguPhapChiTiet = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <FlatList
-        data={[nguphapData]}
-        renderItem={NoiDung}
-        keyExtractor={(item) => item._id}
-      />
+      <View style={styles.content}>
+        <NoiDung />
+      </View>
     </SafeAreaView>
   );
 };
@@ -52,23 +51,33 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.Snow,
   },
+  content: {
+    flex: 1,
+    margin: 16,
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  errorText: {
+    fontSize: 18,
+    textAlign: "center",
+    color: "red",
+  },
   label: {
-    marginLeft: 12,
     fontWeight: "bold",
     fontSize: 20,
+    marginBottom: 4,
   },
   nguphap: {
-    fontSize: 20,
-    marginHorizontal: 4,
-    marginVertical: 4,
+    fontSize: 18,
   },
   nguphapContainer: {
-    marginHorizontal: 12,
-    marginBottom: Platform.OS === "android" ? 7 : 0,
     borderRadius: 5,
     borderWidth: 1.25,
     borderColor: Colors.Feather_Green,
-    justifyContent: "center",
-    alignItems: "center",
+    padding: 8,
+    marginTop: 4,
   },
 });
