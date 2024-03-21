@@ -20,20 +20,28 @@ const initValue = {
   password: '',
   confirmPassword: '',
 };
+
 const SignUpScreen = () => {
   const [values, setValues] = useState(initValue);
-  const [isDisable, setIsDisable] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setTextError] = useState('');
+  const [errorMessage, setTextError] = useState();
+  const [Isdisable, setIsDisable] = useState(true);
 
   const navigation = useNavigation();
-  const dispatch = useDispatch();
 
   useEffect(() => {
-    if (values.email || values.password) {
-      setTextError('');
+    if (
+      !errorMessage ||
+      (errorMessage &&
+        (errorMessage.email ||
+          errorMessage.password ||
+          errorMessage.confirmPassword))
+    ) {
+      setIsDisable(true);
+    } else {
+      setIsDisable(false);
     }
-  }, [values.email, values.password]);
+  }, [errorMessage]);
   function handlerValue(key, value) {
     const data = { ...values };
     data[key] = value;
@@ -47,39 +55,80 @@ const SignUpScreen = () => {
 
     if (email && password && confirmPassword) {
       if (emailValidate && passwordValidate) {
-        setIsDisable(true);
+        setIsLoading(true);
         try {
           const res = await authenticationAPI.HandlerAuthentication(
-            '/signup',
+            '/verification',
             {
+              email: values.email,
+            },
+            'post'
+          );
+          const code = res.verificationCode;
+          if (code) {
+            const dataFetch = {
               name: values.userName,
               email: values.email,
               ngaySinh: '1/1/1999',
               password: values.password,
               passwordConfirm: values.password,
-            },
-            'post'
-          );
-          const dataFetch = {
-            id: res.data.user._id,
-            token: res.token,
-            email: res.data.user.email,
-          };
-          dispatch(addAuth(dataFetch));
-          await AsyncStorage.setItem('auth', JSON.stringify(dataFetch));
-          setValues(initValue);
+            };
+            navigation.navigate('Verification', {
+              dataFetch: dataFetch,
+              veriCode: code,
+            });
+            setIsLoading(false);
+          }
           setIsLoading(false);
         } catch (error) {
           setIsLoading(false);
         }
       } else {
-        setTextError('Email không đúng định dạng!');
+        // setTextError('Email không đúng định dạng!');
       }
     } else {
-      setTextError('Vui lòng nhập đầy đủ thông tin!');
+      // setTextError('Vui lòng nhập đầy đủ thông tin!');
     }
   }
-
+  const formValidate = (key) => {
+    const data = { ...errorMessage };
+    let message = ``;
+    switch (key) {
+      case 'email':
+        if (!values.email) {
+          message = 'Email là bắc buộc!';
+        } else if (!Validate.email(values.email)) {
+          message = 'Email không đúng định dạng';
+        } else {
+          message = '';
+        }
+        break;
+      case 'password':
+        if (!values.password) {
+          message = 'Password không được để trống';
+        } else if (!Validate.Password(values.password)) {
+          message = 'Password phải đủ 8 ký tự';
+        } else {
+          message = '';
+        }
+        break;
+      case 'confirmPassword':
+        if (values.confirmPassword) {
+          if (
+            values.password.toString() === values.confirmPassword.toString()
+          ) {
+            message = '';
+          } else {
+            message = 'Password vào Password confirm không giống nhau!';
+          }
+        } else {
+          message = 'Password confirm không được để trống!';
+        }
+        break;
+    }
+    data[key] = message;
+    setTextError(data);
+  };
   return (
     <>
       <ContainerComponent isImageBackground isScroll>
@@ -121,6 +170,7 @@ const SignUpScreen = () => {
             onChange={(val) => handlerValue('email', val)}
             allowClear
             affix={<AntDesign name="mail" size={24} color="black" />}
+            onEnd={() => formValidate('email')}
           />
           <InputComponent
             value={values.password}
@@ -128,6 +178,7 @@ const SignUpScreen = () => {
             onChange={(val) => handlerValue('password', val)}
             allowClear
             isPassword
+            onEnd={() => formValidate('password')}
             affix={<AntDesign name="lock" size={24} color="black" />}
           />
           <InputComponent
@@ -136,24 +187,29 @@ const SignUpScreen = () => {
             onChange={(val) => handlerValue('confirmPassword', val)}
             allowClear
             isPassword
+            onEnd={() => formValidate('confirmPassword')}
             affix={<AntDesign name="lock" size={24} color="black" />}
           />
         </SectionnsComponent>
         {errorMessage && (
           <SectionnsComponent>
-            <Text style={{ color: 'red' }}>{errorMessage}</Text>
+            {Object.keys(errorMessage).map((error, index) => (
+              <Text style={{ color: 'red' }} key={index}>
+                {errorMessage[error]}
+              </Text>
+            ))}
           </SectionnsComponent>
         )}
         <SectionnsComponent>
           <BottomComponent
-            isDisable
             text="SIGN IN"
             onPress={handlerResgiter}
+            disable={Isdisable}
           ></BottomComponent>
         </SectionnsComponent>
         <SectionnsComponent>
           <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-            <Text style={styles.forgotPassword}>Bạn chưa có tài khoản ?</Text>
+            <Text style={styles.forgotPassword}>Bạn đã có tài khoản ?</Text>
             <TouchableOpacity
               onPress={() => {
                 navigation.goBack();

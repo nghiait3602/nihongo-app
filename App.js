@@ -25,6 +25,7 @@ import NguPhapChiTiet from './src/screen/ChiTiet/NguPhapChiTiet';
 import LoginScreen from './src/screen/Auth/LoginScreen';
 import SignUpScreen from './src/screen/Auth/SignupScreen';
 import ForgotPassword from './src/screen/Auth/ForgotPassword';
+import Verification from './src/screen/Auth/Verification';
 import { Provider, useDispatch, useSelector } from 'react-redux';
 import store from './src/redux/store';
 import AsyncStorage, {
@@ -90,6 +91,11 @@ function AuthStack() {
       <Stack.Screen
         name="ForgotPassword"
         component={ForgotPassword}
+        options={{ headerShown: false }}
+      ></Stack.Screen>
+      <Stack.Screen
+        name="Verification"
+        component={Verification}
         options={{ headerShown: false }}
       ></Stack.Screen>
     </Stack.Navigator>
