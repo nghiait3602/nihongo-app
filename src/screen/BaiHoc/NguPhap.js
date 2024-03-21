@@ -14,6 +14,7 @@ import { useNavigation } from "@react-navigation/native";
 
 import { useSelector } from "react-redux";
 import { authSelector } from "../../redux/reducers/authReducer"; // Thêm authSelector từ reducer
+import Loading from '../../Modals/Loading';
 
 const NguPhap = () => {
   const navigator = useNavigation();
@@ -71,7 +72,7 @@ const NguPhap = () => {
 
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
-      {loading && <ActivityIndicator size="large" color="#0000ff" />}
+      {loading && <Loading isVisible={loading}></Loading>}
       {error && <Text style={styles.errorText}>{error}</Text>}
       {!loading && !error && nguPhap.length > 0 && (
         <FlatList
