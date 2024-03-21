@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View, SafeAreaView } from 'react-native';
 import styles from './Home.style';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import Header from '../../component/UI/Header/header';
 import ListHome from '../../component/ListHome/List';
@@ -8,23 +8,36 @@ import data from '../../../data/datatest.json';
 import authenticationAPI from '../../Api/authApi';
 import { useSelector } from 'react-redux';
 import { authSelector } from '../../redux/reducers/authReducer';
+import LerverApi from '../../Api/leversApi';
+import Loading from '../../Modals/Loading';
 const Home = () => {
+  const [dataFetch, setDataFetch] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const auth = useSelector(authSelector);
   useEffect(() => {
-    console.log(auth.id);
-    // fect();
+    if (auth.token) {
+      handerLever();
+    } else {
+      console.error('Authentication token is missing or invalid.');
+      setIsLoading(false);
+    }
   }, []);
-  // async function fect() {
-  //   try {
-  //     const res = await authenticationAPI.HandlerAuthentication(
-  //       `/`,
-  //       null,
-  //       'get',
-  //       auth.token
-  //     );
-  //     console.log(res.data);
-  //   } catch (error) {}
-  // }
+
+  const handerLever = async () => {
+    try {
+      const res = await LerverApi.HandlerLever('/', null, 'get', auth.token);
+      if (res && res.data) {
+        const data = res; // Lấy mảng dữ liệu từ trường "data"
+        setDataFetch(data);
+        setIsLoading(false);
+      } else {
+        setIsLoading(false);
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      setIsLoading(false);
+    }
+  };
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar style="auto" />
@@ -34,7 +47,8 @@ const Home = () => {
         left={require('../../../assets/Icons/japan.png')}
         right={require('../../../assets/Icons/fire.png')}
       />
-      <ListHome data={data.sections} />
+      {isLoading && <Loading isVisible={isLoading}></Loading>}
+      {dataFetch && !isLoading && <ListHome data={dataFetch} />}
     </SafeAreaView>
   );
 };

@@ -10,11 +10,11 @@ import nagasaki from '../../../../assets/Img/nagasaki.png';
 import osaka from '../../../../assets/Img/osaka.png';
 import tokyo from '../../../../assets/Img/tokyo.png';
 import data from '../../../../data/lession.json';
-const ItemKhoaHoc = ({ exercise }) => {
+const ItemKhoaHoc = ({ KhoaHoc }) => {
   const navigator = useNavigation();
   function handlerNavigation() {
     navigator.navigate('LessionScreen', data.sections);
-    console.log(exercise.id);
+    console.log(KhoaHoc.id);
   }
   const getImage = (name) => {
     switch (name) {
@@ -32,7 +32,7 @@ const ItemKhoaHoc = ({ exercise }) => {
         break;
     }
   };
-  const image = getImage(exercise.name);
+  const image = getImage(KhoaHoc.tenKhoahoc);
   return (
     <TouchableOpacity
       style={ItemKhoaHoaStyles.innerButton}
@@ -41,7 +41,7 @@ const ItemKhoaHoc = ({ exercise }) => {
       <AnimatedCircularProgress
         size={120} // Kích thước của vòng tròn
         width={10} // Độ rộng của vòng tròn
-        // fill={exercise.definition.levels} // Giá trị tiến trình/
+        // fill={KhoaHoc.definition.levels} // Giá trị tiến trình/
         fill={100}
         rotation={135}
         tintColor={Colors.Beak_Upper} // Màu sắc của vòng tròn
@@ -62,7 +62,7 @@ const ItemKhoaHoc = ({ exercise }) => {
           </View>
         )}
       </AnimatedCircularProgress>
-      <Text style={ItemKhoaHoaStyles.innerText}>{exercise.name}</Text>
+      <Text style={ItemKhoaHoaStyles.innerText}>{KhoaHoc.tenKhoahoc}</Text>
     </TouchableOpacity>
   );
 };
