@@ -6,11 +6,11 @@ const ItemHome = ({ item }) => {
   const { id, data } = item;
   return (
     <View style={ItemStyles.sectionContainer}>
-      {data.map((tier) => {
+      {data.map((id) => {
         return (
-          <View key={tier.tier} style={ItemStyles.sections}>
-            {tier.exercises.map((exercise) => {
-              return <ItemKhoaHoc exercise={exercise} key={exercise.id} />;
+          <View key={id._id} style={ItemStyles.sections}>
+            {id.dsKhoaHoc.map((khoaHoc) => {
+              return <ItemKhoaHoc KhoaHoc={khoaHoc} key={khoaHoc._id} />;
             })}
           </View>
         );
