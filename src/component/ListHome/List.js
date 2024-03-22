@@ -11,7 +11,6 @@ const List = ({ data }) => {
   }
   // Sử dụng hàm chuyển đổi và in kết quả
   const outputData = convertData(data);
-  console.log(outputData);
 
   return (
     <FlatList

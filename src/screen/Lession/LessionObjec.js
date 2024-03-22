@@ -12,16 +12,13 @@ import {
 import React from 'react';
 import { useRoute } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
-import Header from '../../component/UI/Header/header';
 import BaiTap from '../../../data/BaiTap.json';
 import { Colors } from '../../constants/colors';
 const LessionObjec = () => {
   const router = useRoute();
   const navigation = useNavigation();
   const idBaiHoc = router.params;
-  function navigationHandler() {
-    navigation.goBack();
-  }
+
   function handlerNavigation(item) {
     navigation.navigate(item, idBaiHoc);
   }
@@ -34,7 +31,7 @@ const LessionObjec = () => {
         <View style={styles.infoContainer}>
           <Image
             style={styles.logoLession}
-            source={require('../../../assets/Icons/animals.png')}
+            source={require('../../../assets/Icons/iconapp.png')}
           ></Image>
           <View style={styles.inforContent}>
             <Text style={styles.text}>{item.name}</Text>

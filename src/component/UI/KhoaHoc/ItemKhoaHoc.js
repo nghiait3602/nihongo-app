@@ -13,7 +13,7 @@ import data from '../../../../data/lession.json';
 const ItemKhoaHoc = ({ KhoaHoc }) => {
   const navigator = useNavigation();
   function handlerNavigation() {
-    navigator.navigate('LessionScreen', data.sections);
+    navigator.navigate('LessionScreen', KhoaHoc.id);
     console.log(KhoaHoc.id);
   }
   const getImage = (name) => {

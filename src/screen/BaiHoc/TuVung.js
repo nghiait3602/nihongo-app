@@ -8,63 +8,86 @@ import {
 import React from 'react';
 import { useRoute } from '@react-navigation/native';
 import { useEffect, useState } from 'react';
-import BaiTap from '../../../data/BaiTap.json';
-import data from '../../../data/tuvung.json';
 import { Colors } from '../../constants/colors';
 import { useNavigation } from '@react-navigation/native';
+import { useSelector } from 'react-redux';
+import { authSelector } from '../../redux/reducers/authReducer';
+import BaiHocApi from '../../Api/baihocApi';
+import Loading from '../../Modals/Loading';
+import LottieView from 'lottie-react-native';
+import SectionnsComponent from '../../component/UI/Auth/SectionnsComponent';
 const TuVung = () => {
-  // const router = useRoute();
-  // const data = router.params; // id của khóa bài học được truyền qua để tìm các bài kanji ngữ pháp từ vựng
-  // const [Baihoc, setBaihoc] = useState(null); // Khởi tạo state Baihoc với giá trị ban đầu là null
+  const [tuVung, setTuVung] = useState([]); // Khởi tạo state Baihoc với giá trị ban đầu là null
+  const [isLoading, setIsLoading] = useState(true);
+  const router = useRoute();
+  const idBaiHoc = router.params; // id của khóa bài học được truyền qua để tìm các bài kanji ngữ pháp từ vựng
   const navigator = useNavigation();
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       // Lấy dữ liệu từ API hoặc nguồn dữ liệu khác ở đây
-  //       // Ví dụ: const response = await fetch('API_URL');
-  //       // const data = await response.json();
-  //       // Sau đó, tìm phần tử trong mảng dữ liệu có id trùng với data
-  //       const item = BaiTap.sections[0].data.find((item) => item.id === data);
-  //       // Gán giá trị cho state Baihoc
-  //       setBaihoc(item);
-  //     } catch (error) {
-  //       console.error('Error fetching data:', error);
-  //     }
-  //   };
+  const auth = useSelector(authSelector);
 
-  //   fetchData(); // Gọi hàm fetchData trong useEffect
-  // }, [data]); // Sử dụng useEffect với dependency là data
+  useEffect(() => {
+    handlerTungVung();
+  }, [auth.token, idBaiHoc]);
 
-  // // Kiểm tra nếu Baihoc chưa được gán giá trị, trả về null hoặc hiển thị thông báo loading
-  // if (!Baihoc) {
-  //   return (
-  //     <View>
-  //       <Text>Loading....</Text>
-  //     </View>
-  //   );
-  // }
+  const handlerTungVung = async () => {
+    setIsLoading(true);
+    try {
+      if (auth.token && idBaiHoc) {
+        const res = await BaiHocApi.BaiHocHandler(
+          `/${idBaiHoc}/tuvung`,
+          null,
+          'get',
+          auth.token
+        );
+        setTuVung(res.data.data);
+      }
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+    }
+  };
+  if (tuVung.length === 0 && !isLoading) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: 'white',
+        }}
+      >
+        <SectionnsComponent>
+          <LottieView
+            autoPlay
+            style={{ width: '100%', height: '100%' }}
+            source={require('../../../assets/Img/Nodata.json')}
+          ></LottieView>
+        </SectionnsComponent>
+      </View>
+    );
+  }
+
   const ItemBaiHoc = ({ item, index }) => {
     function navigationHandler() {
-      console.log(item.id);
-      navigator.navigate('TuVungChiTiet', item); // Chuyển item id dưới dạng tham số
+      navigator.navigate('TuVungChiTiet', item._id); // Chuyển item id dưới dạng tham số
     }
     return (
       <TouchableOpacity style={styles.container} onPress={navigationHandler}>
-        <View style={{ flexDirection: 'row' }}>
-          <Text style={styles.textTitle}>{index + 1}.</Text>
-          <Text style={styles.textTitle}>{item.tuvung}</Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <Text style={styles.textTitle}>{index + 1}. </Text>
+          <Text style={styles.textTitle}>{item.tu}</Text>
         </View>
-        <Text style={styles.textDesc}>{item.dich}</Text>
+        <Text style={styles.textDesc}>{item.dinhNghia}</Text>
       </TouchableOpacity>
     );
   };
   return (
     <View style={{ flex: 1, backgroundColor: 'white' }}>
-      <FlatList
-        data={data.sections[0].data}
-        keyExtractor={(item) => item.id}
-        renderItem={ItemBaiHoc}
-      ></FlatList>
+      {isLoading && <Loading isVisible={isLoading}></Loading>}
+      {tuVung.length > 0 && !isLoading && (
+        <FlatList
+          data={tuVung}
+          keyExtractor={(item) => item._id}
+          renderItem={ItemBaiHoc}
+        ></FlatList>
+      )}
     </View>
   );
 };
