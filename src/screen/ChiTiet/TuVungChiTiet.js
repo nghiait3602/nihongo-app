@@ -15,13 +15,21 @@ import { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { Colors } from '../../constants/colors';
 import ColorButton from '../../component/UI/Button/ColorButton';
+import { useSelector } from 'react-redux';
+import { authSelector } from '../../redux/reducers/authReducer';
+import tuVungApi from '../../Api/tuvungApi';
+import Loading from '../../Modals/Loading';
 const TuVungChiTiet = () => {
-  const router = useRoute();
-  const data = router.params;
-  const navigation = useNavigation();
   const [isPeak, setIsPeak] = useState(false);
   const [isStran, setIsStran] = useState(false);
   const [isStranCau, setIsStranCau] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [chiTietTuVung, setChiTietTuVung] = useState();
+
+  const router = useRoute();
+  const idTuVung = router.params;
+  const navigation = useNavigation();
+  const auth = useSelector(authSelector);
   useEffect(() => {
     const stop = navigation.addListener('beforeRemove', (e) => {
       // Dừng đọc nếu trạng thái là đang đọc
@@ -32,6 +40,26 @@ const TuVungChiTiet = () => {
     });
     return stop;
   }, [navigation, isPeak]);
+  useEffect(() => {
+    handlerTuVung();
+  }, [auth.token, idTuVung]);
+  const handlerTuVung = async () => {
+    setIsLoading(true);
+    try {
+      if (auth.token && idTuVung) {
+        const res = await tuVungApi.TuVungHandler(
+          `/${idTuVung}`,
+          null,
+          'get',
+          auth.token
+        );
+        setChiTietTuVung(res.data.data);
+      }
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+    }
+  };
   async function xuLyDoc(text) {
     if (!isPeak) {
       setIsPeak(true);
@@ -46,7 +74,6 @@ const TuVungChiTiet = () => {
     }
   }
   // dich câu
-
   function stranCau() {
     if (!isStranCau) {
       setIsStranCau(true);
@@ -64,90 +91,100 @@ const TuVungChiTiet = () => {
   }
   return (
     <View style={styles.container}>
-      <View style={styles.viewContainer}>
-        <View style={styles.viewInlineLeft}>
-          <ImageBackground
-            style={{
-              resizeMode: 'cover',
-              justifyContent: 'center',
-            }}
-            source={require('../../../assets/Icons/ribbon.png')}
-          >
-            <Text style={styles.textInlineLeft}>Left</Text>
-          </ImageBackground>
-        </View>
-        <View style={styles.viewImage}>
-          <Image
-            style={styles.image}
-            source={require('../../../assets/character2.png')}
-          ></Image>
-        </View>
-        <View style={styles.viewBottom}>
-          <View style={styles.viewBottomLeft}>
-            <View
+      {isLoading && <Loading isVisible={isLoading}></Loading>}
+      {chiTietTuVung && !isLoading && (
+        <View style={styles.viewContainer}>
+          <View style={styles.viewInlineLeft}>
+            <ImageBackground
               style={{
-                flexDirection: 'row',
-                alignItems: 'center',
+                resizeMode: 'cover',
+                justifyContent: 'center',
+              }}
+              source={require('../../../assets/Icons/ribbon.png')}
+            >
+              <Text style={styles.textInlineLeft}>Left</Text>
+            </ImageBackground>
+          </View>
+          <View style={styles.viewImage}>
+            <Image
+              style={styles.image}
+              source={require('../../../assets/character2.png')}
+            ></Image>
+          </View>
+          <View style={styles.viewBottom}>
+            <View style={styles.viewBottomLeft}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                }}
+              >
+                <Text style={styles.textCachDoc}>{chiTietTuVung.tu}</Text>
+                {isStran && (
+                  <Text style={styles.textCachDoc}>
+                    :{chiTietTuVung.dinhNghia}
+                  </Text>
+                )}
+              </View>
+              <Text style={styles.textCachDoc}>{chiTietTuVung.phienAm}</Text>
+              <Text style={styles.textRomaji}>{chiTietTuVung.loaiTu}</Text>
+              <Text style={styles.textCau}>{chiTietTuVung.viDu}</Text>
+              {isStranCau && (
+                <Text style={styles.textDichNghia}>
+                  {chiTietTuVung.dichNghiaVD}
+                </Text>
+              )}
+            </View>
+            <TouchableOpacity
+              style={styles.viewBottomRight}
+              onPress={xuLyDoc.bind(this, chiTietTuVung.tu)}
+            >
+              <Feather
+                style={{ padding: 10 }}
+                name="volume-2"
+                size={32}
+                color="white"
+              ></Feather>
+            </TouchableOpacity>
+          </View>
+          <View
+            style={{
+              flex: 0.5,
+              flexDirection: 'row',
+              justifyContent: 'center',
+              alignItems: 'center',
+              gap: 5,
+            }}
+          >
+            <TouchableOpacity
+              onPress={stran}
+              style={{
+                ...styles.button,
+                borderBottomStartRadius: 20,
+                borderTopStartRadius: 20,
+                marginStart: 20,
               }}
             >
-              <Text style={styles.textCachDoc}>{data.tuvung}</Text>
-              {isStran && <Text style={styles.textYnghia}>:{data.dich}</Text>}
-            </View>
-            <Text style={styles.textRomaji}>{data.romaji}</Text>
-            <Text style={styles.textCau}>{data.cau}</Text>
-            {isStranCau && (
-              <Text style={styles.textDichNghia}>{data.dichnghia}</Text>
-            )}
+              <Text style={styles.textButton}>
+                {isStran ? 'Tắt dịch' : 'Dịch nghĩa'}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={stranCau}
+              style={{
+                ...styles.button,
+                borderBottomEndRadius: 20,
+                borderTopEndRadius: 20,
+                marginEnd: 20,
+              }}
+            >
+              <Text style={styles.textButton}>
+                {isStranCau ? 'Tắt dịch' : 'Dịch câu'}
+              </Text>
+            </TouchableOpacity>
           </View>
-          <TouchableOpacity
-            style={styles.viewBottomRight}
-            onPress={xuLyDoc.bind(this, data.tuvung)}
-          >
-            <Feather
-              style={{ padding: 10 }}
-              name="volume-2"
-              size={32}
-              color="white"
-            ></Feather>
-          </TouchableOpacity>
         </View>
-        <View
-          style={{
-            flex: 0.5,
-            flexDirection: 'row',
-            justifyContent: 'center',
-            alignItems: 'center',
-            gap: 5,
-          }}
-        >
-          <TouchableOpacity
-            onPress={stran}
-            style={{
-              ...styles.button,
-              borderBottomStartRadius: 20,
-              borderTopStartRadius: 20,
-              marginStart: 20,
-            }}
-          >
-            <Text style={styles.textButton}>
-              {isStran ? 'Tắt dịch' : 'Dịch nghĩa'}
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={stranCau}
-            style={{
-              ...styles.button,
-              borderBottomEndRadius: 20,
-              borderTopEndRadius: 20,
-              marginEnd: 20,
-            }}
-          >
-            <Text style={styles.textButton}>
-              {isStranCau ? 'Tắt dịch' : 'Dịch câu'}
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </View>
+      )}
     </View>
   );
 };
