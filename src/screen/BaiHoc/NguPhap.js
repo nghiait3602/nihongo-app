@@ -16,6 +16,10 @@ import { useSelector } from "react-redux";
 import { authSelector } from "../../redux/reducers/authReducer"; // Thêm authSelector từ reducer
 import Loading from "../../Modals/Loading";
 
+import LottieView from 'lottie-react-native';
+import SectionnsComponent from '../../component/UI/Auth/SectionnsComponent';
+
+
 const NguPhap = () => {
   const navigator = useNavigation();
   const [nguPhap, setNguPhap] = useState([]);
@@ -64,6 +68,25 @@ const NguPhap = () => {
       setLoading(false);
     }
   };
+
+  if (nguPhap.length === 0 && !loading) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: 'white',
+        }}
+      >
+        <SectionnsComponent>
+          <LottieView
+            autoPlay
+            style={{ width: '100%', height: '100%' }}
+            source={require('../../../assets/Img/Nodata.json')}
+          ></LottieView>
+        </SectionnsComponent>
+      </View>
+    );
+  }
 
   const renderItem = ({ item }) => (
     <TouchableOpacity

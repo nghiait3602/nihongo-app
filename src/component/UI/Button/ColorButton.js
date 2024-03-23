@@ -23,7 +23,7 @@ export default ColorButton;
 
 const styles = StyleSheet.create({
   button: {
-    paddingHorizontal: 14,
+    paddingHorizontal: 8,
     paddingVertical: 8,
     margin: 15,
     elevation: 4,
