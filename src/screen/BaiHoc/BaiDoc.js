@@ -8,8 +8,10 @@ import {
 import React from "react";
 import { useRoute } from "@react-navigation/native";
 import { useEffect, useState } from "react";
-import BaiTap from "../../../data/BaiTap.json";
-import data from "../../../data/BaiDoc.json";
+// import BaiTap from "../../../data/BaiTap.json";
+// import data from "../../../data/BaiDoc.json";
+
+
 import { Colors } from "../../constants/colors";
 import { useNavigation } from "@react-navigation/native";
 const BaiDoc = () => {
