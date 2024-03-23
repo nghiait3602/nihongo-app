@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   Text,
@@ -5,54 +6,92 @@ import {
   FlatList,
   TouchableOpacity,
 } from "react-native";
-import React from "react";
-import { useRoute } from "@react-navigation/native";
-import { useEffect, useState } from "react";
-// import BaiTap from "../../../data/BaiTap.json";
-// import data from "../../../data/BaiDoc.json";
 
-
+import BaiHocApi from "../../Api/baihocApi";
 import { Colors } from "../../constants/colors";
 import { useNavigation } from "@react-navigation/native";
+import { useRoute } from "@react-navigation/native";
+
+import { useSelector } from "react-redux";
+import { authSelector } from "../../redux/reducers/authReducer"; // Thêm authSelector từ reducer
+import Loading from "../../Modals/Loading";
+
 const BaiDoc = () => {
   const navigator = useNavigation();
+  const [baiDoc, setBaiDoc] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const router = useRoute();
+  const idBaiHoc = router.params;
+  const [error, setError] = useState(null);
+  const { token } = useSelector(authSelector); // Sử dụng authSelector để lấy token từ Redux store
 
-  const ItemBaiHoc = ({ item, index }) => {
-    const getBaiDocById = (id) => {
-      const baidocData = data.sections.find((section) => {
-        return section.data.some((kanji) => kanji.id === id); // Tìm kiếm Baidoc có ID khớp
-      });
-
-      return baidocData?.data?.find((kanji) => kanji.id === id); // Trả về dữ liệu Baidoc
-    };
-
-    function navigationHandler() {
-      console.log(item.id);
-      const baidocData = getBaiDocById(item.id); // Lấy dữ liệu Baidoc cụ thể dựa trên ID
-      const params = {
-        itemId: item.id,
-        baidocData, // Thêm dữ liệu Baidoc vào tham số
-      };
-
-      navigator.navigate("BaiDocChiTiet", params);
+  useEffect(() => {
+    if (token) {
+      // Kiểm tra xem token có tồn tại không
+      handlerBaiDoc();
+    } else {
+      console.error("Authentication token is missing or invalid.");
+      setError("Authentication token is missing or invalid."); // Thông báo lỗi
+      setLoading(false); // Dừng hiển thị indicator loading
     }
+  }, [token, idBaiHoc]); // Chạy lại effect khi token thay đổi
 
-    return (
-      <TouchableOpacity style={styles.container} onPress={navigationHandler}>
-        <View style={{ flexDirection: "row" }}>
-          <Text style={styles.textTitle}>{index + 1}.</Text>
-          <Text style={styles.textTitle}>{item.title}</Text>
-        </View>
-      </TouchableOpacity>
-    );
+  const handlerBaiDoc = async () => {
+    try {
+      const response = await BaiHocApi.BaiHocHandler(
+        `/${idBaiHoc}/baitapdoc`,
+        null,
+        "get",
+        token
+      ); // Truyền token từ Redux store vào API
+      console.log("Response về:", response);
+
+      if (response.data && idBaiHoc) {
+        const data = response.data.data; // Lấy mảng dữ liệu từ trường "data"
+        setBaiDoc(data);
+        setLoading(false);
+        setError(null);
+      } else {
+        setError("Dữ liệu trả về từ server không hợp lệ.");
+        setLoading(false);
+      }
+      if (response.results === 0) {
+        setError("Trong bài học này không có bài đọc.");
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      setError("Đã xảy ra lỗi khi tải dữ liệu. Vui lòng thử lại sau.");
+      setLoading(false);
+    }
   };
+
+  const renderItem = ({ item, index }) => (
+    <TouchableOpacity
+      style={styles.container}
+      onPress={() => navigateToDetail(item)}
+    >
+      <View style={{ flexDirection: "row" }}>
+        <Text style={styles.textTitle}>{index + 1}.</Text>
+        <Text style={styles.textTitle}>{item.tenBaiDoc}</Text>
+      </View>
+    </TouchableOpacity>
+  );
+
+  const navigateToDetail = (item) => {
+    navigator.navigate("BaiDocChiTiet", { baidocData: item }); // Truyen du lieu sang BaiDocChiTiet
+  };
+
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
-      <FlatList
-        data={data.sections[0].data}
-        keyExtractor={(item) => item.id}
-        renderItem={ItemBaiHoc}
-      ></FlatList>
+      {loading && <Loading isVisible={loading}></Loading>}
+      {error && <Text style={styles.errorText}>{error}</Text>}
+      {!loading && !error && baiDoc.length > 0 && (
+        <FlatList
+          data={baiDoc}
+          keyExtractor={(item) => item._id}
+          renderItem={renderItem}
+        />
+      )}
     </View>
   );
 };
@@ -79,5 +118,10 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: Colors.Wolf,
     fontFamily: "Nunito_Bold",
+  },
+  errorText: {
+    color: "red",
+    textAlign: "center",
+    marginBottom: 10,
   },
 });
