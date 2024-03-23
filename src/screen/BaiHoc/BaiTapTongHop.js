@@ -6,130 +6,209 @@ import {
   SafeAreaView,
   Dimensions,
   FlatList,
+  Alert,
 } from "react-native";
-import React from "react";
-import { useRoute } from "@react-navigation/native";
-import { useEffect, useState } from "react";
-import BaiTap from "../../../data/BaiTap.json";
+import { useRoute, useNavigation } from "@react-navigation/native";
+import React, { useEffect, useState } from "react";
 import { Colors } from "../../constants/colors";
-import Header from "../../component/UI/Header/header";
-import { useNavigation } from "@react-navigation/native";
 import ColorButton from "../../component/UI/Button/ColorButton";
+import Loading from "../../Modals/Loading";
+
+import { useSelector } from "react-redux";
+import { authSelector } from "../../redux/reducers/authReducer"; // Thêm authSelector từ reducer
+import BaiHocApi from "../../Api/baihocApi";
+
+import LottieView from "lottie-react-native";
+import SectionnsComponent from "../../component/UI/Auth/SectionnsComponent";
 
 var width = Dimensions.get("window").width;
 var height = Dimensions.get("window").height;
 
 const BaiTapTongHop = () => {
-  const navigation = useNavigation();
   const router = useRoute();
-  const data = router.params;
-  const [Baihoc, setBaihoc] = useState(null); // Khởi tạo state Baihoc với giá trị ban đầu là null
+  const idBaiHoc = router.params;
+  const navigation = useNavigation();
+  const [cauHoi, setCauHoi] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const { token } = useSelector(authSelector); // Sử dụng authSelector để lấy token từ Redux store
 
   const [selectedButtons, setSelectedButtons] = useState({});
-
-  function navigationHandler() {
-    navigation.goBack();
-  }
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // Lấy dữ liệu từ API hoặc nguồn dữ liệu khác ở đây
-        // Ví dụ: const response = await fetch('API_URL');
-        // const data = await response.json();
-        // Sau đó, tìm phần tử trong mảng dữ liệu có id trùng với data
-        const item = BaiTap.sections[0].data.find((item) => item.id === data);
-        // Gán giá trị cho state Baihoc
-        setBaihoc(item);
-      } catch (error) {
-        console.error("Error fetching data:", error);
+    if (token) {
+      // Kiểm tra xem token có tồn tại không
+      handlerCauHoi();
+    } else {
+      console.error("Authentication token is missing or invalid.");
+      setError("Authentication token is missing or invalid."); // Thông báo lỗi
+      setLoading(false); // Dừng hiển thị indicator loading
+    }
+  }, [token, idBaiHoc]); // Chạy lại effect khi token thay đổi
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("beforeRemove", (e) => {
+      if (!isSubmitted && Object.keys(selectedButtons).length > 0) {
+        e.preventDefault();
+        Alert.alert(
+          "Nộp bài",
+          "Bạn có muốn nộp bài trước khi quay lại không?",
+          [
+            {
+              text: "Không",
+              onPress: () => {
+                navigation.dispatch(e.data.action);
+              },
+              style: "cancel",
+            },
+            {
+              text: "Nộp luôn",
+              onPress: () => {
+                submitHandler();
+              },
+            },
+          ],
+          { cancelable: false }
+        );
       }
-    };
+    });
+  
+    // trả về một hàm trống từ useEffect
+    return unsubscribe;
+  }, [isSubmitted, navigation, selectedButtons]);
 
-    fetchData(); // Gọi hàm fetchData trong useEffect
-  }, [data]); // Sử dụng useEffect với dependency là data
+  const handlerCauHoi = async () => {
+    try {
+      const response = await BaiHocApi.BaiHocHandler(
+        `/${idBaiHoc}/cauhoi`,
+        null,
+        "get",
+        token
+      ); // Truyền token từ Redux store vào API
 
-  // Kiểm tra nếu Baihoc chưa được gán giá trị, trả về null hoặc hiển thị thông báo loading
-  if (!Baihoc) {
+      if (response.data && idBaiHoc) {
+        const data = response.data.data; // Lấy mảng dữ liệu từ trường "data"
+        setCauHoi(data);
+        setLoading(false);
+        setError(null);
+      } else {
+        setError("Dữ liệu trả về từ server không hợp lệ.");
+        setLoading(false);
+      }
+      if (response.results === 0) {
+        setError("Trong bài học này không có ngữ pháp.");
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      setError("Đã xảy ra lỗi khi tải dữ liệu. Vui lòng thử lại sau.");
+      setLoading(false);
+    }
+  };
+
+  if (cauHoi.length === 0 && !loading) {
     return (
-      <View>
-        <Text>Loading....</Text>
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: "white",
+        }}
+      >
+        <SectionnsComponent>
+          <LottieView
+            autoPlay
+            style={{ width: "100%", height: "100%" }}
+            source={require("../../../assets/Img/Nodata.json")}
+          ></LottieView>
+        </SectionnsComponent>
       </View>
     );
   }
 
-  const DATA = [
-    {
-      id: 1,
-      cauhoi: "自分 - Kanji này là gì?",
-      dapan: "",
-    },
-    {
-      id: 2,
-      cauhoi: "自分 - Kanji này là gì?",
-      dapan: "",
-    },
-    {
-      id: 3,
-      cauhoi: "自分 - Kanji này là gì?",
-      dapan: "",
-    },
-  ];
+  const selectHandler = (id, buttonName) => {
+    console.log(`Đã chọn câu ${id} - ${buttonName}`);
 
-  const confirmHandler = (id, buttonName) => {
-    console.log(`Đã chọn câu ${buttonName}`);
-    
     const updatedSelectedButtons = { ...selectedButtons }; // Tạo bản sao của trạng thái hiện tại
     updatedSelectedButtons[id] = buttonName; // Đánh dấu nút đã được chọn
     setSelectedButtons(updatedSelectedButtons); // Cập nhật trạng thái mới
   };
 
-  const NoiDung = (props) => (
-    <View style={styles.answerButtons}>
+  const submitHandler = () => {
+    setIsSubmitted(true); // Cập nhật trạng thái đã nộp bài
+    let tongDiem = 0;
+    // Duyệt qua mảng câu hỏi
+    cauHoi.forEach((item) => {
+      if (selectedButtons[item._id] === item.cauTraLoiDung) {
+        tongDiem += item.diem;
+      }
+    });
+    Alert.alert(
+      "Tổng điểm",
+      `Tổng điểm của bạn là: ${tongDiem}`,
+      [{ text: "OK", onPress: () => navigation.goBack() }],
+      { cancelable: false }
+    );
+  };
+
+  const NoiDung = ({ item, index }) => (
+    <View>
       <Text style={styles.text}>
-        {props.id}. {props.cauhoi}
+        {index + 1}. {item.cauHoi}
       </Text>
       <View style={styles.buttonContainer}>
         <ColorButton
           color={Colors.Beak_Upper}
-          selected={selectedButtons[props.id] === "A"}
-          onPress={() => confirmHandler(props.id, "A")}
+          selected={selectedButtons[item._id] === item.cauTraLoi[0]}
+          onPress={() => selectHandler(item._id, item.cauTraLoi[0])}
         >
-          A
+          {item.cauTraLoi[0]}
         </ColorButton>
         <ColorButton
           color={Colors.Cardinal}
-          selected={selectedButtons[props.id] === "B"}
-          onPress={() => confirmHandler(props.id, "B")}
+          selected={selectedButtons[item._id] === item.cauTraLoi[1]}
+          onPress={() => selectHandler(item._id, item.cauTraLoi[1])}
         >
-          B
+          {item.cauTraLoi[1]}
         </ColorButton>
         <ColorButton
           color={Colors.Feather_Green}
-          selected={selectedButtons[props.id] === "C"}
-          onPress={() => confirmHandler(props.id, "C")}
+          selected={selectedButtons[item._id] === item.cauTraLoi[2]}
+          onPress={() => selectHandler(item._id, item.cauTraLoi[2])}
         >
-          C
+          {item.cauTraLoi[2]}
         </ColorButton>
         <ColorButton
           color={Colors.Humpback}
-          selected={selectedButtons[props.id] === "D"}
-          onPress={() => confirmHandler(props.id, "D")}
+          selected={selectedButtons[item._id] === item.cauTraLoi[3]}
+          onPress={() => selectHandler(item._id, item.cauTraLoi[3])}
         >
-          D
+          {item.cauTraLoi[3]}
         </ColorButton>
       </View>
     </View>
   );
 
   return (
-    <SafeAreaView style={styles.container}>
-      <FlatList
-        data={DATA}
-        renderItem={({ item }) => <NoiDung id={item.id} cauhoi={item.cauhoi} />}
-        keyExtractor={(item) => item.id}
-      />
-    </SafeAreaView>
+    <View style={{ flex: 1, backgroundColor: "white" }}>
+      {loading && <Loading isVisible={loading}></Loading>}
+      {error && <Text style={styles.errorText}>{error}</Text>}
+      {!loading && !error && cauHoi.length > 0 && (
+        <FlatList
+          data={cauHoi}
+          renderItem={NoiDung}
+          keyExtractor={(item) => item._id}
+        />
+      )}
+      <View style={styles.submitButtonContainer}>
+        <ColorButton
+          style={styles.submitButton}
+          color={Colors.Beetle}
+          onPress={submitHandler}
+        >
+          Nộp bài
+        </ColorButton>
+      </View>
+    </View>
   );
 };
 
@@ -151,5 +230,16 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     width: width,
+  },
+  submitButtonContainer: {
+    position: "absolute",
+    bottom: 20,
+    width: width,
+  },
+  errorText: {
+    color: "red",
+    fontSize: 16,
+    textAlign: "center",
+    marginTop: 20,
   },
 });
