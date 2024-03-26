@@ -16,18 +16,65 @@ import BaiHocApi from '../../Api/baihocApi';
 import Loading from '../../Modals/Loading';
 import LottieView from 'lottie-react-native';
 import SectionnsComponent from '../../component/UI/Auth/SectionnsComponent';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import tuVungApi from '../../Api/tuvungApi';
+import CheckData from '../../component/UI/NoData/noData';
 const TuVung = () => {
   const [tuVung, setTuVung] = useState([]); // Khởi tạo state Baihoc với giá trị ban đầu là null
   const [isLoading, setIsLoading] = useState(true);
+  const [ChuDe, setChuDe] = useState('');
   const router = useRoute();
   const idBaiHoc = router.params; // id của khóa bài học được truyền qua để tìm các bài kanji ngữ pháp từ vựng
   const navigator = useNavigation();
   const auth = useSelector(authSelector);
 
   useEffect(() => {
-    handlerTungVung();
-  }, [auth.token, idBaiHoc]);
-
+    handlerAll();
+    if (idBaiHoc === 'ChuDe' && ChuDe) {
+      handerChude();
+    } else if (idBaiHoc === 'all') {
+      handlerAll();
+    } else {
+      handlerTungVung();
+    }
+  }, [auth.token, idBaiHoc, ChuDe]);
+  const getChude = async () => {
+    const getItem = await AsyncStorage.getItem('chude');
+    const data = JSON.parse(getItem);
+    return data;
+  };
+  getChude().then((result) => {
+    setChuDe(result);
+  });
+  const handlerAll = async () => {
+    try {
+      if (auth.token && idBaiHoc !== 'ChuDe' && idBaiHoc === 'all') {
+        const res = await tuVungApi.TuVungHandler(`/`, null, 'get', auth.token);
+        setTuVung(res.data.data);
+      }
+      setIsLoading(false);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      setIsLoading(false);
+    }
+  };
+  const handerChude = async () => {
+    try {
+      if (auth.token && idBaiHoc === 'ChuDe') {
+        const res = await tuVungApi.TuVungHandler(
+          `/chude/?chuDeDaChon=${ChuDe}`,
+          null,
+          'get',
+          auth.token
+        );
+        setTuVung(res.data.selectChuDe);
+      }
+      setIsLoading(false);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      setIsLoading(false);
+    }
+  };
   const handlerTungVung = async () => {
     setIsLoading(true);
     try {
@@ -46,22 +93,7 @@ const TuVung = () => {
     }
   };
   if (tuVung.length === 0 && !isLoading) {
-    return (
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: 'white',
-        }}
-      >
-        <SectionnsComponent>
-          <LottieView
-            autoPlay
-            style={{ width: '100%', height: '100%' }}
-            source={require('../../../assets/Img/Nodata.json')}
-          ></LottieView>
-        </SectionnsComponent>
-      </View>
-    );
+    return <CheckData></CheckData>;
   }
 
   const ItemBaiHoc = ({ item, index }) => {
@@ -78,6 +110,7 @@ const TuVung = () => {
       </TouchableOpacity>
     );
   };
+  // console.log(tuVung);
   return (
     <View style={{ flex: 1, backgroundColor: 'white' }}>
       {isLoading && <Loading isVisible={isLoading}></Loading>}

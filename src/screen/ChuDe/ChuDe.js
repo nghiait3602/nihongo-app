@@ -7,11 +7,17 @@ import {
   TouchableOpacity,
   Image,
 } from 'react-native';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Colors } from '../../constants/colors';
 import OutLineButton from '../../component/UI/Button/OutLineButton';
 import { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
+import chuDecApi from '../../Api/suggetApi';
+import { useSelector } from 'react-redux';
+import { authSelector } from '../../redux/reducers/authReducer';
+import AsyncStorage, {
+  useAsyncStorage,
+} from '@react-native-async-storage/async-storage';
 const Data = [
   {
     id: 1,
@@ -36,7 +42,7 @@ const Data = [
   },
   {
     id: 6,
-    chude: 'Game',
+    chude: 'game',
   },
 ];
 
@@ -44,6 +50,25 @@ const ChuDe = () => {
   const [selectItem, setSelectItem] = useState([]);
   const [itemList, setItemList] = useState([]);
   const navigation = useNavigation();
+
+  const auth = useSelector(authSelector);
+  useEffect(() => {}, []);
+  const handlerChuDe = async (ds) => {
+    try {
+      const res = await chuDecApi.ChuDeHandler(
+        '/suggest',
+        ds,
+        'post',
+        auth.token
+      );
+      const data = res.data;
+      if (data) {
+        await AsyncStorage.setItem('chude', JSON.stringify(res.data));
+        console.log(data);
+      }
+    } catch (error) {}
+  };
+
   function hanlderOnPress(item) {
     const newSelectItem = selectItem.includes(item.id)
       ? selectItem.filter((id) => id !== item.id)
@@ -71,9 +96,20 @@ const ChuDe = () => {
 
   function nextHandler() {
     const data = countItems();
+    const ds = {
+      'thể thao': data['Thể Thao'],
+      'ẩm thực': data['Ẩm Thực'],
+      'thời trang': data['Thời Trang'],
+      'giao tiếp': data['Giao Tiếp'],
+      'phim ảnh': data['Phim Ảnh'],
+      game: data['game'],
+    };
+    console.log(ds);
     console.log(data);
+    handlerChuDe(ds);
     navigation.navigate('BottomNavigation');
   }
+
   function renderItem({ item }) {
     return (
       <TouchableOpacity
