@@ -63,7 +63,7 @@ const LessionScreen = () => {
         <View style={styles.infoContainer}>
           <Image
             style={styles.logoLession}
-            source={require(`../../../assets/Icons/japan.png`)}
+            source={{ uri: item.hinhAnh }}
           ></Image>
           <View style={styles.inforContent}>
             <Text style={styles.text}>{item.tenBaiHoc}</Text>
