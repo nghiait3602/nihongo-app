@@ -14,8 +14,10 @@ import { Colors } from "../../constants/colors";
 import { AntDesign } from "@expo/vector-icons";
 import ItemDangKy from "../../component/Profile/ItemDangKy";
 import ItemProfile from "../../component/Profile/ItemProfile";
-import { removeAuth } from "../../redux/reducers/authReducer";
-import { useDispatch } from "react-redux";
+import { removeAuth, authSelector } from "../../redux/reducers/authReducer";
+import { useDispatch, useSelector } from "react-redux";
+
+import userAPI from "../../Api/authApi";
 
 var width = Dimensions.get("window").width;
 var height = Dimensions.get("window").height;
@@ -24,6 +26,7 @@ const Profile = () => {
   const [user, setUser] = useState(null);
   const [image, setImage] = useState(null);
   const dispatch = useDispatch();
+  const { token } = useSelector(authSelector);
 
   useEffect(() => {
     (async () => {
@@ -37,21 +40,40 @@ const Profile = () => {
     })();
   }, []);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await userAPI.HandlerAuthentication(
+          `/me`,
+          null,
+          "get",
+          token
+        );
+        setUser(response.data.data); // Sửa thành response.data.data để truy cập vào đối tượng người dùng
+      } catch (error) {
+        console.error("Error fetching user data: ", error);
+      }
+    };
+    fetchData();
+  }, [token]);
+
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
-    });
-    console.log(result.assets[0].uri) //Duong link lay uri chuan
+    }); 
+      console.log(result.assets[0].uri); //Duong link lay uri chuan
     if (!result.canceled) {
       setImage(result.assets[0].uri);
-    }
+    } 
   };
 
   const profile = image
     ? { uri: image }
+    : user && user.photo
+    ? { uri: user.photo }
     : "https://d326fntlu7tb1e.cloudfront.net/uploads/b5065bb8-4c6b-4eac-a0ce-86ab0f597b1e-vinci_04.jpg";
   const bkImg =
     "https://d326fntlu7tb1e.cloudfront.net/uploads/ab6356de-429c-45a1-b403-d16f7c20a0bc-bkImg-min.png";
@@ -91,6 +113,8 @@ const Profile = () => {
                   source={
                     image
                       ? { uri: image }
+                      : user && user.photo
+                      ? { uri: user.photo }
                       : require("./../../../assets/Icons/avatar.png")
                   }
                   style={{ width: 45, height: 45, borderRadius: 45 / 2 }}
@@ -98,7 +122,7 @@ const Profile = () => {
               </TouchableOpacity>
               <View style={{ marginLeft: 10, marginTop: 3 }}>
                 <Text style={styles.text}>
-                  {user === null ? "username" : user.username}
+                  {user === null ? "username" : user.name}
                 </Text>
                 <Text style={styles.email}>
                   {user === null ? "email" : user.email}
