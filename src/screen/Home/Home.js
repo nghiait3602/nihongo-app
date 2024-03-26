@@ -10,10 +10,15 @@ import { useSelector } from 'react-redux';
 import { authSelector } from '../../redux/reducers/authReducer';
 import LerverApi from '../../Api/leversApi';
 import Loading from '../../Modals/Loading';
+import AsyncStorage, {
+  useAsyncStorage,
+} from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 const Home = () => {
   const [dataFetch, setDataFetch] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const auth = useSelector(authSelector);
+
   useEffect(() => {
     if (auth.token) {
       handerLever();

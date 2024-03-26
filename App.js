@@ -31,7 +31,7 @@ import store from './src/redux/store';
 import AsyncStorage, {
   useAsyncStorage,
 } from '@react-native-async-storage/async-storage';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { addAuth, authSelector } from './src/redux/reducers/authReducer';
 const Stack = createStackNavigator();
 const Tabs = createBottomTabNavigator();
@@ -105,29 +105,43 @@ function ChudeScreen() {
   return <Stack.Navigator></Stack.Navigator>;
 }
 function HomeScreen() {
+  const [chude, setChuDe] = useState();
+
+  const CheckChuDe = async () => {
+    const data = await AsyncStorage.getItem('chude');
+    return data;
+  };
+  useEffect(() => {
+    CheckChuDe().then((res) => {
+      setChuDe(res);
+    });
+  });
+  console.log(chude);
   return (
     <Stack.Navigator screenOptions={{ headerTitleAlign: 'center' }}>
-      <Stack.Screen
-        name="ChuDe"
-        component={ChuDe}
-        options={({ navigation }) => ({
-          title: 'Chủ đề yêu thích',
-          presentation: 'modal',
-          headerLeft: () => (
-            <AntDesign
-              name="close"
-              size={24}
-              color="black"
-              style={{ marginLeft: 5 }}
-              onPress={() => navigation.navigate('BottomNavigation')}
-            />
-          ),
-        })}
-      ></Stack.Screen>
+      {!chude && (
+        <Stack.Screen
+          name="ChuDe"
+          component={ChuDe}
+          options={({ navigation }) => ({
+            title: 'Chủ đề yêu thích',
+            presentation: 'modal',
+            headerLeft: () => (
+              <AntDesign
+                name="close"
+                size={24}
+                color="black"
+                style={{ marginLeft: 5 }}
+                onPress={() => navigation.navigate('BottomNavigation')}
+              />
+            ),
+          })}
+        ></Stack.Screen>
+      )}
       <Stack.Screen
         name="BottomNavigation"
         component={BottomNavigation}
-        options={{ headerShown: false }}
+        options={{ headerShown: false, title: 'Home' }}
       ></Stack.Screen>
       <Stack.Screen
         name="LessionScreen"

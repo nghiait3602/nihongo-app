@@ -46,19 +46,34 @@ const Dialog = () => {
       </View>
       <View style={styles.bottomView}>
         <ScrollView style={styles.bottomViewInline}>
-          <ItemList icon="book" onPress={() => navigation.navigate('TuVung')}>
+          <ItemList
+            icon="book"
+            onPress={() => navigation.navigate('TuVung', 'ChuDe')}
+          >
             Từ vựng gợi ý.
           </ItemList>
-          <ItemList icon="book" onPress={() => navigation.navigate('BaiDoc')}>
+          <ItemList
+            icon="book"
+            onPress={() => navigation.navigate('BaiDoc', 'baidoc')}
+          >
             Bài đọc
           </ItemList>
-          <ItemList icon="book" onPress={() => navigation.navigate('TuVung')}>
+          <ItemList
+            icon="book"
+            onPress={() => navigation.navigate('TuVung', 'all')}
+          >
             Kho từ vựng
           </ItemList>
-          <ItemList icon="book" onPress={() => navigation.navigate('NguPhap')}>
+          <ItemList
+            icon="book"
+            onPress={() => navigation.navigate('NguPhap', 'nn')}
+          >
             Kho ngữ pháp
           </ItemList>
-          <ItemList icon="book" onPress={() => navigation.navigate('Kanji')}>
+          <ItemList
+            icon="book"
+            onPress={() => navigation.navigate('Kanji', 'kanji')}
+          >
             Kho Kanji
           </ItemList>
         </ScrollView>
