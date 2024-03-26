@@ -49,4 +49,17 @@ export default StyleSheet.create({
     marginHorizontal: 12,
     alignItems: "center",
   },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)", // Màu nền mờ
+  },
+  modalContent: {
+    backgroundColor: "white",
+    padding: 20,
+    borderRadius: 10,
+    width: "80%", // Chiều rộng của nội dung modal
+    maxHeight: "80%", // Chiều cao tối đa của nội dung modal
+  },
 });
