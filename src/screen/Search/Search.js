@@ -10,7 +10,7 @@ import {
   Alert,
   ActivityIndicator,
   Dimensions,
-  ScrollView
+  ScrollView,
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import axios from "axios";
@@ -19,15 +19,19 @@ import Scan from "../../component/Photo/Scan";
 import SearchButton from "../../component/UI/Button/SearchButton";
 import styles from "../Search/Search.styles";
 import { Colors } from "../../constants/colors";
+import * as Clipboard from 'expo-clipboard';
 
 const Search = () => {
   const [tuSearch, setTuSearch] = useState("");
+  const [vanbanSearch, setVanBanSearch] = useState("");
+  const [translatedText, setTranslatedText] = useState("");
   const [camera, setCamera] = useState(false);
   const [searchResults, setSearchResults] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [definitions, setDefinitions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingTranslate, setIsLoadingTranslate] = useState(false);
+  const [currentLanguage, setCurrentLanguage] = useState("vi"); // Mặc định là tiếng Việt
 
   useEffect(() => {
     if (searchResults.length > 0) {
@@ -124,8 +128,37 @@ const Search = () => {
     setModalVisible(false); // Thoat tim kiem
   };
 
-  const dichVanBan = () => {
-    
+  const vanBanInput = (vanban) => {
+    setVanBanSearch(vanban);
+  };
+
+  const dichVanBan = async () => {
+    try {
+      setIsLoading(true); // Bắt đầu hiệu ứng loading
+      const response = await axios.get(
+        `https://translation.googleapis.com/language/translate/v2?key=AIzaSyDnD3yxmMCDTuojIKKS0ZsZbYzU_Wkw36w&q=${encodeURIComponent(
+          vanbanSearch
+        )}&source=${currentLanguage === "vi" ? "vi" : "ja"}&target=${
+          currentLanguage === "vi" ? "ja" : "vi"
+        }`
+      );
+      const translatedText = response.data.data.translations[0].translatedText;
+      setTranslatedText(translatedText);
+      setIsLoading(false); // Kết thúc hiệu ứng loading
+    } catch (error) {
+      console.error("Lỗi khi dịch văn bản:", error);
+      Alert.alert("Đã xảy ra lỗi", "Vui lòng thử lại sau.");
+      setIsLoading(false); // Kết thúc hiệu ứng loading nếu xảy ra lỗi
+    }
+  };
+
+  const doiNgonNgu = () => {
+    setCurrentLanguage(currentLanguage === "vi" ? "ja" : "vi"); // Đảo ngược ngôn ngữ hiện tại
+  };
+
+  const copyToClipboard = (text) => {
+    Clipboard.setString(text);
+    Alert.alert("Sao chép thành công", "Nội dung đã được sao chép vào clipboard.");
   };
 
   var height = Dimensions.get("window").height;
@@ -173,20 +206,44 @@ const Search = () => {
           <Text style={styles.label}>Dịch văn bản :</Text>
           <View style={styles.searchContainer}>
             <TextInput
-              onChangeText={tuNhapVao}
-              value={tuSearch}
-              style={[styles.search, { height: height/9}]}
+              onChangeText={vanBanInput}
+              value={vanbanSearch}
+              style={[styles.search, { height: height / 9 }]}
               multiline={true} // Cho phép nhiều hàng
             />
-            <Icon name="search" size={20} color="white" style={styles.icon} />
+            <Icon name="search" size={20} color="white" style={styles.icon} onPress={dichVanBan} />
           </View>
+
+          <View style={{ flexDirection: "row", top: 5 }}>
+            <TouchableOpacity
+              onPress={doiNgonNgu}
+              style={{ flexDirection: "row", alignItems: "center" }}
+            >
+              <Text style={[styles.label, { marginRight: 10 }]}>
+                {currentLanguage === "vi" ? "Tiếng Việt" : "Tiếng Nhật"}
+              </Text>
+              <Icon
+                name="exchange"
+                size={24}
+                color="white"
+                style={{ marginRight: 10 }}
+              />
+              <Text style={styles.label}>
+                {currentLanguage === "vi" ? "Tiếng Nhật" : "Tiếng Việt"}
+              </Text>
+            </TouchableOpacity>
+          </View>
+
           <View style={[styles.searchContainer, { marginTop: 10 }]}>
             <TextInput
-              value={tuSearch}
-              style={[styles.search, { height: height/9, color: Colors.Humpback}]}
+              value={translatedText}
+              style={[
+                styles.search,
+                { height: height / 9, color: Colors.title },
+              ]}
               multiline={true} // Cho phép nhiều hàng
             />
-            <Icon name="copy" size={20} color="white" style={styles.icon} />
+            <Icon name="copy" size={20} color="white" style={styles.icon} onPress={() => copyToClipboard(translatedText)} />
           </View>
           <View style={styles.buttonsContainer}>
             <View style={styles.buttonContainer}>
@@ -196,7 +253,7 @@ const Search = () => {
         </View>
       )}
 
-      {camera &&  (
+      {camera && (
         <View style={styles.cameraContainer}>
           <Scan />
         </View>
