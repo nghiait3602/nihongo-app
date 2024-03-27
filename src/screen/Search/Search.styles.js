@@ -62,4 +62,9 @@ export default StyleSheet.create({
     width: "80%", // Chiều rộng của nội dung modal
     maxHeight: "80%", // Chiều cao tối đa của nội dung modal
   },
+  closeButton: {
+    position: 'absolute',
+    top: 20,
+    left: 10,
+  },
 });
