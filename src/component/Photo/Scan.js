@@ -1,4 +1,4 @@
-import { Alert, Image, View, StyleSheet, Text } from "react-native";
+import { Alert, Image, View, StyleSheet, Text, Dimensions } from "react-native";
 import {
   launchCameraAsync,
   useCameraPermissions,
@@ -70,10 +70,13 @@ function ImagePicker({ onTakeImage }) {
 
 export default ImagePicker;
 
+var height = Dimensions.get("window").height;
+var width = Dimensions.get("window").width;
+
 const styles = StyleSheet.create({
   imagePreview: {
-    width: "100%",
-    height: "80%",
+    width: width,
+    height: height / 2,
     marginVertical: 8,
     justifyContent: "center",
     alignItems: "center",
@@ -82,8 +85,8 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   image: {
-    width: "100%",
-    height: "100%",
+    width: width,
+    height: height,
   },
   text: {
     paddingTop: 10,

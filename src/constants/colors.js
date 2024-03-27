@@ -28,4 +28,5 @@ export const Colors = {
   searchHeader: "#F7F7F7",
   searchBorder: "#DCDCDC", 
   searchBar: "#EBEBEB",
+  searchIcon: "#777"
 };
