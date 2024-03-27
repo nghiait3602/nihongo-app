@@ -8,6 +8,7 @@ import {
   Dimensions,
   Alert,
   Platform,
+  ScrollView
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { Colors } from "../../constants/colors";
@@ -83,7 +84,7 @@ const Profile = () => {
   }
 
   return (
-    <View>
+    <ScrollView>
       <View style={{ backgroundColor: Colors.Snow, height: height }}>
         <View
           style={{
@@ -147,7 +148,7 @@ const Profile = () => {
               icon={"create-outline"}
               font={1}
             />
-            <ItemProfile title={"Email"} icon={"envelope-letter"} font={2} />
+            {/* <ItemProfile title={"Email"} icon={"envelope-letter"} font={2} /> */}
             <ItemProfile title={"Ngày sinh"} icon={"calendar"} />
           </View>
 
@@ -179,7 +180,7 @@ const Profile = () => {
           </View>
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
@@ -195,7 +196,7 @@ const styles = StyleSheet.create({
     color: "gray",
   },
   box: {
-    height: 140,
+    height: "auto",
     backgroundColor: Colors.Snow,
     margin: 10,
     borderRadius: 12,
