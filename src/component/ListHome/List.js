@@ -5,9 +5,12 @@ const List = ({ data }) => {
   function convertData(inputData) {
     // Lấy giá trị của trường "data" từ đầu vào
     const { data, ...rest } = inputData;
+    if (data !== null) {
+      const outputData = [{ data: data.capdo, id: 'introl' }];
+      return outputData;
+    }
+    return null;
     // Tạo một mảng mới chứa một đối tượng có trường "data" chỉ với giá trị của trường "capdo"
-    const outputData = [{ data: data.capdo, id: 'introl' }];
-    return outputData;
   }
   // Sử dụng hàm chuyển đổi và in kết quả
   const outputData = convertData(data);
