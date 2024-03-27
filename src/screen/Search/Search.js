@@ -19,7 +19,7 @@ import Scan from "../../component/Photo/Scan";
 import SearchButton from "../../component/UI/Button/SearchButton";
 import styles from "../Search/Search.styles";
 import { Colors } from "../../constants/colors";
-import * as Clipboard from 'expo-clipboard';
+import * as Clipboard from "expo-clipboard";
 
 const Search = () => {
   const [tuSearch, setTuSearch] = useState("");
@@ -158,7 +158,10 @@ const Search = () => {
 
   const copyToClipboard = (text) => {
     Clipboard.setString(text);
-    Alert.alert("Sao chép thành công", "Nội dung đã được sao chép vào clipboard.");
+    Alert.alert(
+      "Sao chép thành công",
+      "Nội dung đã được sao chép vào clipboard."
+    );
   };
 
   var height = Dimensions.get("window").height;
@@ -211,7 +214,13 @@ const Search = () => {
               style={[styles.search, { height: height / 9 }]}
               multiline={true} // Cho phép nhiều hàng
             />
-            <Icon name="search" size={20} color="white" style={styles.icon} onPress={dichVanBan} />
+            <Icon
+              name="search"
+              size={20}
+              color="white"
+              style={styles.icon}
+              onPress={dichVanBan}
+            />
           </View>
 
           <View style={{ flexDirection: "row", top: 5 }}>
@@ -219,16 +228,16 @@ const Search = () => {
               onPress={doiNgonNgu}
               style={{ flexDirection: "row", alignItems: "center" }}
             >
-              <Text style={[styles.label, { marginRight: 10 }]}>
+              <Text style={[styles.label, { marginRight: 10, fontSize: 18 }]}>
                 {currentLanguage === "vi" ? "Tiếng Việt" : "Tiếng Nhật"}
               </Text>
               <Icon
                 name="exchange"
                 size={24}
-                color="white"
+                color={Colors.XanhNgocDam}
                 style={{ marginRight: 10 }}
               />
-              <Text style={styles.label}>
+              <Text style={[styles.label, { fontSize: 18 }]}>
                 {currentLanguage === "vi" ? "Tiếng Nhật" : "Tiếng Việt"}
               </Text>
             </TouchableOpacity>
@@ -243,7 +252,13 @@ const Search = () => {
               ]}
               multiline={true} // Cho phép nhiều hàng
             />
-            <Icon name="copy" size={20} color="white" style={styles.icon} onPress={() => copyToClipboard(translatedText)} />
+            <Icon
+              name="copy"
+              size={20}
+              color="white"
+              style={styles.icon}
+              onPress={() => copyToClipboard(translatedText)}
+            />
           </View>
           <View style={styles.buttonsContainer}>
             <View style={styles.buttonContainer}>

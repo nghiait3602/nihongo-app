@@ -6,7 +6,9 @@ export default StyleSheet.create({
     flex: 1,
   },
   headerContainer: {
-    backgroundColor: Colors.backgroundSliver,
+    // backgroundColor: Colors.backgroundSliver,
+    backgroundColor: Colors.searchHeader,
+    borderColor: Colors.searchBorder,
     paddingHorizontal: 20,
     paddingVertical: 15,
     borderBottomLeftRadius: 30,
@@ -15,8 +17,10 @@ export default StyleSheet.create({
     elevation: 4,
   },
   searchContainer: {
+    backgroundColor: Colors.searchBar, 
     flexDirection: "row",
     alignItems: "center",
+    borderRadius: 19
   },
   buttonsContainer: {
     flexDirection: "row",
@@ -42,10 +46,11 @@ export default StyleSheet.create({
   label: {
     color: Colors.title,
     fontWeight: "bold",
-    fontSize: 18,
-    marginBottom: 4,
+    fontSize: 20,
+    marginBottom: 8,
   },
   icon: {
+    color: "#777",
     marginHorizontal: 12,
     alignItems: "center",
   },
