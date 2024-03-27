@@ -25,4 +25,7 @@ export const Colors = {
   Polar: '#f7f7f7',
   Beak_Upper: '#ffc200',
   primary: '#5669FF',
+  searchHeader: "#F7F7F7",
+  searchBorder: "#DCDCDC", 
+  searchBar: "#EBEBEB",
 };

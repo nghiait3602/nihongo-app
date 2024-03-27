@@ -8,7 +8,7 @@ const ItemProfile = ({ title, icon, font }) => {
   const [inputValue, setInputValue] = useState("");
 
   const handlePress = () => {
-    if (title === "Tên người dùng" || title === "Email" || title === "Ngày sinh") {
+    if (title === "Tên người dùng" || title === "Ngày sinh") {
       setEditing(true);
     }
   };
