@@ -15,6 +15,7 @@ export default StyleSheet.create({
     borderBottomRightRadius: 30,
     paddingTop: 40,
     elevation: 4,
+    marginBottom: 10,
   },
   searchContainer: {
     backgroundColor: Colors.searchBar, 
@@ -50,7 +51,7 @@ export default StyleSheet.create({
     marginBottom: 8,
   },
   icon: {
-    color: "#777",
+    color: Colors.searchIcon,
     marginHorizontal: 12,
     alignItems: "center",
   },

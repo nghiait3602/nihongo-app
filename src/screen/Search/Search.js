@@ -165,140 +165,143 @@ const Search = () => {
   };
 
   var height = Dimensions.get("window").height;
+  var width = Dimensions.get("window").width;
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.headerContainer}>
-        <Text style={styles.label}>Tra từ :</Text>
-        <View style={styles.searchContainer}>
-          <TextInput
-            onChangeText={tuNhapVao}
-            value={tuSearch}
-            style={styles.search}
-            placeholder="日本語, Nihongo, Japanese..."
-          />
-          <Icon
-            name="search"
-            size={20}
-            color="white"
-            style={styles.icon}
-            onPress={xuLySearch}
-          />
-        </View>
-        <View style={styles.buttonsContainer}>
-          <View style={styles.buttonContainer}>
-            <SearchButton onPress={openCamera}>{buttonText()}</SearchButton>
-          </View>
-          <View style={styles.buttonContainer}>
-            <SearchButton onPress={xuLySearch}>Tìm kiếm</SearchButton>
-          </View>
-        </View>
-      </View>
-
-      {!camera && (
-        <View
-          style={[
-            styles.headerContainer,
-            {
-              marginTop: 10,
-              borderTopLeftRadius: 30,
-              borderTopRightRadius: 30,
-            },
-          ]}
-        >
-          <Text style={styles.label}>Dịch văn bản :</Text>
+      <ScrollView>
+        <View style={styles.headerContainer}>
+          <Text style={styles.label}>Tra từ :</Text>
           <View style={styles.searchContainer}>
             <TextInput
-              onChangeText={vanBanInput}
-              value={vanbanSearch}
-              style={[styles.search, { height: height / 9 }]}
-              multiline={true} // Cho phép nhiều hàng
+              onChangeText={tuNhapVao}
+              value={tuSearch}
+              style={styles.search}
+              placeholder="日本語, Nihongo, Japanese..."
             />
             <Icon
               name="search"
               size={20}
               color="white"
               style={styles.icon}
-              onPress={dichVanBan}
-            />
-          </View>
-
-          <View style={{ flexDirection: "row", top: 5 }}>
-            <TouchableOpacity
-              onPress={doiNgonNgu}
-              style={{ flexDirection: "row", alignItems: "center" }}
-            >
-              <Text style={[styles.label, { marginRight: 10, fontSize: 18 }]}>
-                {currentLanguage === "vi" ? "Tiếng Việt" : "Tiếng Nhật"}
-              </Text>
-              <Icon
-                name="exchange"
-                size={24}
-                color={Colors.XanhNgocDam}
-                style={{ marginRight: 10 }}
-              />
-              <Text style={[styles.label, { fontSize: 18 }]}>
-                {currentLanguage === "vi" ? "Tiếng Nhật" : "Tiếng Việt"}
-              </Text>
-            </TouchableOpacity>
-          </View>
-
-          <View style={[styles.searchContainer, { marginTop: 10 }]}>
-            <TextInput
-              value={translatedText}
-              style={[
-                styles.search,
-                { height: height / 9, color: Colors.title },
-              ]}
-              multiline={true} // Cho phép nhiều hàng
-            />
-            <Icon
-              name="copy"
-              size={20}
-              color="white"
-              style={styles.icon}
-              onPress={() => copyToClipboard(translatedText)}
+              onPress={xuLySearch}
             />
           </View>
           <View style={styles.buttonsContainer}>
             <View style={styles.buttonContainer}>
-              <SearchButton onPress={dichVanBan}>Dịch</SearchButton>
+              <SearchButton onPress={openCamera}>{buttonText()}</SearchButton>
+            </View>
+            <View style={styles.buttonContainer}>
+              <SearchButton onPress={xuLySearch}>Tìm kiếm</SearchButton>
             </View>
           </View>
         </View>
-      )}
 
-      {camera && (
-        <View style={styles.cameraContainer}>
-          <Scan />
-        </View>
-      )}
-
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(false);
-        }}
-      >
-        <View style={styles.modalContainer}>
-          <TouchableOpacity onPress={closeModal} style={styles.closeButton}>
-            <Icon name="times" size={24} color="white" />
-          </TouchableOpacity>
-          <View style={styles.modalContent}>
-            {isLoading || isLoadingTranslate ? (
-              <ActivityIndicator size="large" color="green" />
-            ) : (
-              <FlatList
-                data={searchResults}
-                renderItem={renderItem}
-                keyExtractor={(item, index) => index.toString()}
+        {!camera && (
+          <View
+            style={[
+              styles.headerContainer,
+              {
+                marginTop: 10,
+                borderTopLeftRadius: 30,
+                borderTopRightRadius: 30,
+              },
+            ]}
+          >
+            <Text style={styles.label}>Dịch văn bản :</Text>
+            <View style={styles.searchContainer}>
+              <TextInput
+                onChangeText={vanBanInput}
+                value={vanbanSearch}
+                style={[styles.search, { height: height / 9 }]}
+                multiline={true} // Cho phép nhiều hàng
               />
-            )}
+              <Icon
+                name="search"
+                size={20}
+                color="white"
+                style={styles.icon}
+                onPress={dichVanBan}
+              />
+            </View>
+
+            <View style={{ flexDirection: "row", top: 5 }}>
+              <TouchableOpacity
+                onPress={doiNgonNgu}
+                style={{ flexDirection: "row", alignItems: "center" }}
+              >
+                <Text style={[styles.label, { marginRight: 10, fontSize: 18 }]}>
+                  {currentLanguage === "vi" ? "Tiếng Việt" : "Tiếng Nhật"}
+                </Text>
+                <Icon
+                  name="exchange"
+                  size={24}
+                  color={Colors.XanhNgocDam}
+                  style={{ marginRight: 10 }}
+                />
+                <Text style={[styles.label, { fontSize: 18 }]}>
+                  {currentLanguage === "vi" ? "Tiếng Nhật" : "Tiếng Việt"}
+                </Text>
+              </TouchableOpacity>
+            </View>
+
+            <View style={[styles.searchContainer, { marginTop: 10 }]}>
+              <TextInput
+                value={translatedText}
+                style={[
+                  styles.search,
+                  { height: height / 9, color: Colors.title },
+                ]}
+                multiline={true} // Cho phép nhiều hàng
+              />
+              <Icon
+                name="copy"
+                size={20}
+                color="white"
+                style={styles.icon}
+                onPress={() => copyToClipboard(translatedText)}
+              />
+            </View>
+            <View style={styles.buttonsContainer}>
+              <View style={styles.buttonContainer}>
+                <SearchButton onPress={dichVanBan}>Dịch</SearchButton>
+              </View>
+            </View>
           </View>
-        </View>
-      </Modal>
+        )}
+
+        {camera && (
+          <View style={styles.cameraContainer}>
+            <Scan />
+          </View>
+        )}
+
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            setModalVisible(false);
+          }}
+        >
+          <View style={styles.modalContainer}>
+            <TouchableOpacity onPress={closeModal} style={styles.closeButton}>
+              <Icon name="times" size={24} color="white" />
+            </TouchableOpacity>
+            <View style={styles.modalContent}>
+              {isLoading || isLoadingTranslate ? (
+                <ActivityIndicator size="large" color="green" />
+              ) : (
+                <FlatList
+                  data={searchResults}
+                  renderItem={renderItem}
+                  keyExtractor={(item, index) => index.toString()}
+                />
+              )}
+            </View>
+          </View>
+        </Modal>
+      </ScrollView>
     </SafeAreaView>
   );
 };
