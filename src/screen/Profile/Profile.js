@@ -27,6 +27,8 @@ var height = Dimensions.get("window").height;
 const Profile = () => {
   const [user, setUser] = useState(null);
   const [image, setImage] = useState(null);
+  const [newName, setNewName] = useState("");
+  const [newBirthDate, setNewBirthDate] = useState("");
   const dispatch = useDispatch();
   const { token } = useSelector(authSelector);
 
@@ -58,6 +60,35 @@ const Profile = () => {
     };
     fetchData();
   }, [token]);
+
+  const updateUserData = async () => {
+    try {
+      const dataToUpdate = {};
+      if (newName !== '') {
+        dataToUpdate.name = newName;
+      }
+      if (newBirthDate !== '') {
+        dataToUpdate.ngaySinh = newBirthDate;
+      }      
+      // Gửi yêu cầu cập nhật dữ liệu lên server
+      const response = await userAPI.HandlerAuthentication(
+        '/updateMe',
+        dataToUpdate,
+        'patch',
+        token
+      );
+      if (response.data.user) {
+        setUser(response.data.user);
+        console.log("Dữ liệu trả về từ máy chủ:", response.data);
+      } else {
+        console.error("Lỗi update user data: Dữ liệu trả về không hợp lệ.");
+      }
+    } catch (error) {
+      console.error("Lỗi update user data: ", error);
+    }
+  };
+
+  
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -156,10 +187,16 @@ const Profile = () => {
               title={"Tên người dùng"}
               icon={"create-outline"}
               font={1}
+              updateUserData={updateUserData}
+              setNewName={setNewName}
             />
 
-            {/* <ItemProfile title={"Email"} icon={"envelope-letter"} font={2} /> */}
-            <ItemProfile title={"Ngày sinh"} icon={"calendar"} />
+            <ItemProfile
+              title={"Ngày sinh"}
+              icon={"calendar"}
+              updateUserData={updateUserData}
+              setNewBirthDate={setNewBirthDate}
+            />
           </View>
 
           <View style={styles.box}>

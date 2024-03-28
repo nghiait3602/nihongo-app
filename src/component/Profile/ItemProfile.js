@@ -1,9 +1,16 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View, Dimensions, TextInput } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  Dimensions,
+  TextInput,
+} from "react-native";
 import { AntDesign, Ionicons, SimpleLineIcons } from "@expo/vector-icons";
 import { Colors } from "../../constants/colors";
 
-const ItemProfile = ({ title, icon, font }) => {
+const ItemProfile = ({ title, icon, font, updateUserData, setNewName, setNewBirthDate }) => {
   const [editing, setEditing] = useState(false);
   const [inputValue, setInputValue] = useState("");
 
@@ -19,8 +26,14 @@ const ItemProfile = ({ title, icon, font }) => {
 
   const handleInputSubmit = () => {
     setEditing(false);
-    // Xử lý api sau khi call
-    console.log("Văn bản đã nhập:", inputValue);
+    if (title === "Tên người dùng") {
+      setNewName(inputValue); // Cập nhật giá trị mới của tên người dùng
+      updateUserData(); // Gọi hàm cập nhật dữ liệu khi hoàn thành chỉnh sửa
+    }
+    if (title === "Ngày sinh") {
+      setNewBirthDate(inputValue); // Cập nhật giá trị mới của ngày sinh
+      updateUserData(); // Gọi hàm cập nhật dữ liệu khi hoàn thành chỉnh sửa
+    }
   };
 
   return (
@@ -40,11 +53,23 @@ const ItemProfile = ({ title, icon, font }) => {
           <View style={styles.outer}>
             <View style={styles.inner}>
               {font === 1 ? (
-                <Ionicons name={icon} size={24} color={Colors.backgroundSliver} />
+                <Ionicons
+                  name={icon}
+                  size={24}
+                  color={Colors.backgroundSliver}
+                />
               ) : font === 2 ? (
-                <SimpleLineIcons name={icon} size={20} color={Colors.backgroundSliver} />
+                <SimpleLineIcons
+                  name={icon}
+                  size={20}
+                  color={Colors.backgroundSliver}
+                />
               ) : (
-                <AntDesign name={icon} size={22} color={Colors.backgroundSliver} />
+                <AntDesign
+                  name={icon}
+                  size={22}
+                  color={Colors.backgroundSliver}
+                />
               )}
               <Text style={styles.text}>{title}</Text>
             </View>
@@ -111,4 +136,3 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
 });
-
