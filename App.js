@@ -26,6 +26,7 @@ import LoginScreen from './src/screen/Auth/LoginScreen';
 import SignUpScreen from './src/screen/Auth/SignupScreen';
 import ForgotPassword from './src/screen/Auth/ForgotPassword';
 import Verification from './src/screen/Auth/Verification';
+import SettingsScreen from './src/screen/Profile/Setting';
 import { Provider, useDispatch, useSelector } from 'react-redux';
 import store from './src/redux/store';
 import AsyncStorage, {
@@ -211,6 +212,11 @@ function HomeScreen() {
         name="NguPhapChiTiet"
         component={NguPhapChiTiet}
         options={{ title: 'Tổng quan ngữ pháp' }}
+      ></Stack.Screen>
+      <Stack.Screen
+        name="SettingsScreen"
+        component={SettingsScreen}
+        options={{ title: 'Settings' }}
       ></Stack.Screen>
     </Stack.Navigator>
   );

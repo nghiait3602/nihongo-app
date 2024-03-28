@@ -9,6 +9,7 @@ import {
   Alert,
   Platform,
   ScrollView,
+  RefreshControl,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { Colors } from "../../constants/colors";
@@ -26,9 +27,20 @@ var height = Dimensions.get("window").height;
 
 const Profile = () => {
   const [user, setUser] = useState(null);
-  const [image, setImage] = useState(null);
+  const [image, setImage] = useState("");
+  const [newName, setNewName] = useState("");
+  const [newBirthDate, setNewBirthDate] = useState("");
   const dispatch = useDispatch();
   const { token } = useSelector(authSelector);
+
+  const [refreshing, setRefreshing] = useState(false); // State để theo dõi trạng thái của action làm mới
+
+  // Hàm để xử lý làm mới dữ liệu
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    fetchData();
+    setRefreshing(false);
+  }, []);
 
   useEffect(() => {
     (async () => {
@@ -42,22 +54,61 @@ const Profile = () => {
     })();
   }, []);
 
+  const fetchData = async () => {
+    try {
+      const response = await userAPI.HandlerAuthentication(
+        `/me`,
+        null,
+        "get",
+        token
+      );
+      setUser(response.data.data); // Sửa thành response.data.data để truy cập vào đối tượng người dùng
+    } catch (error) {
+      console.error("Error fetching user data: ", error);
+    }
+  };
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await userAPI.HandlerAuthentication(
-          `/me`,
-          null,
-          "get",
-          token
-        );
-        setUser(response.data.data); // Sửa thành response.data.data để truy cập vào đối tượng người dùng
-      } catch (error) {
-        console.error("Error fetching user data: ", error);
-      }
-    };
     fetchData();
   }, [token]);
+
+  const updateUserData = async () => {
+    try {
+      const dataToUpdate = {};
+      if (newName !== "") {
+        dataToUpdate.name = newName;
+      }
+      if (newBirthDate !== "") {
+        dataToUpdate.ngaySinh = newBirthDate;
+      }
+      if (image !== "") {
+        dataToUpdate.photo = image;
+      }
+      // Gửi yêu cầu cập nhật dữ liệu lên server
+      const response = await userAPI.HandlerAuthentication(
+        "/updateMe",
+        dataToUpdate,
+        "patch",
+        token
+      );
+      if (response.data.user) {
+        setUser(response.data.user);
+        console.log("Tên mới:", response.data.user.name);
+        console.log("Ngày sinh mới:", response.data.user.ngaySinh);
+        console.log("Photo mới:", response.data.user.photo);
+        Alert.alert("Thông báo", "Cập nhật thành công!");
+      } else {
+        console.error("Lỗi update user data: Dữ liệu trả về không hợp lệ.");
+      }
+    } catch (error) {
+      console.error("Lỗi update user data: ", error);
+    }
+  };
+
+  useEffect(() => {
+    if (newName !== "" || newBirthDate !== "" || image !== "") {
+      updateUserData();
+    }
+  }, [newName, newBirthDate, image]);
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -69,6 +120,7 @@ const Profile = () => {
     console.log(result.assets[0].uri); //Duong link lay uri chuan
     if (!result.canceled) {
       setImage(result.assets[0].uri);
+      updateUserData();
     }
   };
 
@@ -93,7 +145,11 @@ const Profile = () => {
   }
 
   return (
-    <ScrollView>
+    <ScrollView
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+    >
       <View style={{ backgroundColor: Colors.Snow, height: height }}>
         <View
           style={{
@@ -156,17 +212,40 @@ const Profile = () => {
               title={"Tên người dùng"}
               icon={"create-outline"}
               font={1}
+              setNewName={setNewName}
+              updateUserData={updateUserData}
             />
 
-            {/* <ItemProfile title={"Email"} icon={"envelope-letter"} font={2} /> */}
-            <ItemProfile title={"Ngày sinh"} icon={"calendar"} />
+            <ItemProfile
+              title={"Ngày sinh"}
+              icon={"calendar"}
+              setNewBirthDate={setNewBirthDate}
+              updateUserData={updateUserData}
+            />
           </View>
 
           <View style={styles.box}>
-            <ItemProfile title={"Khóa học đang học"} icon={"book"} />
-            <ItemProfile title={"Bài học hoàn thành"} icon={"check"} font={2} />
             <ItemProfile
-              title={"Bài học tiếp theo"}
+              title={`Khóa học đang học: ${
+                user && user.tienTrinhCuaToi && user.tienTrinhCuaToi.length > 0
+                  ? user.tienTrinhCuaToi[0].baiHoc.khoaHoc.tenKhoahoc
+                  : ""
+              }`}
+              icon={"book"}
+            />
+            <ItemProfile
+              title={`Hoàn thành: ${
+                user && user.tienTrinhCuaToi && user.tienTrinhCuaToi.length > 0
+                  ? user.tienTrinhCuaToi[0].baiHoc.tenBaiHoc
+                  : ""
+              }`}
+              icon={"check"}
+              font={2}
+            />
+            <ItemProfile
+              title={`Tiếp theo: ${
+                user && user.baiHocTiepTheo ? user.baiHocTiepTheo.tenBaiHoc : ""
+              }`}
               icon={"rocket-outline"}
               font={1}
             />
@@ -186,7 +265,7 @@ const Profile = () => {
               font={1}
             />
             <ItemProfile title={"Trung tâm dịch vụ"} icon={"customerservice"} />
-            <ItemProfile title={"Cài đặt"} icon={"setting"} />
+            <ItemProfile title={"Cài đặt"} icon={"setting"}/>
           </View>
         </View>
       </View>

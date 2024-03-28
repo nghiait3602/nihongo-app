@@ -12,7 +12,7 @@ function OutLineButton({ onPress, icon, children }) {
         style={styles.icon}
         name={icon}
         size={18}
-        color={Colors.XanhNgocDam}
+        color={Colors.Feather_Green}
       />
       <Text style={styles.text}>{children}</Text>
     </Pressable>
