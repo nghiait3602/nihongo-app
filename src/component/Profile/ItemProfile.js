@@ -9,14 +9,27 @@ import {
 } from "react-native";
 import { AntDesign, Ionicons, SimpleLineIcons } from "@expo/vector-icons";
 import { Colors } from "../../constants/colors";
+import { useNavigation } from '@react-navigation/native';
 
-const ItemProfile = ({ title, icon, font, updateUserData, setNewName, setNewBirthDate }) => {
+const ItemProfile = ({
+  title,
+  icon,
+  font,
+  updateUserData,
+  setNewName,
+  setNewBirthDate,
+}) => {
   const [editing, setEditing] = useState(false);
   const [inputValue, setInputValue] = useState("");
+  const navigation = useNavigation();
 
   const handlePress = () => {
     if (title === "Tên người dùng" || title === "Ngày sinh") {
+      setInputValue(""); // Đặt lại giá trị input
       setEditing(true);
+    }
+    if(title === "Cài đặt"){
+      navigation.navigate('SettingsScreen')
     }
   };
 
@@ -27,13 +40,11 @@ const ItemProfile = ({ title, icon, font, updateUserData, setNewName, setNewBirt
   const handleInputSubmit = () => {
     setEditing(false);
     if (title === "Tên người dùng") {
-      setNewName(inputValue); // Cập nhật giá trị mới của tên người dùng
-      updateUserData(); // Gọi hàm cập nhật dữ liệu khi hoàn thành chỉnh sửa
+      setNewName(inputValue);
+    } else if (title === "Ngày sinh") {
+      setNewBirthDate(inputValue);
     }
-    if (title === "Ngày sinh") {
-      setNewBirthDate(inputValue); // Cập nhật giá trị mới của ngày sinh
-      updateUserData(); // Gọi hàm cập nhật dữ liệu khi hoàn thành chỉnh sửa
-    }
+    updateUserData();
   };
 
   return (
