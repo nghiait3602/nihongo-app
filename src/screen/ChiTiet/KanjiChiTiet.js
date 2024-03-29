@@ -48,11 +48,7 @@ const KanjiChiTiet = () => {
       <KanjiDetail label="Bộ" value={kanjiData.bo} />
       <KanjiDetail label="Nghĩa" value={kanjiData.nghia} />
       <KanjiDetail label="Ví dụ" value={kanjiData.viDu} />
-      {/* <Image source={{ uri: kanjiData.hinhanh }} style={styles.image} /> */}
-      <Image
-        source={require("./../../../assets/Img/Kanji(DulieuAo).gif")}
-        style={styles.image}
-      />
+      <Image source={{ uri: kanjiData.hinhAnhCachViet }} style={styles.image} />
     </View>
   );
 
