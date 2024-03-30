@@ -197,19 +197,30 @@ const BaiTapTongHop = () => {
     if (cauHoiChuaTraLoi.length === 0) {
       setIsSubmitted(true); // Cập nhật trạng thái đã nộp bài
       let tongDiem = 0;
+      let tongCauDung = 0;
       // Duyệt qua mảng câu hỏi
       cauHoi.forEach((item) => {
         if (selectedButtons[item._id] === item.cauTraLoiDung) {
           tongDiem += item.diem;
         }
+        tongCauDung += item.diem;
       });
-      handlerTienTrinh(tongDiem);
-      Alert.alert(
-        "Tổng điểm",
-        `Tổng điểm của bạn là: ${tongDiem}`,
-        [{ text: "OK", onPress: () => navigation.goBack() }],
-        { cancelable: false }
-      );
+      if (tongDiem >= tongCauDung/2) {
+        handlerTienTrinh(tongDiem);
+        Alert.alert(
+          "Tổng điểm",
+          `Tổng điểm của bạn là: ${tongDiem}`,
+          [{ text: "OK", onPress: () => navigation.goBack() }],
+          { cancelable: false }
+        );
+      }else{
+        Alert.alert(
+          "Điểm dưới trung bình!",
+          `Điểm hiện tại là ${tongDiem}. Vui lòng học và kiểm tra lại để hoàn thành bài học.`,
+          [{ text: "OK", onPress: () => navigation.goBack() }],
+          { cancelable: false }
+        );
+      }
     } else {
       Alert.alert(
         "Còn câu chưa trả lời!",
