@@ -208,7 +208,7 @@ const BaiTapTongHop = () => {
       if (tongDiem >= tongCauDung/2) {
         handlerTienTrinh(tongDiem);
         Alert.alert(
-          "Tổng điểm",
+          "Chúc mừng hoàn thành bài học!",
           `Tổng điểm của bạn là: ${tongDiem}`,
           [{ text: "OK", onPress: () => navigation.goBack() }],
           { cancelable: false }

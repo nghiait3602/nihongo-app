@@ -43,17 +43,15 @@ const LessionScreen = () => {
   const fetchData2 = async () => {
     try {
       const response = await TienTrinhApi.TienTrinhHandler(
-        `/`,
+        "/",
         null,
         "get",
         auth.token
       );
-      if (response.status === "success" && response.results === 1) {
-        const responseData = response.data;
-        const baiTapHoanThanh = responseData.data[0].baiHocHoanhThanh;
-        if (baiTapHoanThanh) {
-          setCheck(responseData.data[0].baiHoc.id);
-        }
+      if (response.status === "success" && response.results >= 1) {
+        const responseData = response.data.data; // Lấy ra mảng data từ response
+        const baiHocIds = responseData.map((item) => item.baiHoc._id); // Lấy ra mảng các baiHoc._id
+        setCheck(baiHocIds); // Đặt giá trị của check là mảng các baiHoc._id
       }
     } catch (error) {
       console.error("Error fetching user data: ", error);
@@ -84,7 +82,10 @@ const LessionScreen = () => {
   const renderItem = ({ item }) => {
     return (
       <TouchableOpacity
-        style={[styles.item, check === item._id ? { opacity: 0.3 } : null]}
+        style={[
+          styles.item,
+          check && check.includes(item._id) ? { opacity: 0.3 } : null,
+        ]}
         onPress={handlerNavigation.bind(this, item._id)}
       >
         <View style={styles.infoContainer}>
