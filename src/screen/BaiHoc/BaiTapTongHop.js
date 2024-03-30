@@ -58,6 +58,7 @@ const BaiTapTongHop = () => {
       if (response.status === "success" && response.results === 1) {
         const responseData = response.data;
         const baiTapHoanThanh = responseData.data[0].baiHocHoanhThanh;
+        //Kiem tra bai tap hoan thanh => ko cho lam nua (chi lam 1 lan)
         if (baiTapHoanThanh) {
           Alert.alert(
             "Bài tập đã hoàn thành!",
