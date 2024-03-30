@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { AntDesign, Ionicons, SimpleLineIcons } from "@expo/vector-icons";
 import { Colors } from "../../constants/colors";
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from "@react-navigation/native";
 
 const ItemProfile = ({
   title,
@@ -18,6 +18,12 @@ const ItemProfile = ({
   updateUserData,
   setNewName,
   setNewBirthDate,
+  khoaHoc,
+  tenKH,
+  tenbaihoctt,
+  baihoctt,
+  tenbtht,
+  btht
 }) => {
   const [editing, setEditing] = useState(false);
   const [inputValue, setInputValue] = useState("");
@@ -28,8 +34,17 @@ const ItemProfile = ({
       setInputValue(""); // Đặt lại giá trị input
       setEditing(true);
     }
-    if(title === "Cài đặt"){
-      navigation.navigate('SettingsScreen')
+    if (title === "Cài đặt") {
+      navigation.navigate("SettingsScreen");
+    }
+    if (title === `Khóa học đang học: ${tenKH}`) {
+      navigation.navigate("LessionScreen", khoaHoc.id);
+    }
+    if (title === `Tiếp theo: ${tenbaihoctt}`) {
+      navigation.navigate("LessionObject", baihoctt.id);
+    }
+    if (title === `Hoàn thành: ${tenbtht}`) {
+      navigation.navigate("LessionObject", btht.id);
     }
   };
 

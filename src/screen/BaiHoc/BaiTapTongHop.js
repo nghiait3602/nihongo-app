@@ -47,6 +47,35 @@ const BaiTapTongHop = () => {
     }
   }, [token, idBaiHoc]); // Chạy lại effect khi token thay đổi
 
+  const fetchData = async () => {
+    try {
+      const response = await BaiHocApi.BaiHocHandler(
+        `/${idBaiHoc}/tientrinhbaihoc`,
+        null,
+        "get",
+        token
+      );
+      if (response.status === "success" && response.results === 1) {
+        const responseData = response.data;
+        const baiTapHoanThanh = responseData.data[0].baiHocHoanhThanh;
+        if (baiTapHoanThanh) {
+          Alert.alert(
+            "Bài tập đã hoàn thành!",
+            `Bạn đã hoàn thành bài tập này với số điểm là ${responseData.data[0].diemSo}`,
+            [{ text: "OK", onPress: () => navigation.goBack() }],
+            { cancelable: false }
+          );
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching user data: ", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [token, idBaiHoc]);
+
   useEffect(() => {
     const unsubscribe = navigation.addListener("beforeRemove", (e) => {
       if (!isSubmitted && Object.keys(selectedButtons).length > 0) {
@@ -73,7 +102,7 @@ const BaiTapTongHop = () => {
         );
       }
     });
-  
+
     // trả về một hàm trống từ useEffect
     return unsubscribe;
   }, [isSubmitted, navigation, selectedButtons]);
@@ -133,21 +162,61 @@ const BaiTapTongHop = () => {
     setSelectedButtons(updatedSelectedButtons); // Cập nhật trạng thái mới
   };
 
-  const submitHandler = () => {
-    setIsSubmitted(true); // Cập nhật trạng thái đã nộp bài
-    let tongDiem = 0;
-    // Duyệt qua mảng câu hỏi
-    cauHoi.forEach((item) => {
-      if (selectedButtons[item._id] === item.cauTraLoiDung) {
-        tongDiem += item.diem;
+  const handlerTienTrinh = async (tongDiem) => {
+    try {
+      const dataCreate = {
+        diemSo: tongDiem,
+        baiHocHoanhThanh: true,
+        createAt: Date.now(),
+      };
+
+      const response = await BaiHocApi.BaiHocHandler(
+        `/${idBaiHoc}/tientrinhbaihoc`,
+        dataCreate,
+        "post",
+        token
+      );
+
+      if (response.data && idBaiHoc) {
+        setCauHoi(response.data.data);
+        setError(null);
+      } else {
+        setError("Dữ liệu trả về từ server không hợp lệ.");
       }
-    });
-    Alert.alert(
-      "Tổng điểm",
-      `Tổng điểm của bạn là: ${tongDiem}`,
-      [{ text: "OK", onPress: () => navigation.goBack() }],
-      { cancelable: false }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      setError("Đã xảy ra lỗi khi tải dữ liệu. Vui lòng thử lại sau.");
+    }
+  };
+
+  const submitHandler = () => {
+    const cauHoiChuaTraLoi = cauHoi.filter(
+      (item) => !selectedButtons[item._id]
     );
+    if (cauHoiChuaTraLoi.length === 0) {
+      setIsSubmitted(true); // Cập nhật trạng thái đã nộp bài
+      let tongDiem = 0;
+      // Duyệt qua mảng câu hỏi
+      cauHoi.forEach((item) => {
+        if (selectedButtons[item._id] === item.cauTraLoiDung) {
+          tongDiem += item.diem;
+        }
+      });
+      handlerTienTrinh(tongDiem);
+      Alert.alert(
+        "Tổng điểm",
+        `Tổng điểm của bạn là: ${tongDiem}`,
+        [{ text: "OK", onPress: () => navigation.goBack() }],
+        { cancelable: false }
+      );
+    } else {
+      Alert.alert(
+        "Còn câu chưa trả lời!",
+        "Hãy hoàn thành tất cả câu hỏi để nộp bài.",
+        [{ text: "OK" }],
+        { cancelable: false }
+      );
+    }
   };
 
   const NoiDung = ({ item, index }) => (
@@ -199,15 +268,17 @@ const BaiTapTongHop = () => {
           keyExtractor={(item) => item._id}
         />
       )}
-      <View style={styles.submitButtonContainer}>
-        <ColorButton
-          style={styles.submitButton}
-          color={Colors.Beetle}
-          onPress={submitHandler}
-        >
-          Nộp bài
-        </ColorButton>
-      </View>
+      {Object.keys(selectedButtons).length > 0 && (
+        <View style={styles.submitButtonContainer}>
+          <ColorButton
+            style={styles.submitButton}
+            color={Colors.Beetle}
+            onPress={submitHandler}
+          >
+            Nộp bài
+          </ColorButton>
+        </View>
+      )}
     </View>
   );
 };

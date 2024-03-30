@@ -232,6 +232,16 @@ const Profile = () => {
                   : ""
               }`}
               icon={"book"}
+              khoaHoc={
+                user && user.tienTrinhCuaToi && user.tienTrinhCuaToi.length > 0
+                  ? user.tienTrinhCuaToi[0].baiHoc.khoaHoc
+                  : null
+              }
+              tenKH={
+                user && user.tienTrinhCuaToi && user.tienTrinhCuaToi.length > 0
+                  ? user.tienTrinhCuaToi[0].baiHoc.khoaHoc.tenKhoahoc
+                  : ""
+              }
             />
             <ItemProfile
               title={`Hoàn thành: ${
@@ -241,6 +251,16 @@ const Profile = () => {
               }`}
               icon={"check"}
               font={2}
+              tenbtht={
+                user && user.tienTrinhCuaToi && user.tienTrinhCuaToi.length > 0
+                  ? user.tienTrinhCuaToi[0].baiHoc.tenBaiHoc
+                  : ""
+              }
+              btht={
+                user && user.tienTrinhCuaToi && user.tienTrinhCuaToi.length > 0
+                  ? user.tienTrinhCuaToi[0].baiHoc
+                  : ""
+              }
             />
             <ItemProfile
               title={`Tiếp theo: ${
@@ -248,6 +268,10 @@ const Profile = () => {
               }`}
               icon={"rocket-outline"}
               font={1}
+              tenbaihoctt={
+                user && user.baiHocTiepTheo ? user.baiHocTiepTheo.tenBaiHoc : ""
+              }
+              baihoctt={user && user.baiHocTiepTheo ? user.baiHocTiepTheo : ""}
             />
           </View>
 
@@ -265,7 +289,7 @@ const Profile = () => {
               font={1}
             />
             <ItemProfile title={"Trung tâm dịch vụ"} icon={"customerservice"} />
-            <ItemProfile title={"Cài đặt"} icon={"setting"}/>
+            <ItemProfile title={"Cài đặt"} icon={"setting"} />
           </View>
         </View>
       </View>
