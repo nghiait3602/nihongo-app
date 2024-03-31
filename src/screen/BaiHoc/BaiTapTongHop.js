@@ -205,7 +205,7 @@ const BaiTapTongHop = () => {
         }
         tongCauDung += item.diem;
       });
-      if (tongDiem >= tongCauDung/2) {
+      if (tongDiem >= tongCauDung / 2) {
         handlerTienTrinh(tongDiem);
         Alert.alert(
           "Chúc mừng hoàn thành bài học!",
@@ -213,7 +213,7 @@ const BaiTapTongHop = () => {
           [{ text: "OK", onPress: () => navigation.goBack() }],
           { cancelable: false }
         );
-      }else{
+      } else {
         Alert.alert(
           "Điểm dưới trung bình!",
           `Điểm hiện tại là ${tongDiem}. Vui lòng học và kiểm tra lại để hoàn thành bài học.`,
@@ -232,27 +232,29 @@ const BaiTapTongHop = () => {
   };
 
   const NoiDung = ({ item, index }) => (
-    <View>
+    <View style={styles.khoangTrang}>
       <Text style={styles.text}>
         {index + 1}. {item.cauHoi}
       </Text>
-      <View style={styles.buttonContainer}>
+      <View style={styles.buttonRow}>
         <ColorButton
-          color={Colors.Beak_Upper}
+          color={Colors.Cardinal}
           selected={selectedButtons[item._id] === item.cauTraLoi[0]}
           onPress={() => selectHandler(item._id, item.cauTraLoi[0])}
         >
           {item.cauTraLoi[0]}
         </ColorButton>
         <ColorButton
-          color={Colors.Cardinal}
+          color={Colors.Feather_Green}
           selected={selectedButtons[item._id] === item.cauTraLoi[1]}
           onPress={() => selectHandler(item._id, item.cauTraLoi[1])}
         >
           {item.cauTraLoi[1]}
         </ColorButton>
+      </View>
+      <View style={styles.buttonRow}>
         <ColorButton
-          color={Colors.Feather_Green}
+          color={Colors.Fox}
           selected={selectedButtons[item._id] === item.cauTraLoi[2]}
           onPress={() => selectHandler(item._id, item.cauTraLoi[2])}
         >
@@ -270,7 +272,7 @@ const BaiTapTongHop = () => {
   );
 
   return (
-    <View style={{ flex: 1, backgroundColor: "white" }}>
+    <View style={{ flex: 1, backgroundColor: Colors.Snow }}>
       {loading && <Loading isVisible={loading}></Loading>}
       {error && <Text style={styles.errorText}>{error}</Text>}
       {!loading && !error && cauHoi.length > 0 && (
@@ -278,6 +280,7 @@ const BaiTapTongHop = () => {
           data={cauHoi}
           renderItem={NoiDung}
           keyExtractor={(item) => item._id}
+          contentContainerStyle={{ paddingBottom: 80 }}
         />
       )}
       {Object.keys(selectedButtons).length > 0 && (
@@ -308,19 +311,27 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
   },
-  buttonContainer: {
+  buttonRow: {
     flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    width: width,
+    justifyContent: "space-between",
+    marginHorizontal: 16,
+  },
+  khoangTrang: {
+    top: 5,
+    backgroundColor: Colors.Snow,
+    borderRadius: 30,
+    paddingVertical: 15,
+    elevation: 4,
+    marginBottom: 15,
   },
   submitButtonContainer: {
     position: "absolute",
+    alignItems: "center",
     bottom: 20,
     width: width,
   },
   errorText: {
-    color: "red",
+    color: Colors.Cardinal,
     fontSize: 16,
     textAlign: "center",
     marginTop: 20,
