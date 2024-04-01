@@ -209,14 +209,14 @@ const BaiTapTongHop = () => {
         handlerTienTrinh(tongDiem);
         Alert.alert(
           "Chúc mừng hoàn thành bài học!",
-          `Tổng điểm của bạn là: ${tongDiem}`,
+          `Tổng điểm của bạn là: ${tongDiem}/${tongCauDung}`,
           [{ text: "OK", onPress: () => navigation.goBack() }],
           { cancelable: false }
         );
       } else {
         Alert.alert(
           "Điểm dưới trung bình!",
-          `Điểm hiện tại là ${tongDiem}. Vui lòng học và kiểm tra lại để hoàn thành bài học.`,
+          `Điểm hiện tại là ${tongDiem}/${tongCauDung}. Vui lòng học và kiểm tra lại để hoàn thành bài học.`,
           [{ text: "OK", onPress: () => navigation.goBack() }],
           { cancelable: false }
         );
