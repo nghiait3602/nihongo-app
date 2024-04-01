@@ -140,8 +140,24 @@ const Profile = () => {
     }
   };
   function logOut() {
-    removeItemFromAsyncStorage();
-    dispatch(removeAuth());
+    Alert.alert(
+      'Đăng xuất',
+      'Bạn có chắc chắn muốn đăng xuất?',
+      [
+        {
+          text: 'Hủy',
+          style: 'cancel',
+        },
+        {
+          text: 'OK',
+          onPress: () => {
+            removeItemFromAsyncStorage();
+            dispatch(removeAuth());
+          },
+        },
+      ],
+      { cancelable: false }
+    );
   }
 
   return (
@@ -305,7 +321,6 @@ const Profile = () => {
             style={{
               alignItems: "center",
               alignContent: "center",
-              flex: 1,
               top: 15,
             }}
           >
