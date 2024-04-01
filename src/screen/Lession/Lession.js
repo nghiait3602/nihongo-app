@@ -16,6 +16,7 @@ import { FlatList } from "react-native-gesture-handler";
 import { useEffect, useState } from "react";
 import KhoaHocApi from "../../Api/khohocApi";
 import TienTrinhApi from "../../Api/tienTrinhApi";
+import userAPI from "../../Api/authApi";
 
 import { useSelector } from "react-redux";
 import { authSelector } from "../../redux/reducers/authReducer";
@@ -31,6 +32,26 @@ const LessionScreen = () => {
   const router = useRoute();
   const idKhoaHoc = router.params;
   const auth = useSelector(authSelector);
+
+  const [user, setUser] = useState(null);
+  const [userData, setUserData] = useState(null);
+
+  const fetchDataMe = async () => {
+    try {
+      const response = await userAPI.HandlerAuthentication(
+        `/me`,
+        null,
+        "get",
+        auth.token
+      );
+      setUser(response.data.data._id);
+    } catch (error) {
+      console.error("Error fetching user data: ", error);
+    }
+  };
+  useEffect(() => {
+    fetchDataMe();
+  }, [auth.token]);
 
   useEffect(() => {
     handleGetBaiHoc();
@@ -51,6 +72,7 @@ const LessionScreen = () => {
       if (response.status === "success" && response.results >= 1) {
         const responseData = response.data.data; // Lấy ra mảng data từ response
         const baiHocIds = responseData.map((item) => item.baiHoc._id); // Lấy ra mảng các baiHoc._id
+        setUserData(response.data.data[0].user);
         setCheck(baiHocIds); // Đặt giá trị của check là mảng các baiHoc._id
       }
     } catch (error) {
@@ -84,7 +106,9 @@ const LessionScreen = () => {
       <TouchableOpacity
         style={[
           styles.item,
-          check && check.includes(item._id) ? { opacity: 0.3 } : null,
+          check && check.includes(item._id) && user === userData
+            ? { opacity: 0.3 }
+            : null,
         ]}
         onPress={handlerNavigation.bind(this, item._id)}
       >

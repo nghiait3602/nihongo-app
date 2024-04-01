@@ -20,6 +20,7 @@ import BaiHocApi from "../../Api/baihocApi";
 
 import LottieView from "lottie-react-native";
 import SectionnsComponent from "../../component/UI/Auth/SectionnsComponent";
+import userAPI from "../../Api/authApi";
 
 var width = Dimensions.get("window").width;
 var height = Dimensions.get("window").height;
@@ -35,6 +36,26 @@ const BaiTapTongHop = () => {
 
   const [selectedButtons, setSelectedButtons] = useState({});
   const [isSubmitted, setIsSubmitted] = useState(false);
+
+  const [user, setUser] = useState(null);
+  const [userData, setUserData] = useState(null);
+
+  const fetchDataMe = async () => {
+    try {
+      const response = await userAPI.HandlerAuthentication(
+        `/me`,
+        null,
+        "get",
+        token
+      );
+      setUser(response.data.data._id);
+    } catch (error) {
+      console.error("Error fetching user data: ", error);
+    }
+  };
+  useEffect(() => {
+    fetchDataMe();
+  }, [token]);
 
   useEffect(() => {
     if (token) {
@@ -59,7 +80,8 @@ const BaiTapTongHop = () => {
         const responseData = response.data;
         const baiTapHoanThanh = responseData.data[0].baiHocHoanhThanh;
         //Kiem tra bai tap hoan thanh => ko cho lam nua (chi lam 1 lan)
-        if (baiTapHoanThanh) {
+        if (baiTapHoanThanh && user === responseData.data[0].user) {
+          setUserData(responseData.data[0].user);
           Alert.alert(
             "Bài tập đã hoàn thành!",
             `Bạn đã hoàn thành bài tập này với số điểm là ${responseData.data[0].diemSo}`,
