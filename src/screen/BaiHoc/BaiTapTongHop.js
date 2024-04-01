@@ -49,6 +49,7 @@ const BaiTapTongHop = () => {
         token
       );
       setUser(response.data.data._id);
+      console.log("User now: ",user)
     } catch (error) {
       console.error("Error fetching user data: ", error);
     }

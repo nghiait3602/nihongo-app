@@ -227,15 +227,6 @@ const Profile = () => {
           </View>
 
           <ScrollView>
-            {!token && (
-              <ItemDangKy
-                heading={"Đăng ký tài khoản"}
-                desc={
-                  "Hãy tham gia cộng đồng của chúng tôi và giới thiệu những bài học tiếng Nhật của bạn tới bạn bè."
-                }
-              />
-            )}
-
             <View style={styles.box}>
               <ItemProfile
                 title={`Khóa học đang học: ${
@@ -311,15 +302,6 @@ const Profile = () => {
                 }
               />
             </View>
-
-            {user && user.email !== "admin@gmail.com" && (
-              <ItemDangKy
-                heading={"Tham gia nhóm trợ giảng"}
-                desc={
-                  "Cùng chúng tôi xây dựng cộng đồng học tiếng Nhật online hiệu quả."
-                }
-              />
-            )}
 
             <View style={styles.box}>
               <ItemProfile
