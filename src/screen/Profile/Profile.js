@@ -28,8 +28,7 @@ var height = Dimensions.get("window").height;
 const Profile = () => {
   const [user, setUser] = useState(null);
   const [image, setImage] = useState("");
-  const [newName, setNewName] = useState("");
-  const [newBirthDate, setNewBirthDate] = useState("");
+
   const dispatch = useDispatch();
   const { token } = useSelector(authSelector);
 
@@ -74,12 +73,6 @@ const Profile = () => {
   const updateUserData = async () => {
     try {
       const dataToUpdate = {};
-      if (newName !== "") {
-        dataToUpdate.name = newName;
-      }
-      if (newBirthDate !== "") {
-        dataToUpdate.ngaySinh = newBirthDate;
-      }
       if (image !== "") {
         dataToUpdate.photo = image;
       }
@@ -92,10 +85,8 @@ const Profile = () => {
       );
       if (response.data.user) {
         setUser(response.data.user);
-        console.log("Tên mới:", response.data.user.name);
-        console.log("Ngày sinh mới:", response.data.user.ngaySinh);
         console.log("Photo mới:", response.data.user.photo);
-        Alert.alert("Thông báo", "Cập nhật thành công!");
+        Alert.alert("Thông báo", "Cập nhật ảnh thành công!");
       } else {
         console.error("Lỗi update user data: Dữ liệu trả về không hợp lệ.");
       }
@@ -105,23 +96,39 @@ const Profile = () => {
   };
 
   useEffect(() => {
-    if (newName !== "" || newBirthDate !== "" || image !== "") {
+    if (image !== "") {
       updateUserData();
     }
-  }, [newName, newBirthDate, image]);
+  }, [image]);
 
   const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-    console.log(result.assets[0].uri); //Duong link lay uri chuan
-    if (!result.canceled) {
-      setImage(result.assets[0].uri);
-      updateUserData();
-    }
+    Alert.alert(
+      "Đổi ảnh đại diện",
+      "Bạn có muốn đổi ảnh đại diện không?",
+      [
+        {
+          text: "Hủy",
+          style: "cancel",
+        },
+        {
+          text: "OK",
+          onPress: async () => {
+            let result = await ImagePicker.launchImageLibraryAsync({
+              mediaTypes: ImagePicker.MediaTypeOptions.All,
+              allowsEditing: true,
+              aspect: [4, 3],
+              quality: 1,
+            });
+            console.log(result.assets[0].uri); // Đường link lấy uri chuẩn
+            if (!result.canceled) {
+              setImage(result.assets[0].uri);
+              updateUserData();
+            }
+          },
+        },
+      ],
+      { cancelable: false }
+    );
   };
 
   const profile = image
@@ -141,15 +148,15 @@ const Profile = () => {
   };
   function logOut() {
     Alert.alert(
-      'Đăng xuất',
-      'Bạn có chắc chắn muốn đăng xuất?',
+      "Đăng xuất",
+      "Bạn có chắc chắn muốn đăng xuất?",
       [
         {
-          text: 'Hủy',
-          style: 'cancel',
+          text: "Hủy",
+          style: "cancel",
         },
         {
-          text: 'OK',
+          text: "OK",
           onPress: () => {
             removeItemFromAsyncStorage();
             dispatch(removeAuth());
@@ -204,7 +211,7 @@ const Profile = () => {
                         ? { uri: user.photo }
                         : require("./../../../assets/Icons/avatar.png")
                     }
-                    style={{ width: 100, height: 100, borderRadius: 100 / 2 }}
+                    style={styles.image}
                   />
                 </TouchableOpacity>
                 <Text style={styles.text}>
@@ -215,6 +222,12 @@ const Profile = () => {
                 </Text>
               </View>
             </View>
+            <TouchableOpacity
+              onPress={logOut}
+              style={{ right: 30, top: height < 800 ? -70 : -90 }}
+            >
+              <AntDesign name="logout" size={26} color={Colors.Cardinal} />
+            </TouchableOpacity>
           </View>
 
           {!token && (
@@ -225,23 +238,6 @@ const Profile = () => {
               }
             />
           )}
-
-          <View style={styles.box}>
-            <ItemProfile
-              title={"Sửa tên người dùng"}
-              icon={"create-outline"}
-              font={1}
-              setNewName={setNewName}
-              updateUserData={updateUserData}
-            />
-
-            <ItemProfile
-              title={"Sửa ngày sinh"}
-              icon={"calendar"}
-              setNewBirthDate={setNewBirthDate}
-              updateUserData={updateUserData}
-            />
-          </View>
 
           <View style={styles.box}>
             <ItemProfile
@@ -263,6 +259,8 @@ const Profile = () => {
                   : "chưa học"
               }
             />
+          </View>
+          <View style={styles.box}>
             <ItemProfile
               title={`Hoàn thành: ${
                 user && user.tienTrinhCuaToi && user.tienTrinhCuaToi.length > 0
@@ -283,6 +281,8 @@ const Profile = () => {
                   : "chưa học"
               }
             />
+          </View>
+          <View style={styles.box}>
             <ItemProfile
               title={`Tiếp theo: ${
                 user && user.baiHocTiepTheo ? user.baiHocTiepTheo.tenBaiHoc : ""
@@ -297,7 +297,7 @@ const Profile = () => {
             />
           </View>
 
-          {user && user.name !== "Admin" && (
+          {user && user.email !== "admin@gmail.com" && (
             <ItemDangKy
               heading={"Tham gia nhóm trợ giảng"}
               desc={
@@ -313,22 +313,8 @@ const Profile = () => {
               font={1}
             />
             <ItemProfile title={"Trung tâm dịch vụ"} icon={"customerservice"} />
-            <ItemProfile title={"Cài đặt"} icon={"setting"} />
+            <ItemProfile title={"Sửa thông tin người dùng"} icon={"setting"} />
           </View>
-
-          <TouchableOpacity
-            onPress={logOut}
-            style={{
-              alignItems: "center",
-              alignContent: "center",
-              top: 15,
-            }}
-          >
-            <Text style={{ color: Colors.Cardinal, fontSize: 18 }}>
-              Đăng xuất
-            </Text>
-            <AntDesign name="logout" size={24} color={Colors.Cardinal} />
-          </TouchableOpacity>
         </View>
       </View>
     </ScrollView>
@@ -338,16 +324,22 @@ const Profile = () => {
 export default Profile;
 
 const styles = StyleSheet.create({
+  image: {
+    width: 140,
+    height: 140,
+    borderRadius: 140 / 2,
+    borderColor: Colors.Snow,
+    borderWidth: 4,
+  },
   text: {
-    marginLeft: 10,
     color: "black",
     fontSize: 18,
   },
   email: {
-    marginLeft: 10,
     color: "gray",
   },
   box: {
+    top: 20,
     height: "auto",
     backgroundColor: Colors.Snow,
     margin: 10,
