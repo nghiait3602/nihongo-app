@@ -16,9 +16,6 @@ const ItemProfile = ({
   icon,
   font,
   color,
-  updateUserData,
-  setNewName,
-  setNewBirthDate,
   khoaHoc,
   tenKH,
   tenbaihoctt,
@@ -26,16 +23,10 @@ const ItemProfile = ({
   tenbtht,
   btht,
 }) => {
-  const [editing, setEditing] = useState(false);
-  const [inputValue, setInputValue] = useState("");
   const navigation = useNavigation();
 
   const handlePress = () => {
-    if (title === "Tên người dùng" || title === "Ngày sinh") {
-      setInputValue(""); // Đặt lại giá trị input
-      setEditing(true);
-    }
-    if (title === "Cài đặt") {
+    if (title === "Sửa thông tin người dùng") {
       navigation.navigate("SettingsScreen");
     }
     if (title === `Khóa học đang học: ${tenKH}`) {
@@ -49,20 +40,6 @@ const ItemProfile = ({
     }
   };
 
-  const handleInputChange = (text) => {
-    setInputValue(text);
-  };
-
-  const handleInputSubmit = () => {
-    setEditing(false);
-    if (title === "Tên người dùng") {
-      setNewName(inputValue);
-    } else if (title === "Ngày sinh") {
-      setNewBirthDate(inputValue);
-    }
-    updateUserData();
-  };
-
   const catChuoi = (text, maxLength) => {
     if (text.length > maxLength) {
       return text.substring(0, maxLength - 3) + "...";
@@ -73,59 +50,46 @@ const ItemProfile = ({
 
   return (
     <View>
-      {editing ? (
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.input}
-            value={inputValue}
-            onChangeText={handleInputChange}
-            onSubmitEditing={handleInputSubmit}
-            autoFocus={true}
+      <TouchableOpacity onPress={handlePress}>
+        <View style={styles.outer}>
+          <View style={styles.inner}>
+            {font === 1 ? (
+              <Ionicons
+                name={icon}
+                size={24}
+                color={color || Colors.backgroundSliver}
+              />
+            ) : font === 2 ? (
+              <SimpleLineIcons
+                name={icon}
+                size={24}
+                color={color || Colors.backgroundSliver}
+              />
+            ) : (
+              <AntDesign
+                name={icon}
+                size={24}
+                color={color || Colors.backgroundSliver}
+              />
+            )}
+            <Text
+              style={[styles.text, { color: color || Colors.backgroundSliver }]}
+            >
+              {catChuoi(title, 35)}
+            </Text>
+          </View>
+
+          <AntDesign
+            name="right"
+            size={18}
+            color={Colors.backgroundSliver}
+            style={{ bottom: -3, marginRight: 10 }}
           />
         </View>
-      ) : (
-        <TouchableOpacity onPress={handlePress}>
-          <View style={styles.outer}>
-            <View style={styles.inner}>
-              {font === 1 ? (
-                <Ionicons
-                  name={icon}
-                  size={24}
-                  color={color || Colors.backgroundSliver}
-                />
-              ) : font === 2 ? (
-                <SimpleLineIcons
-                  name={icon}
-                  size={24}
-                  color={color || Colors.backgroundSliver}
-                />
-              ) : (
-                <AntDesign
-                  name={icon}
-                  size={22}
-                  color={color || Colors.backgroundSliver}
-                />
-              )}
-              <Text
-                style={[
-                  styles.text,
-                  { color: color || Colors.backgroundSliver },
-                ]}
-              >
-                {catChuoi(title, 35)}
-              </Text>
-            </View>
-
-            <AntDesign
-              name="right"
-              size={18}
-              color={Colors.backgroundSliver}
-              style={{ bottom: -3, marginRight: 10 }}
-            />
-          </View>
-          <View style={styles.divider} />
-        </TouchableOpacity>
-      )}
+        {!title.includes("Khóa học đang học") &&
+          !title.includes("Hoàn thành") &&
+          !title.includes("Tiếp theo") && <View style={styles.divider} />}
+      </TouchableOpacity>
     </View>
   );
 };
@@ -145,6 +109,10 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     marginTop: 7,
   },
+  box: {
+    marginLeft: 10,
+    paddingTop: 10,
+  },
   outer: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -154,12 +122,15 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     marginHorizontal: 20,
     alignItems: "center",
-    marginVertical: 6,
+    marginVertical: 18,
   },
   text: {
     marginLeft: 10,
-    fontSize: 16,
-    color: Colors.backgroundSliver,
+    fontSize: 17,
+    fontWeight: "bold",
+    color: Colors.backgroundSliver,    
+    fontWeight: "600",
+    fontFamily: "Nunito_ExtraBold",
   },
   inputContainer: {
     borderBottomWidth: 0.3,
