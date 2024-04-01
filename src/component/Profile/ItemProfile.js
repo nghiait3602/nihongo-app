@@ -42,7 +42,7 @@ const ItemProfile = ({
 
   const catChuoi = (text, maxLength) => {
     if (text.length > maxLength) {
-      return text.substring(0, maxLength - 3) + "...";
+      return text.substring(0, maxLength - 5) + "...";
     } else {
       return text;
     }
@@ -80,7 +80,7 @@ const ItemProfile = ({
           </View>
 
           <AntDesign
-            name="right"
+            name="rightcircleo"
             size={18}
             color={Colors.backgroundSliver}
             style={{ bottom: -3, marginRight: 10 }}
@@ -127,7 +127,6 @@ const styles = StyleSheet.create({
   text: {
     marginLeft: 10,
     fontSize: 17,
-    fontWeight: "bold",
     color: Colors.backgroundSliver,    
     fontWeight: "600",
     fontFamily: "Nunito_ExtraBold",

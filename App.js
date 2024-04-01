@@ -216,7 +216,7 @@ function HomeScreen() {
       <Stack.Screen
         name="SettingsScreen"
         component={SettingsScreen}
-        options={{ title: 'Settings' }}
+        options={{ title: 'Thông tin cá nhân' }}
       ></Stack.Screen>
     </Stack.Navigator>
   );
