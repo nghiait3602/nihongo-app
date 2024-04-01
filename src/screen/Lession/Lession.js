@@ -7,22 +7,25 @@ import {
   TouchableOpacity,
   Image,
   Dimensions,
-} from 'react-native';
-import { Colors } from '../../constants/colors';
-import { useRoute } from '@react-navigation/native';
-import { useNavigation } from '@react-navigation/native';
-import Header from '../../component/UI/Header/header';
-import { FlatList } from 'react-native-gesture-handler';
-import { useEffect, useState } from 'react';
-import KhoaHocApi from '../../Api/khohocApi';
-import { useSelector } from 'react-redux';
-import { authSelector } from '../../redux/reducers/authReducer';
-import Loading from '../../Modals/Loading';
-import SectionComponent from '../../component/UI/Auth/SectionnsComponent';
-import LottieView from 'lottie-react-native';
+} from "react-native";
+import { Colors } from "../../constants/colors";
+import { useRoute } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
+import Header from "../../component/UI/Header/header";
+import { FlatList } from "react-native-gesture-handler";
+import { useEffect, useState } from "react";
+import KhoaHocApi from "../../Api/khohocApi";
+import TienTrinhApi from "../../Api/tienTrinhApi";
+
+import { useSelector } from "react-redux";
+import { authSelector } from "../../redux/reducers/authReducer";
+import Loading from "../../Modals/Loading";
+import SectionComponent from "../../component/UI/Auth/SectionnsComponent";
+import LottieView from "lottie-react-native";
 const LessionScreen = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [fetchData, setData] = useState([]);
+  const [check, setCheck] = useState([]);
 
   const navigation = useNavigation();
   const router = useRoute();
@@ -33,14 +36,36 @@ const LessionScreen = () => {
     handleGetBaiHoc();
   }, [idKhoaHoc, auth.token]);
 
+  useEffect(() => {
+    fetchData2();
+  }, [auth.token]);
+
+  const fetchData2 = async () => {
+    try {
+      const response = await TienTrinhApi.TienTrinhHandler(
+        "/",
+        null,
+        "get",
+        auth.token
+      );
+      if (response.status === "success" && response.results >= 1) {
+        const responseData = response.data.data; // Lấy ra mảng data từ response
+        const baiHocIds = responseData.map((item) => item.baiHoc._id); // Lấy ra mảng các baiHoc._id
+        setCheck(baiHocIds); // Đặt giá trị của check là mảng các baiHoc._id
+      }
+    } catch (error) {
+      console.error("Error fetching user data: ", error);
+    }
+  };
+
   const handleGetBaiHoc = async () => {
     setIsLoading(true);
     try {
       if (auth.token && idKhoaHoc) {
         const res = await KhoaHocApi.baiHocHandler(
           `/${idKhoaHoc}/baihoc`,
-          '',
-          'get',
+          "",
+          "get",
           auth.token
         );
         setData(res.data.data);
@@ -52,12 +77,15 @@ const LessionScreen = () => {
   };
   function handlerNavigation(item) {
     console.log(item);
-    navigation.navigate('LessionObject', item);
+    navigation.navigate("LessionObject", item);
   }
   const renderItem = ({ item }) => {
     return (
       <TouchableOpacity
-        style={styles.item}
+        style={[
+          styles.item,
+          check && check.includes(item._id) ? { opacity: 0.3 } : null,
+        ]}
         onPress={handlerNavigation.bind(this, item._id)}
       >
         <View style={styles.infoContainer}>
@@ -77,14 +105,14 @@ const LessionScreen = () => {
       <View
         style={{
           flex: 1,
-          backgroundColor: 'white',
+          backgroundColor: "white",
         }}
       >
         <SectionComponent>
           <LottieView
             autoPlay
-            style={{ width: '100%', height: '100%' }}
-            source={require('../../../assets/Img/Nodata.json')}
+            style={{ width: "100%", height: "100%" }}
+            source={require("../../../assets/Img/Nodata.json")}
           ></LottieView>
         </SectionComponent>
       </View>
@@ -105,28 +133,28 @@ const LessionScreen = () => {
 };
 
 export default LessionScreen;
-var width = Dimensions.get('window').width;
-var height = Dimensions.get('window').height;
+var width = Dimensions.get("window").width;
+var height = Dimensions.get("window").height;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.Snow,
-    paddingTop: Platform.OS === 'android' ? 50 : 0,
+    paddingTop: Platform.OS === "android" ? 50 : 0,
   },
   item: {
-    display: 'flex',
+    display: "flex",
     flex: 1,
     padding: 10,
-    color: 'black',
-    justifyContent: 'center',
+    color: "black",
+    justifyContent: "center",
     margin: 10,
     borderRadius: 12,
     borderWidth: 1,
   },
   infoContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-start",
   },
   logoLession: {
     width: width * 0.06,
@@ -134,13 +162,13 @@ const styles = StyleSheet.create({
   },
   inforContent: {
     flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
   },
   text: {
     fontSize: 16,
-    fontWeight: '600',
-    fontFamily: 'Nunito_ExtraBold',
+    fontWeight: "600",
+    fontFamily: "Nunito_ExtraBold",
   },
 });

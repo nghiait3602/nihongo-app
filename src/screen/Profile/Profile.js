@@ -153,10 +153,8 @@ const Profile = () => {
       <View style={{ backgroundColor: Colors.Snow, height: height }}>
         <View
           style={{
-            backgroundColor: Colors.Macaw,
-            height: height - 80,
-            borderBottomEndRadius: 30,
-            borderBottomStartRadius: 30,
+            backgroundColor: Colors.XanhNgoc,
+            height: height,
           }}
         >
           <Image
@@ -174,19 +172,25 @@ const Profile = () => {
                 flexDirection: "row",
               }}
             >
-              <TouchableOpacity onPress={pickImage}>
-                <Image
-                  source={
-                    image
-                      ? { uri: image }
-                      : user && user.photo
-                      ? { uri: user.photo }
-                      : require("./../../../assets/Icons/avatar.png")
-                  }
-                  style={{ width: 45, height: 45, borderRadius: 45 / 2 }}
-                />
-              </TouchableOpacity>
-              <View style={{ marginLeft: 10, marginTop: 3 }}>
+              <View
+                style={{
+                  alignItems: "center",
+                  alignContent: "center",
+                  flex: 1,
+                }}
+              >
+                <TouchableOpacity onPress={pickImage}>
+                  <Image
+                    source={
+                      image
+                        ? { uri: image }
+                        : user && user.photo
+                        ? { uri: user.photo }
+                        : require("./../../../assets/Icons/avatar.png")
+                    }
+                    style={{ width: 100, height: 100, borderRadius: 100 / 2 }}
+                  />
+                </TouchableOpacity>
                 <Text style={styles.text}>
                   {user === null ? "username" : user.name}
                 </Text>
@@ -195,21 +199,20 @@ const Profile = () => {
                 </Text>
               </View>
             </View>
-            <TouchableOpacity onPress={logOut}>
-              <AntDesign name="logout" size={24} color="red" />
-            </TouchableOpacity>
           </View>
 
-          <ItemDangKy
-            heading={"Đăng ký tài khoản"}
-            desc={
-              "Hãy tham gia cộng đồng của chúng tôi và giới thiệu những bài học tiếng Nhật của bạn tới bạn bè."
-            }
-          />
+          {!token && (
+            <ItemDangKy
+              heading={"Đăng ký tài khoản"}
+              desc={
+                "Hãy tham gia cộng đồng của chúng tôi và giới thiệu những bài học tiếng Nhật của bạn tới bạn bè."
+              }
+            />
+          )}
 
           <View style={styles.box}>
             <ItemProfile
-              title={"Tên người dùng"}
+              title={"Sửa tên người dùng"}
               icon={"create-outline"}
               font={1}
               setNewName={setNewName}
@@ -217,7 +220,7 @@ const Profile = () => {
             />
 
             <ItemProfile
-              title={"Ngày sinh"}
+              title={"Sửa ngày sinh"}
               icon={"calendar"}
               setNewBirthDate={setNewBirthDate}
               updateUserData={updateUserData}
@@ -229,34 +232,63 @@ const Profile = () => {
               title={`Khóa học đang học: ${
                 user && user.tienTrinhCuaToi && user.tienTrinhCuaToi.length > 0
                   ? user.tienTrinhCuaToi[0].baiHoc.khoaHoc.tenKhoahoc
-                  : ""
+                  : "chưa học"
               }`}
               icon={"book"}
+              color={Colors.Fox}
+              khoaHoc={
+                user && user.tienTrinhCuaToi && user.tienTrinhCuaToi.length > 0
+                  ? user.tienTrinhCuaToi[0].baiHoc.khoaHoc
+                  : "chưa học"
+              }
+              tenKH={
+                user && user.tienTrinhCuaToi && user.tienTrinhCuaToi.length > 0
+                  ? user.tienTrinhCuaToi[0].baiHoc.khoaHoc.tenKhoahoc
+                  : "chưa học"
+              }
             />
             <ItemProfile
               title={`Hoàn thành: ${
                 user && user.tienTrinhCuaToi && user.tienTrinhCuaToi.length > 0
                   ? user.tienTrinhCuaToi[0].baiHoc.tenBaiHoc
-                  : ""
+                  : "chưa học"
               }`}
               icon={"check"}
+              color={Colors.Feather_Green}
               font={2}
+              tenbtht={
+                user && user.tienTrinhCuaToi && user.tienTrinhCuaToi.length > 0
+                  ? user.tienTrinhCuaToi[0].baiHoc.tenBaiHoc
+                  : "chưa học"
+              }
+              btht={
+                user && user.tienTrinhCuaToi && user.tienTrinhCuaToi.length > 0
+                  ? user.tienTrinhCuaToi[0].baiHoc
+                  : "chưa học"
+              }
             />
             <ItemProfile
               title={`Tiếp theo: ${
                 user && user.baiHocTiepTheo ? user.baiHocTiepTheo.tenBaiHoc : ""
               }`}
               icon={"rocket-outline"}
+              color={Colors.Humpback}
               font={1}
+              tenbaihoctt={
+                user && user.baiHocTiepTheo ? user.baiHocTiepTheo.tenBaiHoc : ""
+              }
+              baihoctt={user && user.baiHocTiepTheo ? user.baiHocTiepTheo : ""}
             />
           </View>
 
-          <ItemDangKy
-            heading={"Tham gia nhóm trợ giảng"}
-            desc={
-              "Cùng chúng tôi xây dựng cộng đồng học tiếng Nhật online hiệu quả."
-            }
-          />
+          {user && user.name !== "Admin" && (
+            <ItemDangKy
+              heading={"Tham gia nhóm trợ giảng"}
+              desc={
+                "Cùng chúng tôi xây dựng cộng đồng học tiếng Nhật online hiệu quả."
+              }
+            />
+          )}
 
           <View style={styles.box}>
             <ItemProfile
@@ -265,8 +297,23 @@ const Profile = () => {
               font={1}
             />
             <ItemProfile title={"Trung tâm dịch vụ"} icon={"customerservice"} />
-            <ItemProfile title={"Cài đặt"} icon={"setting"}/>
+            <ItemProfile title={"Cài đặt"} icon={"setting"} />
           </View>
+
+          <TouchableOpacity
+            onPress={logOut}
+            style={{
+              alignItems: "center",
+              alignContent: "center",
+              flex: 1,
+              top: 15,
+            }}
+          >
+            <Text style={{ color: Colors.Cardinal, fontSize: 18 }}>
+              Đăng xuất
+            </Text>
+            <AntDesign name="logout" size={24} color={Colors.Cardinal} />
+          </TouchableOpacity>
         </View>
       </View>
     </ScrollView>
@@ -279,6 +326,7 @@ const styles = StyleSheet.create({
   text: {
     marginLeft: 10,
     color: "black",
+    fontSize: 18,
   },
   email: {
     marginLeft: 10,

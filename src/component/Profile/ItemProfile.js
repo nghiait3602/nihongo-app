@@ -9,15 +9,22 @@ import {
 } from "react-native";
 import { AntDesign, Ionicons, SimpleLineIcons } from "@expo/vector-icons";
 import { Colors } from "../../constants/colors";
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from "@react-navigation/native";
 
 const ItemProfile = ({
   title,
   icon,
   font,
+  color,
   updateUserData,
   setNewName,
   setNewBirthDate,
+  khoaHoc,
+  tenKH,
+  tenbaihoctt,
+  baihoctt,
+  tenbtht,
+  btht,
 }) => {
   const [editing, setEditing] = useState(false);
   const [inputValue, setInputValue] = useState("");
@@ -28,8 +35,17 @@ const ItemProfile = ({
       setInputValue(""); // Đặt lại giá trị input
       setEditing(true);
     }
-    if(title === "Cài đặt"){
-      navigation.navigate('SettingsScreen')
+    if (title === "Cài đặt") {
+      navigation.navigate("SettingsScreen");
+    }
+    if (title === `Khóa học đang học: ${tenKH}`) {
+      navigation.navigate("LessionScreen", khoaHoc.id);
+    }
+    if (title === `Tiếp theo: ${tenbaihoctt}`) {
+      navigation.navigate("LessionObject", baihoctt.id);
+    }
+    if (title === `Hoàn thành: ${tenbtht}`) {
+      navigation.navigate("LessionObject", btht.id);
     }
   };
 
@@ -45,6 +61,14 @@ const ItemProfile = ({
       setNewBirthDate(inputValue);
     }
     updateUserData();
+  };
+
+  const catChuoi = (text, maxLength) => {
+    if (text.length > maxLength) {
+      return text.substring(0, maxLength - 3) + "...";
+    } else {
+      return text;
+    }
   };
 
   return (
@@ -67,22 +91,29 @@ const ItemProfile = ({
                 <Ionicons
                   name={icon}
                   size={24}
-                  color={Colors.backgroundSliver}
+                  color={color || Colors.backgroundSliver}
                 />
               ) : font === 2 ? (
                 <SimpleLineIcons
                   name={icon}
-                  size={20}
-                  color={Colors.backgroundSliver}
+                  size={24}
+                  color={color || Colors.backgroundSliver}
                 />
               ) : (
                 <AntDesign
                   name={icon}
                   size={22}
-                  color={Colors.backgroundSliver}
+                  color={color || Colors.backgroundSliver}
                 />
               )}
-              <Text style={styles.text}>{title}</Text>
+              <Text
+                style={[
+                  styles.text,
+                  { color: color || Colors.backgroundSliver },
+                ]}
+              >
+                {catChuoi(title, 35)}
+              </Text>
             </View>
 
             <AntDesign
@@ -127,7 +158,7 @@ const styles = StyleSheet.create({
   },
   text: {
     marginLeft: 10,
-    fontSize: 12,
+    fontSize: 16,
     color: Colors.backgroundSliver,
   },
   inputContainer: {
@@ -135,14 +166,14 @@ const styles = StyleSheet.create({
     borderColor: Colors.backgroundSliver,
     marginLeft: 10,
     marginBottom: 5,
-    marginTop: 7,
+    marginTop: 15,
     paddingHorizontal: 20,
     flexDirection: "row",
     alignItems: "center",
   },
   input: {
     flex: 1,
-    fontSize: 12,
+    fontSize: 16,
     color: Colors.backgroundSliver,
     marginLeft: 10,
   },
