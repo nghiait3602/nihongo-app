@@ -33,8 +33,9 @@ const LessionScreen = () => {
   const idKhoaHoc = router.params;
   const auth = useSelector(authSelector);
 
-  const [user, setUser] = useState(null);
-  const [userData, setUserData] = useState(null);
+  const [TienTrinhUser, setTienTrinhUser] = useState([]);
+  const [userNow, setUserNow] = useState(null);
+  const [userData, setUserData] = useState([]);
 
   const fetchDataMe = async () => {
     try {
@@ -44,7 +45,16 @@ const LessionScreen = () => {
         "get",
         auth.token
       );
-      setUser(response.data.data._id);
+      if (
+        response.status === "success" &&
+        response.data.data.tienTrinhCuaToi.length > 0
+      ) {
+        const tienTrinhIds = response.data.data.tienTrinhCuaToi.map(
+          (tienTrinh) => tienTrinh.baiHoc._id
+        );
+        setTienTrinhUser(tienTrinhIds);
+        setUserNow(response.data.data.id);
+      }
     } catch (error) {
       console.error("Error fetching user data: ", error);
     }
@@ -57,10 +67,6 @@ const LessionScreen = () => {
     handleGetBaiHoc();
   }, [idKhoaHoc, auth.token]);
 
-  useEffect(() => {
-    fetchData2();
-  }, [auth.token]);
-
   const fetchData2 = async () => {
     try {
       const response = await TienTrinhApi.TienTrinhHandler(
@@ -72,13 +78,18 @@ const LessionScreen = () => {
       if (response.status === "success" && response.results >= 1) {
         const responseData = response.data.data; // Lấy ra mảng data từ response
         const baiHocIds = responseData.map((item) => item.baiHoc._id); // Lấy ra mảng các baiHoc._id
-        setUserData(response.data.data[0].user);
+        const userIds = responseData.map((item) => item.user);
+        setUserData(userIds);
         setCheck(baiHocIds); // Đặt giá trị của check là mảng các baiHoc._id
       }
     } catch (error) {
       console.error("Error fetching user data: ", error);
     }
   };
+
+  useEffect(() => {
+    fetchData2();
+  }, [auth.token]);
 
   const handleGetBaiHoc = async () => {
     setIsLoading(true);
@@ -106,7 +117,9 @@ const LessionScreen = () => {
       <TouchableOpacity
         style={[
           styles.item,
-          check && check.includes(item._id) && user === userData
+          check.includes(item._id) &&
+          TienTrinhUser.includes(item._id) &&
+          userData.includes(userNow)
             ? { opacity: 0.3 }
             : null,
         ]}

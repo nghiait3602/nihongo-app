@@ -61,7 +61,7 @@ const Profile = () => {
         "get",
         token
       );
-      setUser(response.data.data); 
+      setUser(response.data.data);
     } catch (error) {
       console.error("Error fetching user data: ", error);
     }
@@ -168,160 +168,135 @@ const Profile = () => {
   }
 
   return (
-    <RefreshControl refreshing={refreshing} onRefresh={onRefresh}>
-      <View style={{ backgroundColor: Colors.Snow, height: height }}>
+    <ScrollView
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+      style={{
+        backgroundColor: Colors.XanhNgoc,
+        height: height,
+      }}
+    >
+      <Image
+        source={{ uri: bkImg }}
+        style={[
+          StyleSheet.absoluteFillObject,
+          {
+            opacity: 0.7,
+          },
+        ]}
+      />
+      <View style={styles.profile}>
         <View
           style={{
-            backgroundColor: Colors.XanhNgoc,
-            height: height,
+            flexDirection: "row",
           }}
         >
-          <Image
-            source={{ uri: bkImg }}
-            style={[
-              StyleSheet.absoluteFillObject,
-              {
-                opacity: 0.7,
-              },
-            ]}
-          />
-          <View style={styles.profile}>
-            <View
-              style={{
-                flexDirection: "row",
-              }}
-            >
-              <View
-                style={{
-                  alignItems: "center",
-                  alignContent: "center",
-                  flex: 1,
-                }}
-              >
-                <TouchableOpacity onPress={pickImage}>
-                  <Image
-                    source={
-                      image
-                        ? { uri: image }
-                        : user && user.photo
-                        ? { uri: user.photo }
-                        : require("./../../../assets/Icons/avatar.png")
-                    }
-                    style={styles.image}
-                  />
-                </TouchableOpacity>
-                <Text style={styles.text}>
-                  {user === null ? "username" : user.name}
-                </Text>
-                <Text style={styles.email}>
-                  {user === null ? "email" : user.email}
-                </Text>
-              </View>
-            </View>
-            <TouchableOpacity
-              onPress={logOut}
-              style={{ right: 30, top: height < 800 ? -80 : -100 }}
-            >
-              <AntDesign name="logout" size={26} color={Colors.Cardinal} />
+          <View
+            style={{
+              alignItems: "center",
+              alignContent: "center",
+              flex: 1,
+            }}
+          >
+            <TouchableOpacity onPress={pickImage}>
+              <Image
+                source={
+                  image
+                    ? { uri: image }
+                    : user && user.photo
+                    ? { uri: user.photo }
+                    : require("./../../../assets/Icons/avatar.png")
+                }
+                style={styles.image}
+              />
             </TouchableOpacity>
+            <Text style={styles.text}>
+              {user === null ? "username" : user.name}
+            </Text>
+            <Text style={styles.email}>
+              {user === null ? "email" : user.email}
+            </Text>
           </View>
-
-          <ScrollView>
-            <View style={styles.box}>
-              <ItemProfile
-                title={`Khóa học đang học: ${
-                  user &&
-                  user.tienTrinhCuaToi &&
-                  user.tienTrinhCuaToi.length > 0
-                    ? user.tienTrinhCuaToi[0].baiHoc.khoaHoc.tenKhoahoc
-                    : "chưa học"
-                }`}
-                icon={"book"}
-                color={Colors.Fox}
-                khoaHoc={
-                  user &&
-                  user.tienTrinhCuaToi &&
-                  user.tienTrinhCuaToi.length > 0
-                    ? user.tienTrinhCuaToi[0].baiHoc.khoaHoc
-                    : "chưa học"
-                }
-                tenKH={
-                  user &&
-                  user.tienTrinhCuaToi &&
-                  user.tienTrinhCuaToi.length > 0
-                    ? user.tienTrinhCuaToi[0].baiHoc.khoaHoc.tenKhoahoc
-                    : "chưa học"
-                }
-              />
-            </View>
-            <View style={styles.box}>
-              <ItemProfile
-                title={`Hoàn thành: ${
-                  user &&
-                  user.tienTrinhCuaToi &&
-                  user.tienTrinhCuaToi.length > 0
-                    ? user.tienTrinhCuaToi[0].baiHoc.tenBaiHoc
-                    : "chưa học"
-                }`}
-                icon={"check"}
-                color={Colors.Feather_Green}
-                font={2}
-                tenbtht={
-                  user &&
-                  user.tienTrinhCuaToi &&
-                  user.tienTrinhCuaToi.length > 0
-                    ? user.tienTrinhCuaToi[0].baiHoc.tenBaiHoc
-                    : "chưa học"
-                }
-                btht={
-                  user &&
-                  user.tienTrinhCuaToi &&
-                  user.tienTrinhCuaToi.length > 0
-                    ? user.tienTrinhCuaToi[0].baiHoc
-                    : "chưa học"
-                }
-              />
-            </View>
-            <View style={styles.box}>
-              <ItemProfile
-                title={`Tiếp theo: ${
-                  user && user.baiHocTiepTheo
-                    ? user.baiHocTiepTheo.tenBaiHoc
-                    : ""
-                }`}
-                icon={"rocket-outline"}
-                color={Colors.Humpback}
-                font={1}
-                tenbaihoctt={
-                  user && user.baiHocTiepTheo
-                    ? user.baiHocTiepTheo.tenBaiHoc
-                    : ""
-                }
-                baihoctt={
-                  user && user.baiHocTiepTheo ? user.baiHocTiepTheo : ""
-                }
-              />
-            </View>
-
-            <View style={styles.box}>
-              <ItemProfile
-                title={"Phản hồi"}
-                icon={"chatbubbles-outline"}
-                font={1}
-              />
-              <ItemProfile
-                title={"Trung tâm dịch vụ"}
-                icon={"customerservice"}
-              />
-              <ItemProfile
-                title={"Sửa thông tin người dùng"}
-                icon={"setting"}
-              />
-            </View>
-          </ScrollView>
         </View>
+        <TouchableOpacity
+          onPress={logOut}
+          style={{ right: 30, top: height < 800 ? -80 : -100 }}
+        >
+          <AntDesign name="logout" size={26} color={Colors.Cardinal} />
+        </TouchableOpacity>
       </View>
-    </RefreshControl>
+
+      <View style={styles.box}>
+        <ItemProfile
+          title={`Khóa học đang học: ${
+            user && user.tienTrinhCuaToi && user.tienTrinhCuaToi.length > 0
+              ? user.tienTrinhCuaToi[0].baiHoc.khoaHoc.tenKhoahoc
+              : "chưa học"
+          }`}
+          icon={"book"}
+          color={Colors.Fox}
+          khoaHoc={
+            user && user.tienTrinhCuaToi && user.tienTrinhCuaToi.length > 0
+              ? user.tienTrinhCuaToi[0].baiHoc.khoaHoc
+              : "chưa học"
+          }
+          tenKH={
+            user && user.tienTrinhCuaToi && user.tienTrinhCuaToi.length > 0
+              ? user.tienTrinhCuaToi[0].baiHoc.khoaHoc.tenKhoahoc
+              : "chưa học"
+          }
+        />
+      </View>
+      <View style={styles.box}>
+        <ItemProfile
+          title={`Hoàn thành: ${
+            user && user.tienTrinhCuaToi && user.tienTrinhCuaToi.length > 0
+              ? user.tienTrinhCuaToi[0].baiHoc.tenBaiHoc
+              : "chưa học"
+          }`}
+          icon={"check"}
+          color={Colors.Feather_Green}
+          font={2}
+          tenbtht={
+            user && user.tienTrinhCuaToi && user.tienTrinhCuaToi.length > 0
+              ? user.tienTrinhCuaToi[0].baiHoc.tenBaiHoc
+              : "chưa học"
+          }
+          btht={
+            user && user.tienTrinhCuaToi && user.tienTrinhCuaToi.length > 0
+              ? user.tienTrinhCuaToi[0].baiHoc
+              : "chưa học"
+          }
+        />
+      </View>
+      <View style={styles.box}>
+        <ItemProfile
+          title={`Tiếp theo: ${
+            user && user.baiHocTiepTheo
+              ? user.baiHocTiepTheo.tenBaiHoc
+              : "chưa học"
+          }`}
+          icon={"rocket-outline"}
+          color={Colors.Humpback}
+          font={1}
+          tenbaihoctt={
+            user && user.baiHocTiepTheo
+              ? user.baiHocTiepTheo.tenBaiHoc
+              : "chưa học"
+          }
+          baihoctt={
+            user && user.baiHocTiepTheo ? user.baiHocTiepTheo : "chưa học"
+          }
+        />
+      </View>
+
+      <View style={styles.box}>
+        <ItemProfile title={"Phản hồi"} icon={"chatbubbles-outline"} font={1} />
+        <ItemProfile title={"Trung tâm dịch vụ"} icon={"customerservice"} />
+        <ItemProfile title={"Sửa thông tin người dùng"} icon={"setting"} />
+      </View>
+    </ScrollView>
   );
 };
 

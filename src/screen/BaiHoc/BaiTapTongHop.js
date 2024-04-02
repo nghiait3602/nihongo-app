@@ -37,8 +37,49 @@ const BaiTapTongHop = () => {
   const [selectedButtons, setSelectedButtons] = useState({});
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const [user, setUser] = useState(null);
-  const [userData, setUserData] = useState(null);
+  const [TienTrinhUser, setTienTrinhUser] = useState([]);
+  const [userIdNow, setUserIdNow] = useState(null);
+
+  const fetchData = async () => {
+    try {
+      const response = await BaiHocApi.BaiHocHandler(
+        `/${idBaiHoc}/tientrinhbaihoc`,
+        null,
+        "get",
+        token
+      );
+      if (response.status === "success" && response.results >= 1) {
+        const responseData = response.data.data;
+        if (Array.isArray(responseData) && responseData.length > 0) {
+          const userIds = responseData.map(item => item.user);
+          const baiTapHoanThanh = responseData[0].baiHocHoanhThanh;
+          //Kiem tra bai tap hoan thanh => ko cho lam nua (chi lam 1 lan)
+          if (
+            TienTrinhUser &&
+            TienTrinhUser.includes(idBaiHoc) &&
+            baiTapHoanThanh &&
+            userIds.includes(userIdNow)
+          ) {
+            Alert.alert(
+              "Bài tập đã hoàn thành!",
+              `Bạn đã hoàn thành bài tập này với số điểm là ${responseData[0].diemSo}`,
+              [{ text: "Làm lại"},{ text: "Xem"}],
+              { cancelable: false }
+            );
+          }
+        } else {
+          console.error("responseData is not a valid array or is empty.");
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching user data: ", error);
+    }
+  };
+  
+  useEffect(() => {
+    fetchData();
+    fetchDataMe();
+  }, [token, idBaiHoc, userIdNow]);
 
   const fetchDataMe = async () => {
     try {
@@ -48,15 +89,20 @@ const BaiTapTongHop = () => {
         "get",
         token
       );
-      setUser(response.data.data._id);
-      console.log("User now: ",user)
+      if (
+        response.status === "success" &&
+        response.data.data.tienTrinhCuaToi.length > 0
+      ) {
+        const tienTrinhIds = response.data.data.tienTrinhCuaToi.map(
+          (tienTrinh) => tienTrinh.baiHoc._id
+        );
+        setTienTrinhUser(tienTrinhIds);
+        setUserIdNow(response.data.data.id);
+      }
     } catch (error) {
       console.error("Error fetching user data: ", error);
     }
   };
-  useEffect(() => {
-    fetchDataMe();
-  }, [token]);
 
   useEffect(() => {
     if (token) {
@@ -68,37 +114,6 @@ const BaiTapTongHop = () => {
       setLoading(false); // Dừng hiển thị indicator loading
     }
   }, [token, idBaiHoc]); // Chạy lại effect khi token thay đổi
-
-  const fetchData = async () => {
-    try {
-      const response = await BaiHocApi.BaiHocHandler(
-        `/${idBaiHoc}/tientrinhbaihoc`,
-        null,
-        "get",
-        token
-      );
-      if (response.status === "success" && response.results === 1) {
-        const responseData = response.data;
-        const baiTapHoanThanh = responseData.data[0].baiHocHoanhThanh;
-        //Kiem tra bai tap hoan thanh => ko cho lam nua (chi lam 1 lan)
-        if (baiTapHoanThanh && user === responseData.data[0].user) {
-          setUserData(responseData.data[0].user);
-          Alert.alert(
-            "Bài tập đã hoàn thành!",
-            `Bạn đã hoàn thành bài tập này với số điểm là ${responseData.data[0].diemSo}`,
-            [{ text: "OK", onPress: () => navigation.goBack() }],
-            { cancelable: false }
-          );
-        }
-      }
-    } catch (error) {
-      console.error("Error fetching user data: ", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, [token, idBaiHoc]);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("beforeRemove", (e) => {
