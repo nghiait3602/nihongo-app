@@ -16,6 +16,7 @@ import { FlatList } from "react-native-gesture-handler";
 import { useEffect, useState } from "react";
 import KhoaHocApi from "../../Api/khohocApi";
 import TienTrinhApi from "../../Api/tienTrinhApi";
+import userAPI from "../../Api/authApi";
 
 import { useSelector } from "react-redux";
 import { authSelector } from "../../redux/reducers/authReducer";
@@ -32,13 +33,39 @@ const LessionScreen = () => {
   const idKhoaHoc = router.params;
   const auth = useSelector(authSelector);
 
+  const [TienTrinhUser, setTienTrinhUser] = useState([]);
+  const [userNow, setUserNow] = useState(null);
+  const [userData, setUserData] = useState([]);
+
+  const fetchDataMe = async () => {
+    try {
+      const response = await userAPI.HandlerAuthentication(
+        `/me`,
+        null,
+        "get",
+        auth.token
+      );
+      if (
+        response.status === "success" &&
+        response.data.data.tienTrinhCuaToi.length > 0
+      ) {
+        const tienTrinhIds = response.data.data.tienTrinhCuaToi.map(
+          (tienTrinh) => tienTrinh.baiHoc._id
+        );
+        setTienTrinhUser(tienTrinhIds);
+        setUserNow(response.data.data.id);
+      }
+    } catch (error) {
+      console.error("Error fetching user data: ", error);
+    }
+  };
+  useEffect(() => {
+    fetchDataMe();
+  }, [auth.token]);
+
   useEffect(() => {
     handleGetBaiHoc();
   }, [idKhoaHoc, auth.token]);
-
-  useEffect(() => {
-    fetchData2();
-  }, [auth.token]);
 
   const fetchData2 = async () => {
     try {
@@ -51,12 +78,18 @@ const LessionScreen = () => {
       if (response.status === "success" && response.results >= 1) {
         const responseData = response.data.data; // Lấy ra mảng data từ response
         const baiHocIds = responseData.map((item) => item.baiHoc._id); // Lấy ra mảng các baiHoc._id
+        const userIds = responseData.map((item) => item.user);
+        setUserData(userIds);
         setCheck(baiHocIds); // Đặt giá trị của check là mảng các baiHoc._id
       }
     } catch (error) {
       console.error("Error fetching user data: ", error);
     }
   };
+
+  useEffect(() => {
+    fetchData2();
+  }, [auth.token]);
 
   const handleGetBaiHoc = async () => {
     setIsLoading(true);
@@ -84,7 +117,11 @@ const LessionScreen = () => {
       <TouchableOpacity
         style={[
           styles.item,
-          check && check.includes(item._id) ? { opacity: 0.3 } : null,
+          check.includes(item._id) &&
+          TienTrinhUser.includes(item._id) &&
+          userData.includes(userNow)
+            ? { opacity: 0.3 }
+            : null,
         ]}
         onPress={handlerNavigation.bind(this, item._id)}
       >
