@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -6,10 +6,10 @@ import {
   View,
   Dimensions,
   TextInput,
-} from "react-native";
-import { AntDesign, Ionicons, SimpleLineIcons } from "@expo/vector-icons";
-import { Colors } from "../../constants/colors";
-import { useNavigation } from "@react-navigation/native";
+} from 'react-native';
+import { AntDesign, Ionicons, SimpleLineIcons } from '@expo/vector-icons';
+import { Colors } from '../../constants/colors';
+import { useNavigation } from '@react-navigation/native';
 
 const ItemProfile = ({
   title,
@@ -22,27 +22,31 @@ const ItemProfile = ({
   baihoctt,
   tenbtht,
   btht,
+  idsTV,
 }) => {
   const navigation = useNavigation();
 
   const handlePress = () => {
-    if (title === "Sửa thông tin người dùng") {
-      navigation.navigate("SettingsScreen");
+    if (title === 'Sửa thông tin người dùng') {
+      navigation.navigate('SettingsScreen');
     }
     if (title === `Khóa học đang học: ${tenKH}`) {
-      navigation.navigate("LessionScreen", khoaHoc.id);
+      navigation.navigate('LessionScreen', khoaHoc.id);
     }
     if (title === `Tiếp theo: ${tenbaihoctt}`) {
-      navigation.navigate("LessionObject", baihoctt.id);
+      navigation.navigate('LessionObject', baihoctt.id);
     }
     if (title === `Hoàn thành: ${tenbtht}`) {
-      navigation.navigate("LessionObject", btht.id);
+      navigation.navigate('LessionObject', btht.id);
+    }
+    if (title === 'Từ vựng yêu thích') {
+      navigation.navigate('TuVung', { title: 'like' });
     }
   };
 
   const catChuoi = (text, maxLength) => {
     if (text.length > maxLength) {
-      return text.substring(0, maxLength - 5) + "...";
+      return text.substring(0, maxLength - 5) + '...';
     } else {
       return text;
     }
@@ -86,9 +90,9 @@ const ItemProfile = ({
             style={{ bottom: -3, marginRight: 10 }}
           />
         </View>
-        {!title.includes("Khóa học đang học") &&
-          !title.includes("Hoàn thành") &&
-          !title.includes("Tiếp theo") && <View style={styles.divider} />}
+        {!title.includes('Khóa học đang học') &&
+          !title.includes('Hoàn thành') &&
+          !title.includes('Tiếp theo') && <View style={styles.divider} />}
       </TouchableOpacity>
     </View>
   );
@@ -96,8 +100,8 @@ const ItemProfile = ({
 
 export default ItemProfile;
 
-var width = Dimensions.get("window").width;
-var height = Dimensions.get("window").height;
+var width = Dimensions.get('window').width;
+var height = Dimensions.get('window').height;
 
 const styles = StyleSheet.create({
   divider: {
@@ -114,22 +118,22 @@ const styles = StyleSheet.create({
     paddingTop: 10,
   },
   outer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   inner: {
-    flexDirection: "row",
+    flexDirection: 'row',
     marginHorizontal: 20,
-    alignItems: "center",
+    alignItems: 'center',
     marginVertical: 18,
   },
   text: {
     marginLeft: 10,
     fontSize: 17,
-    color: Colors.backgroundSliver,    
-    fontWeight: "600",
-    fontFamily: "Nunito_ExtraBold",
+    color: Colors.backgroundSliver,
+    fontWeight: '600',
+    fontFamily: 'Nunito_ExtraBold',
   },
   inputContainer: {
     borderBottomWidth: 0.3,
@@ -138,8 +142,8 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     marginTop: 15,
     paddingHorizontal: 20,
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   input: {
     flex: 1,

@@ -15,10 +15,17 @@ import { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { Colors } from '../../constants/colors';
 import ColorButton from '../../component/UI/Button/ColorButton';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { authSelector } from '../../redux/reducers/authReducer';
 import tuVungApi from '../../Api/tuvungApi';
 import Loading from '../../Modals/Loading';
+import { AntDesign } from '@expo/vector-icons';
+import {
+  addLike,
+  likeSelector,
+  removeLike,
+} from '../../redux/reducers/likeReducer';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const TuVungChiTiet = () => {
   const [isPeak, setIsPeak] = useState(false);
   const [isStran, setIsStran] = useState(false);
@@ -30,6 +37,10 @@ const TuVungChiTiet = () => {
   const idTuVung = router.params;
   const navigation = useNavigation();
   const auth = useSelector(authSelector);
+
+  const like = useSelector(likeSelector);
+  const isLike = like.includes(idTuVung);
+  const dispatch = useDispatch();
   useEffect(() => {
     const stop = navigation.addListener('beforeRemove', (e) => {
       // Dừng đọc nếu trạng thái là đang đọc
@@ -40,9 +51,25 @@ const TuVungChiTiet = () => {
     });
     return stop;
   }, [navigation, isPeak]);
+
   useEffect(() => {
     handlerTuVung();
   }, [auth.token, idTuVung]);
+
+  useEffect(() => {
+    const updateLike = async () => {
+      await AsyncStorage.setItem('like', JSON.stringify(like));
+    };
+    updateLike();
+  }, [like]);
+
+  const handlerLike = () => {
+    if (isLike) {
+      dispatch(removeLike({ id: idTuVung }));
+    } else {
+      dispatch(addLike({ id: idTuVung }));
+    }
+  };
   const handlerTuVung = async () => {
     setIsLoading(true);
     try {
@@ -94,22 +121,21 @@ const TuVungChiTiet = () => {
       {isLoading && <Loading isVisible={isLoading}></Loading>}
       {chiTietTuVung && !isLoading && (
         <View style={styles.viewContainer}>
-          <View style={styles.viewInlineLeft}>
-            <ImageBackground
-              style={{
-                resizeMode: 'cover',
-                justifyContent: 'center',
-              }}
-              source={require('../../../assets/Icons/ribbon.png')}
-            >
-              <Text style={styles.textInlineLeft}>Left</Text>
-            </ImageBackground>
-          </View>
           <View style={styles.viewImage}>
             <Image
-              style={styles.image}
-              source={require('../../../assets/character2.png')}
+              style={{ ...styles.image }}
+              source={{ uri: chiTietTuVung.hinhAnh }}
             ></Image>
+            <TouchableOpacity
+              onPress={handlerLike}
+              style={styles.viewInlineLeft}
+            >
+              {isLike ? (
+                <AntDesign name="heart" size={24} color="white" />
+              ) : (
+                <AntDesign name="hearto" size={24} color="white" />
+              )}
+            </TouchableOpacity>
           </View>
           <View style={styles.viewBottom}>
             <View style={styles.viewBottomLeft}>
@@ -210,9 +236,13 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   viewInlineLeft: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    position: 'absolute',
+    top: 20,
+    right: 20,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Màu nền của icon
+    borderRadius: 50, // Đảm bảo icon là hình tròn
+    padding: 10, // Khoảng cách giữa biểu tượng và viền
+    elevation: 5, // Shadow để tạo hiệu ứng nổi bật
   },
   textInlineLeft: {
     fontSize: 14,
@@ -223,14 +253,15 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
   },
   viewImage: {
-    flex: 0.5,
+    flex: 0.7,
     justifyContent: 'center',
     alignItems: 'center',
   },
   image: {
-    maxWidth: width * 0.3,
-    maxHeight: height * 0.3,
+    width: '100%',
+    height: '100%',
     resizeMode: 'cover',
+    borderRadius: 20,
   },
   viewBottom: {
     flexDirection: 'row',

@@ -19,10 +19,12 @@ import SectionnsComponent from '../../component/UI/Auth/SectionnsComponent';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import tuVungApi from '../../Api/tuvungApi';
 import CheckData from '../../component/UI/NoData/noData';
+import { likeSelector } from '../../redux/reducers/likeReducer';
 const TuVung = () => {
   const [tuVung, setTuVung] = useState([]); // Khởi tạo state Baihoc với giá trị ban đầu là null
   const [isLoading, setIsLoading] = useState(true);
   const [ChuDe, setChuDe] = useState('');
+  const [idsTV, setIsTV] = useState([]);
   const router = useRoute();
   const idBaiHoc = router.params; // id của khóa bài học được truyền qua để tìm các bài kanji ngữ pháp từ vựng
   const navigator = useNavigation();
@@ -34,10 +36,12 @@ const TuVung = () => {
       handerChude();
     } else if (idBaiHoc === 'all') {
       handlerAll();
+    } else if (idBaiHoc.title === 'like' && idsTV) {
+      handlerLikeTV();
     } else {
       handlerTungVung();
     }
-  }, [auth.token, idBaiHoc, ChuDe]);
+  }, [auth.token, idBaiHoc, ChuDe, idsTV]);
   const getChude = async () => {
     const getItem = await AsyncStorage.getItem('chude');
     const data = JSON.parse(getItem);
@@ -46,6 +50,45 @@ const TuVung = () => {
   getChude().then((result) => {
     setChuDe(result);
   });
+  useEffect(() => {
+    const fetchLikeData = async () => {
+      try {
+        const savedLikeData = await AsyncStorage.getItem('like');
+        if (savedLikeData !== null) {
+          const parsedLikeData = JSON.parse(savedLikeData);
+          setIsTV(parsedLikeData);
+        }
+      } catch (error) {
+        console.error('Error retrieving like data from AsyncStorage:', error);
+      }
+    };
+
+    fetchLikeData(); // Gọi hàm fetchLikeData khi component được render lần đầu tiên
+  }, []);
+
+  const handlerLikeTV = async () => {
+    setIsLoading(true);
+    try {
+      if (auth.token && idBaiHoc && idsTV) {
+        const data = [];
+        for (const id of idsTV) {
+          const res = await tuVungApi.TuVungHandler(
+            `/${id}`,
+            null,
+            'get',
+            auth.token
+          );
+          data.push(res.data.data);
+        }
+        setTuVung(data);
+        // setTuVung(res.data.data);
+      }
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+    }
+  };
+
   const handlerAll = async () => {
     try {
       if (auth.token && idBaiHoc !== 'ChuDe' && idBaiHoc === 'all') {
