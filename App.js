@@ -34,6 +34,7 @@ import AsyncStorage, {
 } from '@react-native-async-storage/async-storage';
 import { useEffect, useState } from 'react';
 import { addAuth, authSelector } from './src/redux/reducers/authReducer';
+import { addLike } from './src/redux/reducers/likeReducer';
 const Stack = createStackNavigator();
 const Tabs = createBottomTabNavigator();
 
@@ -62,12 +63,19 @@ function Root() {
   console.log(auth);
   useEffect(() => {
     checkLogin();
+    checkLike();
   }, []);
 
   const checkLogin = async () => {
     const data = await getItem();
-    console.log(data);
     data && dispatch(addAuth(JSON.parse(data)));
+  };
+  const checkLike = async () => {
+    const data = await AsyncStorage.getItem('like');
+    if (data) {
+      const test = JSON.parse(data);
+      test.forEach((id) => dispatch(addLike({ id: id })));
+    }
   };
 
   return (
@@ -102,9 +110,7 @@ function AuthStack() {
     </Stack.Navigator>
   );
 }
-function ChudeScreen() {
-  return <Stack.Navigator></Stack.Navigator>;
-}
+
 function HomeScreen() {
   const [chude, setChuDe] = useState();
 
