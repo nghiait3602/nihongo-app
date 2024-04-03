@@ -292,7 +292,7 @@ const Profile = () => {
       </View>
 
       <View style={styles.box}>
-        <ItemProfile title={"Phản hồi"} icon={"chatbubbles-outline"} font={1} />
+        <ItemProfile title={"Liên hệ"} icon={"chatbubbles-outline"} font={1} />
         <ItemProfile title={"Trung tâm dịch vụ"} icon={"customerservice"} />
         <ItemProfile title={"Sửa thông tin người dùng"} icon={"setting"} />
       </View>

@@ -1,0 +1,19 @@
+{
+    "sections": [
+        {
+            "id": "profile",
+            "data": [
+                {
+                    "id": 1,
+                    "title": "NihonGo là gì?",
+                    "content": "Ứng dụng học ngôn ngữ Nhật - NihonGo dành riêng cho các bạn sinh viên Hutech nói chung và VJIT nói riêng. NihonGo mang tới trải nghiệm học tập thú vị và các nghiên cứu đã chứng minh sự hiệu quả của ứng dụng! Với các bài học nhỏ gọn, nhanh chóng, bạn sẽ vừa luyện tập các kỹ năng hữu ích vừa nhận về điểm và mở khóa từng cấp độ mới."
+                },
+                {
+                    "id": 2,
+                    "title": "Giá sử dụng NihonGo là bao nhiêu?",
+                    "content": "Giá sử dụng NihonGo là bao nhiêu? Bạn có thể học ngôn ngữ trên NihonGo hoàn toàn miễn phí. Không mất gì. Hãy bắt đầu học ngay trong hôm nay bạn nhé!"
+                }
+            ]
+        }
+    ]
+}

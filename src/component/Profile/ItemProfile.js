@@ -6,10 +6,16 @@ import {
   View,
   Dimensions,
   TextInput,
+  Modal,
+  ActivityIndicator,
+  FlatList,
+  Image,
 } from "react-native";
 import { AntDesign, Ionicons, SimpleLineIcons } from "@expo/vector-icons";
 import { Colors } from "../../constants/colors";
 import { useNavigation } from "@react-navigation/native";
+import Icon from "react-native-vector-icons/FontAwesome";
+import data from "./../../../data/Profile.json";
 
 const ItemProfile = ({
   title,
@@ -24,6 +30,8 @@ const ItemProfile = ({
   btht,
 }) => {
   const navigation = useNavigation();
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isModalVisible2, setIsModalVisible2] = useState(false);
 
   const handlePress = () => {
     if (title === "Sửa thông tin người dùng") {
@@ -38,6 +46,12 @@ const ItemProfile = ({
     if (title === `Hoàn thành: ${tenbtht}`) {
       navigation.navigate("LessionObject", btht.id);
     }
+    if (title === `Liên hệ`) {
+      setIsModalVisible(true);
+    }
+    if (title === `Trung tâm dịch vụ`) {
+      setIsModalVisible2(true);
+    }
   };
 
   const catChuoi = (text, maxLength) => {
@@ -47,6 +61,31 @@ const ItemProfile = ({
       return text;
     }
   };
+
+  const closeModal = () => {
+    setIsModalVisible(false); //exit
+    setIsModalVisible2(false);
+  };
+
+  const renderItem = ({ item }) => (
+    <View style={styles.item}>
+      <Text
+        style={[
+          styles.text2,
+          {
+            color: Colors.Humpback,
+            paddingBottom: 10,
+            paddingTop: 10,
+            fontSize: 20,
+            textAlign: "left",
+          },
+        ]}
+      >
+        {item.title}
+      </Text>
+      <Text style={styles.text2}>{item.content}</Text>
+    </View>
+  );
 
   return (
     <View>
@@ -90,6 +129,65 @@ const ItemProfile = ({
           !title.includes("Hoàn thành") &&
           !title.includes("Tiếp theo") && <View style={styles.divider} />}
       </TouchableOpacity>
+      
+      <Modal
+        visible={isModalVisible}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={closeModal}
+      >
+        <View style={styles.modalContainer}>
+          <TouchableOpacity onPress={closeModal} style={styles.closeButton}>
+            <Icon name="times" size={28} color="white" />
+          </TouchableOpacity>
+          <View style={styles.modalInnerContent}>
+            <Text
+              style={[
+                styles.text,
+                { color: Colors.Feather_Green, paddingBottom: 20 },
+              ]}
+            >
+              @ THÔNG TIN DEVELOPER @
+            </Text>
+            <Text style={styles.text}>Nguyễn Trung Nghĩa - 0385 637 299</Text>
+            <Text style={styles.text}>Lê Quốc Việt - 0783 319 045</Text>
+            <Text style={styles.text}>Phạm Hồng Thắng - 0778 054 039</Text>
+            <Image
+              source={require("./../../../assets/Icons/iconapp.png")}
+              style={{
+                width: 140,
+                height: 140,
+              }}
+            />
+            <Text style={[styles.text, { paddingTop: 40, fontSize: 12 }]}>
+              © 2024 NihonGo App. Đồ án CNTT-VJIT-HUTECH.
+            </Text>
+          </View>
+        </View>
+      </Modal>
+
+      <Modal
+        visible={isModalVisible2}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={closeModal}
+      >
+        <View style={styles.modalContainer}>
+          <TouchableOpacity onPress={closeModal} style={styles.closeButton}>
+            <Icon name="times" size={28} color="white" />
+          </TouchableOpacity>
+          <View style={styles.modalInnerContent}>
+            <FlatList
+              data={data.sections[0].data}
+              renderItem={renderItem}
+              keyExtractor={(item) => item.id}
+            />
+            <Text style={[styles.text, { paddingTop: 40, fontSize: 12 }]}>
+              © 2024 NihonGo App. Đồ án CNTT-VJIT-HUTECH.
+            </Text>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -127,9 +225,17 @@ const styles = StyleSheet.create({
   text: {
     marginLeft: 10,
     fontSize: 17,
-    color: Colors.backgroundSliver,    
+    color: Colors.backgroundSliver,
     fontWeight: "600",
+    fontFamily: "Nunito_Black",
+    textAlign: "center",
+  },
+  text2: {
+    marginLeft: 5,
+    fontSize: 16,
+    color: Colors.backgroundSliver,
     fontFamily: "Nunito_ExtraBold",
+    textAlign: "justify",
   },
   inputContainer: {
     borderBottomWidth: 0.3,
@@ -146,5 +252,26 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: Colors.backgroundSliver,
     marginLeft: 10,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)", // Màu nền mờ
+  },
+  closeButton: {
+    position: "absolute",
+    top: 20,
+    left: 10,
+  },
+  modalInnerContent: {
+    backgroundColor: "white",
+    borderRadius: 10,
+    padding: 20,
+    width: width - 40,
+    maxHeight: height - 200,
+    borderWidth: 0.5,
+    borderColor: Colors.backgroundSliver,
+    alignItems: "center",
   },
 });
