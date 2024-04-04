@@ -28,6 +28,7 @@ var height = Dimensions.get("window").height;
 const Profile = () => {
   const [user, setUser] = useState(null);
   const [image, setImage] = useState("");
+  const [idsTV, setIdsTV] = useState();
 
   const dispatch = useDispatch();
   const { token } = useSelector(authSelector);
@@ -142,6 +143,7 @@ const Profile = () => {
   const removeItemFromAsyncStorage = async () => {
     try {
       await AsyncStorage.removeItem("chude");
+      await AsyncStorage.removeItem("like");
     } catch (error) {
       console.error(`Error removing item from AsyncStorage: ${error}`);
     }
@@ -292,6 +294,11 @@ const Profile = () => {
       </View>
 
       <View style={styles.box}>
+        <ItemProfile
+          title={`Từ vựng yêu thích`}
+          icon={"chatbubbles-outline"}
+          font={1}
+        />
         <ItemProfile title={"Liên hệ"} icon={"chatbubbles-outline"} font={1} />
         <ItemProfile title={"Trung tâm dịch vụ"} icon={"customerservice"} />
         <ItemProfile title={"Sửa thông tin người dùng"} icon={"setting"} />

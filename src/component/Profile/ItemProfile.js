@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -28,23 +28,27 @@ const ItemProfile = ({
   baihoctt,
   tenbtht,
   btht,
+  idsTV,
 }) => {
   const navigation = useNavigation();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isModalVisible2, setIsModalVisible2] = useState(false);
 
   const handlePress = () => {
-    if (title === "Sửa thông tin người dùng") {
-      navigation.navigate("SettingsScreen");
+    if (title === 'Sửa thông tin người dùng') {
+      navigation.navigate('SettingsScreen');
     }
     if (title === `Khóa học đang học: ${tenKH}`) {
-      navigation.navigate("LessionScreen", khoaHoc.id);
+      navigation.navigate('LessionScreen', khoaHoc.id);
     }
     if (title === `Tiếp theo: ${tenbaihoctt}`) {
-      navigation.navigate("LessionObject", baihoctt.id);
+      navigation.navigate('LessionObject', baihoctt.id);
     }
     if (title === `Hoàn thành: ${tenbtht}`) {
-      navigation.navigate("LessionObject", btht.id);
+      navigation.navigate('LessionObject', btht.id);
+    }
+    if (title === 'Từ vựng yêu thích') {
+      navigation.navigate('TuVung', { title: 'like' });
     }
     if (title === `Liên hệ`) {
       setIsModalVisible(true);
@@ -56,7 +60,7 @@ const ItemProfile = ({
 
   const catChuoi = (text, maxLength) => {
     if (text.length > maxLength) {
-      return text.substring(0, maxLength - 5) + "...";
+      return text.substring(0, maxLength - 5) + '...';
     } else {
       return text;
     }
@@ -125,9 +129,9 @@ const ItemProfile = ({
             style={{ bottom: -3, marginRight: 10 }}
           />
         </View>
-        {!title.includes("Khóa học đang học") &&
-          !title.includes("Hoàn thành") &&
-          !title.includes("Tiếp theo") && <View style={styles.divider} />}
+        {!title.includes('Khóa học đang học') &&
+          !title.includes('Hoàn thành') &&
+          !title.includes('Tiếp theo') && <View style={styles.divider} />}
       </TouchableOpacity>
       
       <Modal
@@ -194,8 +198,8 @@ const ItemProfile = ({
 
 export default ItemProfile;
 
-var width = Dimensions.get("window").width;
-var height = Dimensions.get("window").height;
+var width = Dimensions.get('window').width;
+var height = Dimensions.get('window').height;
 
 const styles = StyleSheet.create({
   divider: {
@@ -212,14 +216,14 @@ const styles = StyleSheet.create({
     paddingTop: 10,
   },
   outer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   inner: {
-    flexDirection: "row",
+    flexDirection: 'row',
     marginHorizontal: 20,
-    alignItems: "center",
+    alignItems: 'center',
     marginVertical: 18,
   },
   text: {
@@ -244,8 +248,8 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     marginTop: 15,
     paddingHorizontal: 20,
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   input: {
     flex: 1,

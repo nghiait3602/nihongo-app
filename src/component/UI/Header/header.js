@@ -12,7 +12,6 @@ const Header = ({ left, right, onPress, textLeft, textRight }) => {
       </View>
       <View style={styles.infoContainer}>
         <Image source={right} />
-        <Text style={styles.fireText}>{textRight}</Text>
       </View>
     </View>
   );
