@@ -136,7 +136,8 @@ const Profile = () => {
     ? { uri: image }
     : user && user.photo
     ? { uri: user.photo }
-    : "https://d326fntlu7tb1e.cloudfront.net/uploads/b5065bb8-4c6b-4eac-a0ce-86ab0f597b1e-vinci_04.jpg";
+    : require("./../../../assets/Icons/avatar.png");
+    
   const bkImg =
     "https://d326fntlu7tb1e.cloudfront.net/uploads/ab6356de-429c-45a1-b403-d16f7c20a0bc-bkImg-min.png";
 
@@ -203,13 +204,7 @@ const Profile = () => {
           >
             <TouchableOpacity onPress={pickImage}>
               <Image
-                source={
-                  image
-                    ? { uri: image }
-                    : user && user.photo
-                    ? { uri: user.photo }
-                    : require("./../../../assets/Icons/avatar.png")
-                }
+                source={profile}
                 style={styles.image}
               />
             </TouchableOpacity>
@@ -296,7 +291,7 @@ const Profile = () => {
       <View style={styles.box}>
         <ItemProfile
           title={`Từ vựng yêu thích`}
-          icon={"chatbubbles-outline"}
+          icon={"heart"}
           font={1}
         />
         <ItemProfile title={"Liên hệ"} icon={"chatbubbles-outline"} font={1} />
