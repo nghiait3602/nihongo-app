@@ -10,6 +10,7 @@ import {
   Platform,
   ScrollView,
   RefreshControl,
+  ActivityIndicator,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { Colors } from "../../constants/colors";
@@ -21,6 +22,8 @@ import { useDispatch, useSelector } from "react-redux";
 
 import userAPI from "../../Api/authApi";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import ImageAPI from "../../Api/updateMeApi";
+import Loading from "../../Modals/Loading";
 
 var width = Dimensions.get("window").width;
 var height = Dimensions.get("window").height;
@@ -34,6 +37,7 @@ const Profile = () => {
   const { token } = useSelector(authSelector);
 
   const [refreshing, setRefreshing] = useState(false); // State để theo dõi trạng thái của action làm mới
+  const [isLoading, setIsLoading] = useState(false);
 
   // Hàm để xử lý làm mới dữ liệu
   const onRefresh = React.useCallback(() => {
@@ -73,26 +77,16 @@ const Profile = () => {
 
   const updateUserData = async () => {
     try {
-      const dataToUpdate = {};
-      if (image !== "") {
-        dataToUpdate.photo = image;
-      }
-      // Gửi yêu cầu cập nhật dữ liệu lên server
-      const response = await userAPI.HandlerAuthentication(
-        "/updateMe",
-        dataToUpdate,
-        "patch",
-        token
-      );
-      if (response.data.user) {
-        setUser(response.data.user);
-        console.log("Photo mới:", response.data.user.photo);
+      setIsLoading(true);
+      const response = await ImageAPI.updateUserData(image, token);
+      if (response && response.status === "success") {
+        setIsLoading(false);
         Alert.alert("Thông báo", "Cập nhật ảnh thành công!");
       } else {
         console.error("Lỗi update user data: Dữ liệu trả về không hợp lệ.");
       }
     } catch (error) {
-      console.error("Lỗi update user data: ", error);
+      Alert.alert("Ảnh hơi nặng!", "Vui lòng chọn ảnh khác hoặc chờ đợi.");
     }
   };
 
@@ -137,7 +131,7 @@ const Profile = () => {
     : user && user.photo
     ? { uri: user.photo }
     : require("./../../../assets/Icons/avatar.png");
-    
+
   const bkImg =
     "https://d326fntlu7tb1e.cloudfront.net/uploads/ab6356de-429c-45a1-b403-d16f7c20a0bc-bkImg-min.png";
 
@@ -203,11 +197,11 @@ const Profile = () => {
             }}
           >
             <TouchableOpacity onPress={pickImage}>
-              <Image
-                source={profile}
-                style={styles.image}
-              />
+              <Image source={profile} style={styles.image} />
             </TouchableOpacity>
+            {isLoading && (
+              <ActivityIndicator size="small" color={Colors.Feather_Green} />
+            )}
             <Text style={styles.text}>
               {user === null ? "username" : user.name}
             </Text>
@@ -289,11 +283,7 @@ const Profile = () => {
       </View>
 
       <View style={styles.box}>
-        <ItemProfile
-          title={`Từ vựng yêu thích`}
-          icon={"heart"}
-          font={1}
-        />
+        <ItemProfile title={`Từ vựng yêu thích`} icon={"heart"} font={1} />
         <ItemProfile title={"Liên hệ"} icon={"chatbubbles-outline"} font={1} />
         <ItemProfile title={"Trung tâm dịch vụ"} icon={"customerservice"} />
         <ItemProfile title={"Sửa thông tin người dùng"} icon={"setting"} />
