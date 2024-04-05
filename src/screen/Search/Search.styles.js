@@ -69,8 +69,13 @@ export default StyleSheet.create({
     maxHeight: "80%", // Chiều cao tối đa của nội dung modal
   },
   closeButton: {
-    position: 'absolute',
-    top: 20,
-    left: 10,
+    width: 40,
+    height: 40, 
+    justifyContent: "center", 
+    alignItems: "center",
+    borderRadius: 20,
+    backgroundColor: "rgba(0, 0, 0, 0.5)", 
+    alignSelf: "center",
+    marginBottom: 10,
   },
 });

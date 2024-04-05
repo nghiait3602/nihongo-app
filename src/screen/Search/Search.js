@@ -39,24 +39,43 @@ const Search = () => {
     }
   }, [searchResults]);
 
-  const tuNhapVao = (tuTra) => {
+  const tuNhapVao = async (tuTra) => {
     setTuSearch(tuTra);
   };
 
   const xuLySearch = async () => {
     try {
       setIsLoading(true); // Bắt đầu hiệu ứng loading
-      if (!tuSearch.trim()) {
+      // Dịch sang tiếng Anh được khi search, vì từ điển jisho chỉ dịch từ Anh sang Nhật
+      const responseTrans = await axios.get(
+        `https://translation.googleapis.com/language/translate/v2?key=AIzaSyDnD3yxmMCDTuojIKKS0ZsZbYzU_Wkw36w&q=${encodeURIComponent(
+          tuSearch
+        )}&source=vi&target=en`
+      );
+      const translatedText =
+        responseTrans.data.data.translations[0].translatedText;
+
+      if (!translatedText.trim()) {
         Alert.alert("(✿◠‿◠)", "Vui lòng nhập từ cần tìm kiếm bạn nhé.");
         setIsLoading(false); // Kết thúc hiệu ứng loading
         return;
       }
       setModalVisible(true); // Mở modal hiển thị kết quả
       const response = await axios.get(
-        `https://jisho.org/api/v1/search/words?keyword=${tuSearch}`
+        `https://jisho.org/api/v1/search/words?keyword=${translatedText}`
       );
       const data = response.data;
-      setSearchResults(data.data);
+      if (data.data.length === 0) {
+        Alert.alert("Không tìm thấy kết quả", "Vui lòng thử lại với từ khác.", [
+          {
+            onPress: () => {
+              setModalVisible(false);
+            },
+          },
+        ]);
+      } else {
+        setSearchResults(data.data);
+      }
       setIsLoading(false); // Kết thúc hiệu ứng loading sau khi nhận được dữ liệu
     } catch (error) {
       console.error("Lỗi khi tìm kiếm từ:", error);
@@ -118,13 +137,11 @@ const Search = () => {
   );
 
   const handleItemClick = (item) => {
-    // Xử lý khi người dùng nhấn vào một mục trong danh sách
     console.log("Đã chọn:", item);
-    setModalVisible(false); // Đóng modal sau khi chọn
-    // Thực hiện các hành động khác nếu cần
   };
 
   const closeModal = () => {
+    setSearchResults([]);
     setModalVisible(false); // Thoat tim kiem
   };
 
@@ -157,11 +174,13 @@ const Search = () => {
   };
 
   const copyToClipboard = (text) => {
-    Clipboard.setString(text);
-    Alert.alert(
-      "Sao chép thành công",
-      "Nội dung đã được sao chép vào clipboard."
-    );
+    if (text !== "") {
+      Clipboard.setString(text);
+      Alert.alert(
+        "Sao chép thành công",
+        "Nội dung đã được sao chép vào clipboard."
+      );
+    }
   };
 
   var height = Dimensions.get("window").height;
@@ -177,15 +196,19 @@ const Search = () => {
               onChangeText={tuNhapVao}
               value={tuSearch}
               style={styles.search}
-              placeholder="日本語, Nihongo, Japanese..."
+              placeholder="日本語, Nihongo, Tiếng Nhật..."
             />
-            <Icon
-              name="search"
-              size={20}
-              color="white"
-              style={styles.icon}
-              onPress={xuLySearch}
-            />
+            {tuSearch !== "" && (
+              <Icon
+                name="times"
+                size={24}
+                color="white"
+                style={styles.icon}
+                onPress={() => {
+                  setTuSearch("");
+                }}
+              />
+            )}
           </View>
           <View style={styles.buttonsContainer}>
             <View style={styles.buttonContainer}>
@@ -216,13 +239,17 @@ const Search = () => {
                 style={[styles.search, { height: height / 9 }]}
                 multiline={true} // Cho phép nhiều hàng
               />
-              <Icon
-                name="search"
-                size={20}
-                color="white"
-                style={styles.icon}
-                onPress={dichVanBan}
-              />
+              {vanbanSearch !== "" && (
+                <Icon
+                  name="times"
+                  size={24}
+                  color="white"
+                  style={styles.icon}
+                  onPress={() => {
+                    setVanBanSearch("");
+                  }}
+                />
+              )}
             </View>
 
             <View style={{ flexDirection: "row", top: 5 }}>
@@ -254,13 +281,15 @@ const Search = () => {
                 ]}
                 multiline={true} // Cho phép nhiều hàng
               />
-              <Icon
-                name="copy"
-                size={20}
-                color="white"
-                style={styles.icon}
-                onPress={() => copyToClipboard(translatedText)}
-              />
+              {translatedText !== "" && (
+                <Icon
+                  name="copy"
+                  size={20}
+                  color="white"
+                  style={styles.icon}
+                  onPress={() => copyToClipboard(translatedText)}
+                />
+              )}
             </View>
             <View style={styles.buttonsContainer}>
               <View style={styles.buttonContainer}>

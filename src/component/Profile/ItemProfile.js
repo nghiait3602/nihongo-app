@@ -264,9 +264,14 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.5)", // Màu nền mờ
   },
   closeButton: {
-    position: "absolute",
-    top: 20,
-    left: 10,
+    width: 40,
+    height: 40, 
+    justifyContent: "center", 
+    alignItems: "center",
+    borderRadius: 20,
+    backgroundColor: "rgba(0, 0, 0, 0.5)", 
+    alignSelf: "center",
+    marginBottom: 10,
   },
   modalInnerContent: {
     backgroundColor: "white",
