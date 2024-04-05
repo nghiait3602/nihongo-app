@@ -10,7 +10,6 @@ import {
   Platform,
   ScrollView,
   RefreshControl,
-  ActivityIndicator,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { Colors } from "../../constants/colors";
@@ -37,7 +36,6 @@ const Profile = () => {
   const { token } = useSelector(authSelector);
 
   const [refreshing, setRefreshing] = useState(false); // State để theo dõi trạng thái của action làm mới
-  const [isLoading, setIsLoading] = useState(false);
 
   // Hàm để xử lý làm mới dữ liệu
   const onRefresh = React.useCallback(() => {
@@ -77,22 +75,23 @@ const Profile = () => {
 
   const updateUserData = async () => {
     try {
-      setIsLoading(true);
       const response = await ImageAPI.updateUserData(image, token);
       if (response && response.status === "success") {
-        setIsLoading(false);
-        Alert.alert("Thông báo", "Cập nhật ảnh thành công!");
+        console.log(
+          `Upload cloudinary thành công: ${response.data.user.photo}`
+        );
       } else {
         console.error("Lỗi update user data: Dữ liệu trả về không hợp lệ.");
       }
-    } catch (error) {
-      Alert.alert("Ảnh hơi nặng!", "Vui lòng chọn ảnh khác hoặc chờ đợi.");
+    } catch (err) {
+      console.log("Đang upload ảnh lên cloudinary...");
     }
   };
 
   useEffect(() => {
     if (image !== "") {
       updateUserData();
+      Alert.alert("Thông báo", "Cập nhật ảnh thành công!");
     }
   }, [image]);
 
@@ -114,10 +113,28 @@ const Profile = () => {
               aspect: [4, 3],
               quality: 1,
             });
-            console.log(result.assets[0].uri); // Đường link lấy uri chuẩn
             if (!result.canceled) {
-              setImage(result.assets[0].uri);
-              updateUserData();
+              try {
+                setImage(result.assets[0].uri);
+                const updateAnh = {};
+                if (image !== "") {
+                  updateAnh.photo = image;
+                }
+                const response = await userAPI.HandlerAuthentication(
+                  `/updateMe`,
+                  updateAnh,
+                  "patch",
+                  token
+                );
+                if (response.data.user) {
+                  console.log(
+                    "Update local thành công:",
+                    response.data.user.photo
+                  );
+                }
+              } catch (err) {
+                console.error("Update local Thất bại:", err);
+              }
             }
           },
         },
@@ -199,9 +216,6 @@ const Profile = () => {
             <TouchableOpacity onPress={pickImage}>
               <Image source={profile} style={styles.image} />
             </TouchableOpacity>
-            {isLoading && (
-              <ActivityIndicator size="small" color={Colors.Feather_Green} />
-            )}
             <Text style={styles.text}>
               {user === null ? "username" : user.name}
             </Text>
