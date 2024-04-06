@@ -8,9 +8,9 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import React from 'react';
+import * as Speech from 'expo-speech';
 import { useRoute } from '@react-navigation/native';
 import { Feather } from '@expo/vector-icons';
-import * as Speech from 'expo-speech';
 import { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { Colors } from '../../constants/colors';
@@ -93,7 +93,7 @@ const TuVungChiTiet = () => {
       Speech.speak(text, {
         language: 'ja',
         pitch: 1,
-        rate: 0.75,
+        rate: 1,
         onDone: () => {
           setIsPeak(false); // Khi đọc xong, cập nhật lại nội dung của nút đọc
         },
