@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import {
   StyleSheet,
   Text,
@@ -11,26 +11,26 @@ import {
   ScrollView,
   RefreshControl,
   ActivityIndicator,
-} from "react-native";
-import * as ImagePicker from "expo-image-picker";
-import { Colors } from "../../constants/colors";
-import { AntDesign } from "@expo/vector-icons";
-import ItemDangKy from "../../component/Profile/ItemDangKy";
-import ItemProfile from "../../component/Profile/ItemProfile";
-import { removeAuth, authSelector } from "../../redux/reducers/authReducer";
-import { useDispatch, useSelector } from "react-redux";
+} from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
+import { Colors } from '../../constants/colors';
+import { AntDesign } from '@expo/vector-icons';
+import ItemDangKy from '../../component/Profile/ItemDangKy';
+import ItemProfile from '../../component/Profile/ItemProfile';
+import { removeAuth, authSelector } from '../../redux/reducers/authReducer';
+import { useDispatch, useSelector } from 'react-redux';
 
-import userAPI from "../../Api/authApi";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import ImageAPI from "../../Api/updateMeApi";
-import Loading from "../../Modals/Loading";
+import userAPI from '../../Api/authApi';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import ImageAPI from '../../Api/updateMeApi';
+import Loading from '../../Modals/Loading';
 
-var width = Dimensions.get("window").width;
-var height = Dimensions.get("window").height;
+var width = Dimensions.get('window').width;
+var height = Dimensions.get('window').height;
 
 const Profile = () => {
   const [user, setUser] = useState(null);
-  const [image, setImage] = useState("");
+  const [image, setImage] = useState('');
   const [idsTV, setIdsTV] = useState();
 
   const dispatch = useDispatch();
@@ -48,11 +48,11 @@ const Profile = () => {
 
   useEffect(() => {
     (async () => {
-      if (Platform.OS !== "web") {
+      if (Platform.OS !== 'web') {
         const { status } =
           await ImagePicker.requestMediaLibraryPermissionsAsync();
-        if (status !== "granted") {
-          Alert.alert("Quyền truy cập thư viện ảnh đã bị từ chối!");
+        if (status !== 'granted') {
+          Alert.alert('Quyền truy cập thư viện ảnh đã bị từ chối!');
         }
       }
     })();
@@ -63,12 +63,12 @@ const Profile = () => {
       const response = await userAPI.HandlerAuthentication(
         `/me`,
         null,
-        "get",
+        'get',
         token
       );
       setUser(response.data.data);
     } catch (error) {
-      console.error("Error fetching user data: ", error);
+      console.error('Error fetching user data: ', error);
     }
   };
   useEffect(() => {
@@ -79,34 +79,34 @@ const Profile = () => {
     try {
       setIsLoading(true);
       const response = await ImageAPI.updateUserData(image, token);
-      if (response && response.status === "success") {
+      if (response && response.status === 'success') {
         setIsLoading(false);
-        Alert.alert("Thông báo", "Cập nhật ảnh thành công!");
+        Alert.alert('Thông báo', 'Cập nhật ảnh thành công!');
       } else {
-        console.error("Lỗi update user data: Dữ liệu trả về không hợp lệ.");
+        console.error('Lỗi update user data: Dữ liệu trả về không hợp lệ.');
       }
     } catch (error) {
-      Alert.alert("Ảnh hơi nặng!", "Vui lòng chọn ảnh khác hoặc chờ đợi.");
+      Alert.alert('Ảnh hơi nặng!', 'Vui lòng chọn ảnh khác hoặc chờ đợi.');
     }
   };
 
   useEffect(() => {
-    if (image !== "") {
+    if (image !== '') {
       updateUserData();
     }
   }, [image]);
 
   const pickImage = async () => {
     Alert.alert(
-      "Đổi ảnh đại diện",
-      "Bạn có muốn đổi ảnh đại diện không?",
+      'Đổi ảnh đại diện',
+      'Bạn có muốn đổi ảnh đại diện không?',
       [
         {
-          text: "Hủy",
-          style: "cancel",
+          text: 'Hủy',
+          style: 'cancel',
         },
         {
-          text: "OK",
+          text: 'OK',
           onPress: async () => {
             let result = await ImagePicker.launchImageLibraryAsync({
               mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -130,30 +130,30 @@ const Profile = () => {
     ? { uri: image }
     : user && user.photo
     ? { uri: user.photo }
-    : require("./../../../assets/Icons/avatar.png");
+    : require('./../../../assets/Icons/avatar.png');
 
   const bkImg =
-    "https://d326fntlu7tb1e.cloudfront.net/uploads/ab6356de-429c-45a1-b403-d16f7c20a0bc-bkImg-min.png";
+    'https://d326fntlu7tb1e.cloudfront.net/uploads/ab6356de-429c-45a1-b403-d16f7c20a0bc-bkImg-min.png';
 
   const removeItemFromAsyncStorage = async () => {
     try {
-      await AsyncStorage.removeItem("chude");
-      await AsyncStorage.removeItem("like");
+      await AsyncStorage.removeItem('chude');
+      await AsyncStorage.removeItem('like');
     } catch (error) {
       console.error(`Error removing item from AsyncStorage: ${error}`);
     }
   };
   function logOut() {
     Alert.alert(
-      "Đăng xuất",
-      "Bạn có chắc chắn muốn đăng xuất?",
+      'Đăng xuất',
+      'Bạn có chắc chắn muốn đăng xuất?',
       [
         {
-          text: "Hủy",
-          style: "cancel",
+          text: 'Hủy',
+          style: 'cancel',
         },
         {
-          text: "OK",
+          text: 'OK',
           onPress: () => {
             removeItemFromAsyncStorage();
             dispatch(removeAuth());
@@ -186,13 +186,13 @@ const Profile = () => {
       <View style={styles.profile}>
         <View
           style={{
-            flexDirection: "row",
+            flexDirection: 'row',
           }}
         >
           <View
             style={{
-              alignItems: "center",
-              alignContent: "center",
+              alignItems: 'center',
+              alignContent: 'center',
               flex: 1,
             }}
           >
@@ -203,10 +203,10 @@ const Profile = () => {
               <ActivityIndicator size="small" color={Colors.Feather_Green} />
             )}
             <Text style={styles.text}>
-              {user === null ? "username" : user.name}
+              {user === null ? 'username' : user.name}
             </Text>
             <Text style={styles.email}>
-              {user === null ? "email" : user.email}
+              {user === null ? 'email' : user.email}
             </Text>
           </View>
         </View>
@@ -223,19 +223,19 @@ const Profile = () => {
           title={`Khóa học đang học: ${
             user && user.tienTrinhCuaToi && user.tienTrinhCuaToi.length > 0
               ? user.tienTrinhCuaToi[0].baiHoc.khoaHoc.tenKhoahoc
-              : "chưa học"
+              : 'chưa học'
           }`}
-          icon={"book"}
+          icon={'book'}
           color={Colors.Fox}
           khoaHoc={
             user && user.tienTrinhCuaToi && user.tienTrinhCuaToi.length > 0
               ? user.tienTrinhCuaToi[0].baiHoc.khoaHoc
-              : "chưa học"
+              : 'chưa học'
           }
           tenKH={
             user && user.tienTrinhCuaToi && user.tienTrinhCuaToi.length > 0
               ? user.tienTrinhCuaToi[0].baiHoc.khoaHoc.tenKhoahoc
-              : "chưa học"
+              : 'chưa học'
           }
         />
       </View>
@@ -244,20 +244,20 @@ const Profile = () => {
           title={`Hoàn thành: ${
             user && user.tienTrinhCuaToi && user.tienTrinhCuaToi.length > 0
               ? user.tienTrinhCuaToi[0].baiHoc.tenBaiHoc
-              : "chưa học"
+              : 'chưa học'
           }`}
-          icon={"check"}
+          icon={'check'}
           color={Colors.Feather_Green}
           font={2}
           tenbtht={
             user && user.tienTrinhCuaToi && user.tienTrinhCuaToi.length > 0
               ? user.tienTrinhCuaToi[0].baiHoc.tenBaiHoc
-              : "chưa học"
+              : 'chưa học'
           }
           btht={
             user && user.tienTrinhCuaToi && user.tienTrinhCuaToi.length > 0
               ? user.tienTrinhCuaToi[0].baiHoc
-              : "chưa học"
+              : 'chưa học'
           }
         />
       </View>
@@ -266,27 +266,27 @@ const Profile = () => {
           title={`Tiếp theo: ${
             user && user.baiHocTiepTheo
               ? user.baiHocTiepTheo.tenBaiHoc
-              : "chưa học"
+              : 'chưa học'
           }`}
-          icon={"rocket-outline"}
+          icon={'rocket-outline'}
           color={Colors.Humpback}
           font={1}
           tenbaihoctt={
             user && user.baiHocTiepTheo
               ? user.baiHocTiepTheo.tenBaiHoc
-              : "chưa học"
+              : 'chưa học'
           }
           baihoctt={
-            user && user.baiHocTiepTheo ? user.baiHocTiepTheo : "chưa học"
+            user && user.baiHocTiepTheo ? user.baiHocTiepTheo : 'chưa học'
           }
         />
       </View>
 
       <View style={styles.box}>
-        <ItemProfile title={`Từ vựng yêu thích`} icon={"heart"} font={1} />
-        <ItemProfile title={"Liên hệ"} icon={"chatbubbles-outline"} font={1} />
-        <ItemProfile title={"Trung tâm dịch vụ"} icon={"customerservice"} />
-        <ItemProfile title={"Sửa thông tin người dùng"} icon={"setting"} />
+        <ItemProfile title={`Từ vựng yêu thích`} icon={'heart'} font={1} />
+        <ItemProfile title={'Liên hệ'} icon={'chatbubbles-outline'} font={1} />
+        <ItemProfile title={'Trung tâm dịch vụ'} icon={'customerservice'} />
+        <ItemProfile title={'Sửa thông tin người dùng'} icon={'setting'} />
       </View>
     </ScrollView>
   );
@@ -303,24 +303,24 @@ const styles = StyleSheet.create({
     borderWidth: 4,
   },
   text: {
-    color: "black",
+    color: 'black',
     fontSize: 18,
   },
   email: {
-    color: "gray",
+    color: 'gray',
     marginBottom: 30,
   },
   box: {
-    height: "auto",
+    height: 'auto',
     backgroundColor: Colors.Snow,
     margin: 10,
     borderRadius: 12,
     elevation: 3,
   },
   profile: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     marginHorizontal: 20,
     marginTop: 60,
   },
