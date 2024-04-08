@@ -47,34 +47,34 @@ const Dialog = () => {
       <View style={styles.bottomView}>
         <ScrollView style={styles.bottomViewInline}>
           <ItemList
-            icon="book"
+            icon="text-outline"
             onPress={() => navigation.navigate('TuVung', 'ChuDe')}
           >
-            Từ vựng gợi ý.
+            TỪ VỰNG GỢI Ý
           </ItemList>
           <ItemList
-            icon="book"
+            icon="library-outline"
             onPress={() => navigation.navigate('BaiDoc', 'baidoc')}
           >
-            Bài đọc
+            BÀI ĐỌC
           </ItemList>
           <ItemList
-            icon="book"
+            icon="bag-outline"
             onPress={() => navigation.navigate('TuVung', 'all')}
           >
-            Kho từ vựng
+            KHO TỪ VỰNG
           </ItemList>
           <ItemList
-            icon="book"
+            icon="bag-handle-outline"
             onPress={() => navigation.navigate('NguPhap', 'nn')}
           >
-            Kho ngữ pháp
+            KHO NGỮ PHÁP
           </ItemList>
           <ItemList
-            icon="book"
+            icon="briefcase-outline"
             onPress={() => navigation.navigate('Kanji', 'kanji')}
           >
-            Kho Kanji
+            KHO KANJI
           </ItemList>
         </ScrollView>
       </View>

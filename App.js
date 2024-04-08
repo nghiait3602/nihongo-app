@@ -57,7 +57,6 @@ export default function App() {
 }
 function Root() {
   const { getItem } = useAsyncStorage('auth');
-
   const auth = useSelector(authSelector);
   const dispatch = useDispatch();
   console.log(auth);
@@ -65,7 +64,6 @@ function Root() {
     checkLogin();
     checkLike();
   }, []);
-
   const checkLogin = async () => {
     const data = await getItem();
     data && dispatch(addAuth(JSON.parse(data)));
@@ -113,7 +111,6 @@ function AuthStack() {
 
 function HomeScreen() {
   const [chude, setChuDe] = useState();
-
   const CheckChuDe = async () => {
     const data = await AsyncStorage.getItem('chude');
     return data;
@@ -123,7 +120,6 @@ function HomeScreen() {
       setChuDe(res);
     });
   });
-  console.log(chude);
   return (
     <Stack.Navigator screenOptions={{ headerTitleAlign: 'center' }}>
       {!chude && (

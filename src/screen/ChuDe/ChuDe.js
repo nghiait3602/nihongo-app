@@ -18,6 +18,7 @@ import { authSelector } from '../../redux/reducers/authReducer';
 import AsyncStorage, {
   useAsyncStorage,
 } from '@react-native-async-storage/async-storage';
+import BottomComponent from '../../component/UI/Auth/BottomComponent';
 const Data = [
   {
     id: 1,
@@ -49,10 +50,15 @@ const Data = [
 const ChuDe = () => {
   const [selectItem, setSelectItem] = useState([]);
   const [itemList, setItemList] = useState([]);
+  const [disable, setDisable] = useState(true);
   const navigation = useNavigation();
 
   const auth = useSelector(authSelector);
-  useEffect(() => {}, []);
+
+  useEffect(() => {
+    handlerSelected();
+  }, [selectItem]);
+
   const handlerChuDe = async (ds) => {
     try {
       const res = await chuDecApi.ChuDeHandler(
@@ -104,28 +110,47 @@ const ChuDe = () => {
       'phim ảnh': data['Phim Ảnh'],
       game: data['game'],
     };
-    console.log(ds);
-    console.log(data);
     handlerChuDe(ds);
     navigation.navigate('BottomNavigation');
   }
 
+  function handlerImage(key) {
+    switch (key) {
+      case 'Thể Thao':
+        return require('../../../assets/chude/sport.png');
+      case 'Ẩm Thực':
+        return require('../../../assets/chude/at.png');
+      case 'Giao Tiếp':
+        return require('../../../assets/chude/sport.png');
+      case 'Thời Trang':
+        return require('../../../assets/chude/tt.png');
+      case 'Phim Ảnh':
+        return require('../../../assets/chude/movie.png');
+      case 'game':
+        return require('../../../assets/chude/game.png');
+    }
+  }
+  function handlerSelected() {
+    if (selectItem.length < 3) {
+      setDisable(true);
+      return;
+    }
+    setDisable(false);
+  }
   function renderItem({ item }) {
+    const image = handlerImage(item.chude);
     return (
       <TouchableOpacity
         style={[
           styles.itemContent,
           {
-            borderColor: selectItem.includes(item.id) ? Colors.Bee : 'gray',
+            borderColor: selectItem.includes(item.id) ? Colors.Bee : 'white',
           },
         ]}
         onPress={hanlderOnPress.bind(this, item)}
       >
         <View style={styles.viewInner}>
-          <Image
-            style={styles.image}
-            source={require('../../../assets/Icons/japan.png')}
-          ></Image>
+          <Image style={styles.image} source={image}></Image>
           <Text style={styles.textTitle}>{item.chude}</Text>
         </View>
       </TouchableOpacity>
@@ -145,7 +170,11 @@ const ChuDe = () => {
         contentContainerStyle={styles.item}
       />
       <View style={styles.viewBottom}>
-        <OutLineButton onPress={nextHandler}>TIẾP THEO</OutLineButton>
+        <BottomComponent
+          onPress={nextHandler}
+          text="TIẾP THEO"
+          disable={disable}
+        ></BottomComponent>
       </View>
     </View>
   );
@@ -175,10 +204,9 @@ const styles = StyleSheet.create({
   },
   itemContent: {
     width: width * 0.3,
-    height: height * 0.1,
+    height: height * 0.07,
     borderRadius: 50,
     borderWidth: 1,
-    borderColor: 'gray',
     marginHorizontal: height * 0.05,
     marginVertical: width * 0.05,
     shadowColor: 'black',
@@ -191,11 +219,12 @@ const styles = StyleSheet.create({
   image: {
     width: width * 0.06,
     height: height * 0.04,
+    resizeMode: 'cover',
   },
   viewInner: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-around',
     flex: 1,
   },
   item: {
@@ -204,7 +233,7 @@ const styles = StyleSheet.create({
   },
   viewBottom: {
     flex: 1,
-    justifyContent: 'space-around',
-    marginBottom: -1,
+    justifyContent: 'center',
+    marginHorizontal: 10,
   },
 });
