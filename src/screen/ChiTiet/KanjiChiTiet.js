@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   Text,
@@ -12,11 +12,35 @@ import {
 import { useRoute } from "@react-navigation/native";
 import { Colors } from "../../constants/colors";
 
+import { useSelector } from "react-redux";
+import { authSelector } from "../../redux/reducers/authReducer";
+import KanjiApi from "../../Api/kanjiApi";
+
 const KanjiChiTiet = () => {
   const router = useRoute();
   const { itemId, kanjiData } = router.params; // Get data tu navigation params
 
   const [data, setData] = useState(kanjiData); // Lấy dữ liệu từ navigation params
+
+  const { token } = useSelector(authSelector);
+
+  useEffect(() => {
+    if (kanjiData && kanjiData._id) addDSKanji();
+  });
+
+  const addDSKanji = async () => {
+    try {
+      await KanjiApi.KanjiHandler(
+        `/addDSKanji/${kanjiData._id}`,
+        null,
+        "patch",
+        token
+      );
+      console.log("Đã học kanji:",kanjiData._id);
+    } catch (error) {
+      console.error("Lỗi:", error);
+    }
+  };
 
   if (!kanjiData) {
     return (
