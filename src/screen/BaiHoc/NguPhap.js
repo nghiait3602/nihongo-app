@@ -31,7 +31,7 @@ const NguPhap = () => {
   const { token } = useSelector(authSelector); // Sử dụng authSelector để lấy token từ Redux store
 
   useEffect(() => {
-    if (token && idBaiHoc === 'nguphap') {
+    if (token && idBaiHoc === 'nn') {
       // Kiểm tra xem token có tồn tại không
       handlerAll();
     } else if (token) {
