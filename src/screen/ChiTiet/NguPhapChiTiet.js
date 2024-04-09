@@ -1,11 +1,34 @@
-import React from "react";
+import React, {useEffect} from "react";
 import { StyleSheet, Text, View, SafeAreaView } from "react-native";
 import { useRoute } from "@react-navigation/native";
 import { Colors } from "../../constants/colors";
 
+import NguPhapApi from '../../Api/nguPhapApi';
+import { useSelector } from 'react-redux';
+import { authSelector } from '../../redux/reducers/authReducer';
+
 const NguPhapChiTiet = () => {
   const router = useRoute();
   const { nguphapData } = router.params; // Lấy dữ liệu từ navigation params
+  const { token } = useSelector(authSelector);
+
+  useEffect(() => {
+    if (nguphapData && nguphapData._id) addDSNguPhap();
+  });
+
+  const addDSNguPhap = async () => {
+    try {
+      await NguPhapApi.nguPhapHandler(
+        `/addDSNguPhap/${nguphapData._id}`,
+        null,
+        "patch",
+        token
+      );
+      console.log("Đã học kanji:",nguphapData._id);
+    } catch (error) {
+      console.error("Lỗi:", error);
+    }
+  };
 
   if (!nguphapData) {
     return (
