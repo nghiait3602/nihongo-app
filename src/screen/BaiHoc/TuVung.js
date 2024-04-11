@@ -14,17 +14,17 @@ import { useSelector } from 'react-redux';
 import { authSelector } from '../../redux/reducers/authReducer';
 import BaiHocApi from '../../Api/baihocApi';
 import Loading from '../../Modals/Loading';
-import LottieView from 'lottie-react-native';
-import SectionnsComponent from '../../component/UI/Auth/SectionnsComponent';
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import tuVungApi from '../../Api/tuvungApi';
 import CheckData from '../../component/UI/NoData/noData';
-import { likeSelector } from '../../redux/reducers/likeReducer';
+import userAPI from '../../Api/authApi';
 const TuVung = () => {
   const [tuVung, setTuVung] = useState([]); // Khởi tạo state Baihoc với giá trị ban đầu là null
   const [isLoading, setIsLoading] = useState(true);
   const [ChuDe, setChuDe] = useState('');
   const [idsTV, setIsTV] = useState([]);
+  const [listTV, setListTV] = useState([]);
   const router = useRoute();
   const idBaiHoc = router.params; // id của khóa bài học được truyền qua để tìm các bài kanji ngữ pháp từ vựng
   const navigator = useNavigation();
@@ -65,7 +65,9 @@ const TuVung = () => {
 
     fetchLikeData(); // Gọi hàm fetchLikeData khi component được render lần đầu tiên
   }, []);
-
+  useEffect(() => {
+    fetchData();
+  }, [auth.token]);
   const handlerLikeTV = async () => {
     setIsLoading(true);
     try {
@@ -135,8 +137,28 @@ const TuVung = () => {
       setIsLoading(false);
     }
   };
+
+  const fetchData = async () => {
+    try {
+      const response = await userAPI.HandlerAuthentication(
+        `/me`,
+        null,
+        'get',
+        auth.token
+      );
+      if (response.data.data.tuVungS) setListTV(response.data.data.tuVungS);
+    } catch (error) {
+      console.error('Error fetching user data: ', error);
+    }
+  };
   if (tuVung.length === 0 && !isLoading) {
     return <CheckData></CheckData>;
+  }
+
+  function checkTV(id) {
+    const newMap = listTV.map((item) => item._id);
+    const check = newMap.includes(id);
+    return check;
   }
 
   const ItemBaiHoc = ({ item, index }) => {
@@ -144,7 +166,10 @@ const TuVung = () => {
       navigator.navigate('TuVungChiTiet', item._id); // Chuyển item id dưới dạng tham số
     }
     return (
-      <TouchableOpacity style={styles.container} onPress={navigationHandler}>
+      <TouchableOpacity
+        style={[styles.container, checkTV(item._id) ? { opacity: 0.3 } : null]}
+        onPress={navigationHandler}
+      >
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <Text style={styles.textTitle}>{index + 1}. </Text>
           <Text style={styles.textTitle}>{item.tu}</Text>

@@ -16,15 +16,14 @@ import { useRoute } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 import { authSelector } from '../../redux/reducers/authReducer'; // Thêm authSelector từ reducer
 import Loading from '../../Modals/Loading';
-
-import LottieView from 'lottie-react-native';
-import SectionnsComponent from '../../component/UI/Auth/SectionnsComponent';
 import CheckData from '../../component/UI/NoData/noData';
+import userAPI from '../../Api/authApi';
 
 const NguPhap = () => {
   const navigator = useNavigation();
   const [nguPhap, setNguPhap] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [listNguPhap, setListNguPhap] = useState([]);
   const router = useRoute();
   const idBaiHoc = router.params;
   const [error, setError] = useState(null);
@@ -42,6 +41,10 @@ const NguPhap = () => {
       setLoading(false); // Dừng hiển thị indicator loading
     }
   }, [token, idBaiHoc]); // Chạy lại effect khi token thay đổi
+
+  useEffect(() => {
+    fetchData();
+  }, [token]);
   const handlerAll = async () => {
     try {
       const response = await NguPhapApi.nguPhapHandler(`/`, null, 'get', token); // Truyền token từ Redux store vào API
@@ -93,13 +96,31 @@ const NguPhap = () => {
     }
   };
 
+  const fetchData = async () => {
+    try {
+      const response = await userAPI.HandlerAuthentication(
+        `/me`,
+        null,
+        'get',
+        token
+      );
+      if (response.data.data.nguPhapS)
+        setListNguPhap(response.data.data.nguPhapS);
+    } catch (error) {
+      console.error('Error fetching user data: ', error);
+    }
+  };
   if (nguPhap.length === 0 && !loading) {
     return <CheckData></CheckData>;
   }
-
+  function checkNP(id) {
+    const newMap = listNguPhap.map((item) => item._id);
+    const check = newMap.includes(id);
+    return check;
+  }
   const renderItem = ({ item }) => (
     <TouchableOpacity
-      style={styles.container}
+      style={[styles.container, checkNP(item._id) ? { opacity: 0.3 } : null]}
       onPress={() => navigateToDetail(item)}
     >
       <View style={{ flexDirection: 'row' }}>
