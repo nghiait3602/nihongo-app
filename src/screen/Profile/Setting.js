@@ -19,10 +19,15 @@ import { Colors } from "../../constants/colors";
 const SettingsScreen = () => {
   const [newName, setNewName] = useState("");
   const [newBirthDate, setNewBirthDate] = useState("");
+  const [nowPass, setNowPass] = useState("");
+  const [newPass, setNewPass] = useState("");
+  const [confirmNewPass, setConfirmNewPass] = useState("");
   const [user, setUser] = useState(null);
   const [birthDateError, setBirthDateError] = useState(false);
   const navigation = useNavigation();
   const { token } = useSelector(authSelector);
+
+  const dispatch = useDispatch();
 
   const validateDateFormat = (dateString) => {
     const DDMMYYYY = /^([0-2][0-9]|3[0-1])\/(0[1-9]|1[0-2])\/\d{4}$/; //check validate có đúng dd/mm/yyy
@@ -73,6 +78,68 @@ const SettingsScreen = () => {
               } else {
                 console.error(
                   "Lỗi update user data: Dữ liệu trả về không hợp lệ."
+                );
+              }
+            } catch (error) {
+              console.error("Lỗi update user data: ", error);
+            }
+          },
+        },
+      ],
+      { cancelable: false }
+    );
+  };
+
+  const updateUserPassword = async () => {
+    Alert.alert(
+      "Xác nhận",
+      "Bạn có muốn cập nhật mật khẩu không?",
+      [
+        {
+          text: "Hủy",
+          style: "cancel",
+        },
+        {
+          text: "Đồng ý",
+          onPress: async () => {
+            try {
+              const UpdatePassword = {};
+              if (nowPass !== "") {
+                UpdatePassword.passwordCurrent = nowPass;
+              }
+              if (newPass !== "") {
+                UpdatePassword.password = newPass;
+              }
+              if (confirmNewPass !== "") {
+                UpdatePassword.passwordConfirm = confirmNewPass;
+              }
+              const response = await userAPI.HandlerAuthentication(
+                `/updateMyPassword`,
+                UpdatePassword,
+                "patch",
+                token
+              );
+              console.log(response);
+              if (response.status === "success") {
+                Alert.alert(
+                  "Thông báo",
+                  `Cập nhật thành công. Vui lòng đăng nhập lại.`,
+                  [{ text: "OK", onPress: () => dispatch(removeAuth()) }],
+                  { cancelable: false }
+                );
+              } else if (response.status === "error") {
+                Alert.alert(
+                  "Mật khẩu không khớp hoặc quá ngắn",
+                  `Vui lòng xác nhận lại hoặc điều chỉnh lại mật khẩu.`,
+                  [{ text: "OK" }],
+                  { cancelable: false }
+                );
+              } else {
+                Alert.alert(
+                  "Sai mật khẩu hiện tại",
+                  `Vui lòng nhập lại mật khẩu hiện tại chính xác.`,
+                  [{ text: "OK" }],
+                  { cancelable: false }
                 );
               }
             } catch (error) {
@@ -137,6 +204,60 @@ const SettingsScreen = () => {
           </Text>
         )}
         <ColorButton children="Cập nhật" onPress={updateUserData} />
+
+        <Text style={styles.label}>Mật khẩu hiện tại</Text>
+        <TextInput
+          style={[
+            styles.input,
+            { borderColor: nowPass ? Colors.Mask_Green : Colors.Swan },
+          ]}
+          value={nowPass}
+          onChangeText={setNowPass}
+        />
+        <Text style={styles.label}>Mật khẩu mới</Text>
+        <TextInput
+          style={[
+            styles.input,
+            {
+              borderColor: newPass
+                ? newPass.length >= 8
+                  ? Colors.Mask_Green
+                  : Colors.Cardinal
+                : Colors.Swan,
+            },
+          ]}
+          value={newPass}
+          onChangeText={setNewPass}
+        />
+        {newPass && newPass.length < 8 && (
+          <Text style={styles.errorMessage}>
+            Mật khẩu phải có độ dài tối thiểu 8 ký tự.
+          </Text>
+        )}
+        <Text style={styles.label}>Xác nhận mật khẩu</Text>
+        <TextInput
+          style={[
+            styles.input,
+            {
+              borderColor: confirmNewPass
+                ? confirmNewPass === newPass
+                  ? Colors.Mask_Green
+                  : Colors.Cardinal
+                : Colors.Swan,
+            },
+          ]}
+          value={confirmNewPass}
+          onChangeText={setConfirmNewPass}
+        />
+        {confirmNewPass && confirmNewPass !== newPass && (
+          <Text style={styles.errorMessage}>Mật khẩu không khớp.</Text>
+        )}
+        <ColorButton
+          children="Đổi mật khẩu"
+          onPress={updateUserPassword}
+          color={Colors.Humpback}
+        />
+
         <Text style={styles.nonLabel}>Email*</Text>
         <TextInput
           style={styles.noInput}
@@ -186,6 +307,7 @@ const styles = StyleSheet.create({
     flexGrow: 0.3,
     justifyContent: "center",
     alignItems: "center",
+    paddingBottom: 10,
   },
   noInput: {
     width: width - 30,
