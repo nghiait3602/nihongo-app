@@ -17,14 +17,14 @@ import { useSelector } from 'react-redux';
 import { authSelector } from '../../redux/reducers/authReducer'; // Thêm authSelector từ reducer
 import Loading from '../../Modals/Loading';
 
-import LottieView from 'lottie-react-native';
-import SectionnsComponent from '../../component/UI/Auth/SectionnsComponent';
 import CheckData from '../../component/UI/NoData/noData';
+import userAPI from '../../Api/authApi';
 
 const Kanji = () => {
   const navigator = useNavigation();
   const [kanji, setKanji] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [listKanji, setListKanji] = useState([]);
   const router = useRoute();
   const idBaiHoc = router.params;
   const [error, setError] = useState(null);
@@ -42,10 +42,14 @@ const Kanji = () => {
       setLoading(false); // Dừng hiển thị indicator loading
     }
   }, [token, idBaiHoc]); // Chạy lại effect khi token thay đổi
+
+  useEffect(() => {
+    fetchData();
+  }, [token]);
+
   const handlerAll = async () => {
     try {
       const response = await KanjiApi.KanjiHandler(`/`, null, 'get', token); // Truyền token từ Redux store vào API
-      console.log(response.data.data);
 
       if (response.data && idBaiHoc) {
         const data = response.data.data; // Lấy mảng dữ liệu từ trường "data"
@@ -63,6 +67,20 @@ const Kanji = () => {
       console.error('Error fetching data:', error);
       setError('Đã xảy ra lỗi khi tải dữ liệu. Vui lòng thử lại sau.');
       setLoading(false);
+    }
+  };
+
+  const fetchData = async () => {
+    try {
+      const response = await userAPI.HandlerAuthentication(
+        `/me`,
+        null,
+        'get',
+        token
+      );
+      if (response.data.data.kanjiS) setListKanji(response.data.data.kanjiS);
+    } catch (error) {
+      console.error('Error fetching user data: ', error);
     }
   };
 
@@ -74,7 +92,6 @@ const Kanji = () => {
         'get',
         token
       ); // Truyền token từ Redux store vào API
-      console.log('Response về:', response);
 
       if (response.data && idBaiHoc) {
         const data = response.data.data; // Lấy mảng dữ liệu từ trường "data"
@@ -95,22 +112,33 @@ const Kanji = () => {
     }
   };
 
+  function checkKaji(id) {
+    const newMap = listKanji.map((item) => item._id);
+    const check = newMap.includes(id);
+    return check;
+  }
+
   if (kanji.length === 0 && !loading) {
     return <CheckData></CheckData>;
   }
 
-  const renderItem = ({ item, index }) => (
-    <TouchableOpacity
-      style={styles.container}
-      onPress={() => navigateToDetail(item)}
-    >
-      <View style={{ flexDirection: 'row' }}>
-        <Text style={styles.textTitle}>{index + 1}. </Text>
-        <Text style={styles.textTitle}>{item.hanTu}</Text>
-      </View>
-      <Text style={styles.textDesc}>{item.viDu}</Text>
-    </TouchableOpacity>
-  );
+  const renderItem = ({ item, index }) => {
+    return (
+      <TouchableOpacity
+        style={[
+          styles.container,
+          checkKaji(item._id) ? { opacity: 0.3 } : null,
+        ]}
+        onPress={() => navigateToDetail(item)}
+      >
+        <View style={{ flexDirection: 'row' }}>
+          <Text style={styles.textTitle}>{index + 1}. </Text>
+          <Text style={styles.textTitle}>{item.hanTu}</Text>
+        </View>
+        <Text style={styles.textDesc}>{item.viDu}</Text>
+      </TouchableOpacity>
+    );
+  };
 
   const navigateToDetail = (item) => {
     navigator.navigate('KanjiChiTiet', { kanjiData: item }); // Truyen du lieu sang KanjiChiTiet
