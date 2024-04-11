@@ -84,6 +84,7 @@ const Verification = () => {
       ngaySinh: dataFetch.ngaySinh,
       password: dataFetch.password,
       passwordConfirm: dataFetch.password,
+      photo: "https://res.cloudinary.com/dwajmdb86/image/upload/v1711479672/nihongoapp/khhvxuqa1uqcp0b0ktfy.png"
     };
     if (limit > 0) {
       if (newCode.toString() === currentCode.toString()) {
