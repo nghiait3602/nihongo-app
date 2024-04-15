@@ -40,7 +40,7 @@ const Dialog = () => {
         <View style={styles.topInlineRight}>
           <Image
             style={styles.image}
-            source={require('../../../assets/Icons/animals.png')}
+            source={require('../../../assets/Icons/iconapp.png')}
           ></Image>
         </View>
       </View>

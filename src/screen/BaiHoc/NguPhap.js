@@ -33,6 +33,9 @@ const NguPhap = () => {
     if (token && idBaiHoc === 'nn') {
       // Kiểm tra xem token có tồn tại không
       handlerAll();
+    } else if (idBaiHoc.title === 'npdh' && idBaiHoc.data.length > 0) {
+      setNguPhap(idBaiHoc.data);
+      setLoading(false);
     } else if (token) {
       handlerNguPhap();
     } else {
