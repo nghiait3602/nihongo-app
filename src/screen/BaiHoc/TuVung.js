@@ -31,13 +31,15 @@ const TuVung = () => {
   const auth = useSelector(authSelector);
 
   useEffect(() => {
-    handlerAll();
     if (idBaiHoc === 'ChuDe' && ChuDe) {
       handerChude();
     } else if (idBaiHoc === 'all') {
       handlerAll();
     } else if (idBaiHoc.title === 'like' && idsTV) {
       handlerLikeTV();
+    } else if (idBaiHoc.title === 'tvdh' && idBaiHoc.data.length > 0) {
+      setTuVung(idBaiHoc.data);
+      setIsLoading(false);
     } else {
       handlerTungVung();
     }
@@ -178,7 +180,6 @@ const TuVung = () => {
       </TouchableOpacity>
     );
   };
-  // console.log(tuVung);
   return (
     <View style={{ flex: 1, backgroundColor: 'white' }}>
       {isLoading && <Loading isVisible={isLoading}></Loading>}

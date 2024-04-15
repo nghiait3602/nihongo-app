@@ -10,15 +10,14 @@ import {
   Platform,
   ScrollView,
   RefreshControl,
-
-} from "react-native";
-import * as ImagePicker from "expo-image-picker";
-import { Colors } from "../../constants/colors";
-import { AntDesign } from "@expo/vector-icons";
-import ItemDangKy from "../../component/Profile/ItemDangKy";
-import ItemProfile from "../../component/Profile/ItemProfile";
-import { removeAuth, authSelector } from "../../redux/reducers/authReducer";
-import { useDispatch, useSelector } from "react-redux";
+} from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
+import { Colors } from '../../constants/colors';
+import { AntDesign } from '@expo/vector-icons';
+import ItemDangKy from '../../component/Profile/ItemDangKy';
+import ItemProfile from '../../component/Profile/ItemProfile';
+import { removeAuth, authSelector } from '../../redux/reducers/authReducer';
+import { useDispatch, useSelector } from 'react-redux';
 
 import userAPI from '../../Api/authApi';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -31,7 +30,7 @@ var height = Dimensions.get('window').height;
 const Profile = () => {
   const [user, setUser] = useState(null);
   const [image, setImage] = useState('');
-  const [idsTV, setIdsTV] = useState();
+  const [isLoading, setIsLoading] = useState(false);
 
   const dispatch = useDispatch();
   const { token } = useSelector(authSelector);
@@ -58,6 +57,7 @@ const Profile = () => {
   }, []);
 
   const fetchData = async () => {
+    setIsLoading(true);
     try {
       const response = await userAPI.HandlerAuthentication(
         `/me`,
@@ -66,6 +66,7 @@ const Profile = () => {
         token
       );
       setUser(response.data.data);
+      setIsLoading(false);
     } catch (error) {
       console.error('Error fetching user data: ', error);
     }
@@ -78,25 +79,22 @@ const Profile = () => {
     try {
       const response = await ImageAPI.updateUserData(image, token);
 
-      if (response && response.status === "success") {
+      if (response && response.status === 'success') {
         console.log(
           `Upload cloudinary thành công: ${response.data.user.photo}`
         );
-
       } else {
         console.error('Lỗi update user data: Dữ liệu trả về không hợp lệ.');
       }
-
     } catch (err) {
-      console.log("Đang upload ảnh lên cloudinary...");
-
+      console.log('Đang upload ảnh lên cloudinary...');
     }
   };
 
   useEffect(() => {
     if (image !== '') {
       updateUserData();
-      Alert.alert("Thông báo", "Cập nhật ảnh thành công!");
+      Alert.alert('Thông báo', 'Cập nhật ảnh thành công!');
     }
   }, [image]);
 
@@ -122,23 +120,23 @@ const Profile = () => {
               try {
                 setImage(result.assets[0].uri);
                 const updateAnh = {};
-                if (image !== "") {
+                if (image !== '') {
                   updateAnh.photo = image;
                 }
                 const response = await userAPI.HandlerAuthentication(
                   `/updateMe`,
                   updateAnh,
-                  "patch",
+                  'patch',
                   token
                 );
                 if (response.data.user) {
                   console.log(
-                    "Update local thành công:",
+                    'Update local thành công:',
                     response.data.user.photo
                   );
                 }
               } catch (err) {
-                console.error("Update local Thất bại:", err);
+                console.error('Update local Thất bại:', err);
               }
             }
           },
@@ -196,6 +194,7 @@ const Profile = () => {
         height: height,
       }}
     >
+      {isLoading && <Loading isVisible={isLoading}></Loading>}
       <Image
         source={{ uri: bkImg }}
         style={[
@@ -300,7 +299,46 @@ const Profile = () => {
           }
         />
       </View>
-
+      {user && !isLoading && (
+        <View style={styles.box}>
+          <ItemProfile
+            title={`Từ vựng`}
+            icon={'bag-outline'}
+            font={1}
+            datadl={
+              user.tuVungS !== undefined &&
+              user.tuVungS !== null &&
+              user.tuVungS.length > 0
+                ? user.tuVungS
+                : ''
+            }
+          />
+          <ItemProfile
+            title={`Kanji`}
+            icon={'briefcase-outline'}
+            font={1}
+            datadl={
+              user.kanjiS !== undefined &&
+              user.kanjiS !== null &&
+              user.kanjiS.length > 0
+                ? user.kanjiS
+                : ''
+            }
+          />
+          <ItemProfile
+            title={`Ngữ Pháp`}
+            icon={'bag-handle-outline'}
+            font={1}
+            datadl={
+              user.nguPhapS !== undefined &&
+              user.nguPhapS !== null &&
+              user.nguPhapS.length > 0
+                ? user.nguPhapS
+                : ''
+            }
+          />
+        </View>
+      )}
       <View style={styles.box}>
         <ItemProfile title={`Từ vựng yêu thích`} icon={'heart'} font={1} />
         <ItemProfile title={'Liên hệ'} icon={'chatbubbles-outline'} font={1} />

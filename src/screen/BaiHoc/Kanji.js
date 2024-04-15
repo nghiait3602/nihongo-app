@@ -29,11 +29,13 @@ const Kanji = () => {
   const idBaiHoc = router.params;
   const [error, setError] = useState(null);
   const { token } = useSelector(authSelector); // Sử dụng authSelector để lấy token từ Redux store
-
   useEffect(() => {
     if (token && idBaiHoc === 'kanji') {
       // Kiểm tra xem token có tồn tại không
       handlerAll();
+    } else if (idBaiHoc.title === 'kjdh' && idBaiHoc.data.length > 0) {
+      setKanji(idBaiHoc.data);
+      setLoading(false);
     } else if (token) {
       handlerKanji();
     } else {
